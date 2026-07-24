@@ -974,7 +974,7 @@ body {
 .about-bio__inner {
   display: flex;
   flex-direction: column;
-  gap: 64px;
+  gap: 24px;
 }
 
 .about-heading {
@@ -988,7 +988,7 @@ body {
 .about-bio__body {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
   max-width: 480px;
 }
 
