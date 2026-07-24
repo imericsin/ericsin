@@ -42,11 +42,11 @@ a { color: inherit; text-decoration: none; }
   --color-card-off: #fafafa;
 
   /* ── Type scale ── */
-  /* Display:       Bold 700, 28/32 */
+  /* Display:       Medium 500, 28/34, -1.5% */
   --type-display-size:    1.75rem;
-  --type-display-lh:      1.143;
-  --type-display-weight:  700;
-  --type-display-ls:      -0.01em;
+  --type-display-lh:      34px;
+  --type-display-weight:  500;
+  --type-display-ls:      -0.015em;
   /* Body—Bold:     Bold 700, 15/18 */
   --type-body-bold-size:   0.9375rem;
   --type-body-bold-lh:     1.2;
@@ -287,9 +287,9 @@ body {
 .hero-text--stack .hero-name { color: var(--system-hero-secondary); }
 .hero-text--stack .hero-bio { flex: none; width: 100%; max-width: 420px; }
 .hero-left { display: flex; flex-direction: column; flex: 0 0 calc(50% - 4px); }
-.hero-name  { font-size: 1.75rem; font-weight: 700; line-height: 1.143; letter-spacing: -0.01em; color: var(--system-hero-primary); white-space: nowrap; }
-.hero-title { font-size: 1.75rem; font-weight: 700; line-height: 1.143; letter-spacing: -0.01em; color: var(--system-hero-secondary); white-space: nowrap; }
-.hero-bio   { font-size: 1.75rem; font-weight: 700; line-height: 1.143; letter-spacing: -0.01em; color: var(--system-hero-primary); flex: 1 1 0; min-width: 0; }
+.hero-name  { font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-primary); white-space: nowrap; }
+.hero-title { font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-secondary); white-space: nowrap; }
+.hero-bio   { font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-primary); flex: 1 1 0; min-width: 0; }
 
 /* ─── Home layout ────────────────────────────────── */
 .home-layout {
@@ -323,10 +323,10 @@ body {
 }
 .home-bio-section { display: flex; flex-direction: column; gap: 36px; margin-bottom: 128px; }
 .home-bio {
-  font-size: 1.75rem;
-  font-weight: 700;
-  line-height: 1.143;
-  letter-spacing: -0.01em;
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-lh);
+  letter-spacing: var(--type-display-ls);
   color: var(--system-body-primary);
   max-width: 500px;
 }
