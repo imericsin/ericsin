@@ -287,8 +287,8 @@ body {
 .hero-text--stack .hero-name { color: var(--system-hero-secondary); }
 .hero-text--stack .hero-bio { flex: none; width: 100%; max-width: 420px; }
 .hero-left { display: flex; flex-direction: column; flex: 0 0 calc(50% - 4px); }
-.hero-name  { font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-primary); white-space: nowrap; }
-.hero-title { font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-secondary); white-space: nowrap; }
+.hero-name  { font-size: var(--type-display-size); font-weight: 700; line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-primary); white-space: nowrap; }
+.hero-title { font-size: var(--type-display-size); font-weight: 700; line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-secondary); white-space: nowrap; }
 .hero-bio   { font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-primary); flex: 1 1 0; min-width: 0; }
 
 /* ─── Home layout ────────────────────────────────── */
@@ -333,19 +333,22 @@ body {
 .home-cta-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background: var(--system-body-primary);
-  color: var(--system-background-1);
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.286;
-  letter-spacing: 0.015em;
-  padding: 10px 16px;
-  border-radius: 8px;
+  gap: 4px;
+  background: var(--component-fg-1);
+  color: #ffffff;
+  padding: 10px 16px 10px 20px;
+  border-radius: 100px;
   white-space: nowrap;
-  transition: opacity 150ms ease;
+  text-decoration: none;
 }
-.home-cta-btn:hover { opacity: 0.8; }
+.home-cta-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0.015em;
+  padding-right: 4px;
+}
+.home-cta-icon { display: flex; align-items: center; width: 14px; height: 14px; flex-shrink: 0; }
 
 .home-cards { display: flex; flex-direction: column; gap: 40px; }
 
