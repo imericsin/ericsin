@@ -1,16 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Lottie, { type LottieRefCurrentProps } from 'lottie-react'
 import Card from '../components/Card'
 import { useWorkIndex } from '../hooks/useWorkIndex'
 
 function CtaButton() {
+  const [hovered, setHovered] = useState(false)
+  const [animData, setAnimData] = useState<object | null>(null)
+  const lottieRef = useRef<LottieRefCurrentProps>(null)
+
+  useEffect(() => {
+    fetch('/assets/arrow-lottie.json').then(r => r.json()).then(setAnimData)
+  }, [])
+
+  useEffect(() => {
+    if (!lottieRef.current) return
+    if (hovered) {
+      lottieRef.current.goToAndPlay(0)
+    } else {
+      lottieRef.current.goToAndStop(0)
+    }
+  }, [hovered])
+
   return (
-    <a className="home-cta-btn" href="mailto:eric@2717.design">
+    <a
+      className={`home-cta-btn${hovered ? ' home-cta-btn--hover' : ''}`}
+      href="mailto:eric@2717.design"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <span className="home-cta-label">Let's Chat</span>
       <span className="home-cta-icon">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M7.82227 2.5815C8.06634 2.33742 8.46198 2.33742 8.70605 2.5815L12.6836 6.55806C12.9277 6.80214 12.9277 7.19875 12.6836 7.44282L8.70605 11.4194C8.46198 11.6635 8.06634 11.6635 7.82227 11.4194C7.57819 11.1753 7.57819 10.7797 7.82227 10.5356L10.7324 7.62544H1.75781C1.41263 7.62544 1.13281 7.34562 1.13281 7.00044C1.13281 6.65526 1.41263 6.37544 1.75781 6.37544H10.7324L7.82227 3.46528C7.57819 3.22121 7.57819 2.82557 7.82227 2.5815Z" fill="white"/>
-        </svg>
+        {animData && <Lottie lottieRef={lottieRef} animationData={animData} loop={false} autoplay={false} style={{ width: 14, height: 14 }} />}
       </span>
     </a>
   )

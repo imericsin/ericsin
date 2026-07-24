@@ -350,8 +350,9 @@ body {
   position: relative;
   top: -0.5px;
 }
-.home-cta-btn:hover { opacity: 0.9; }
+.home-cta-btn--hover { opacity: 0.9; }
 .home-cta-icon { display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; flex-shrink: 0; }
+.home-cta-icon > div { display: flex !important; align-items: center; }
 .home-cta-icon svg { display: block; }
 
 .home-cards { display: flex; flex-direction: column; gap: 40px; }
