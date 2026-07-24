@@ -394,7 +394,8 @@ body {
   white-space: nowrap;
   transition: top 250ms ease-out;
 }
-.exp-cta--visible { top: 0; border-bottom: 1px dotted currentColor; padding-bottom: 2px; }
+.exp-cta--visible { top: 0; }
+.exp-cta--visible .exp-cta-text { border-bottom: 1px dotted currentColor; padding-bottom: 2px; }
 
 /* Dotted underline signifier for inline links */
 .link-dotted {
