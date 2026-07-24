@@ -51,27 +51,30 @@ function ExperienceList() {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className={`exp-list${hovered ? ' exp-list--hover' : ''}`}>
-        {experiences.map(({ title, company, year }, i) => (
-          <div
-            key={title + company}
-            className="exp-row"
-            style={{ opacity: hovered ? 1 : DEFAULT_OPACITIES[i], transition: 'opacity 250ms ease-out' }}
-          >
-            <span className="exp-title">{title}</span>
-            <span className="exp-slash" aria-hidden>/</span>
-            <span className="exp-company">{company}</span>
-            {(hovered || i === 0) && (
-              <>
-                <span className="exp-slash" aria-hidden>/</span>
-                <span className="exp-year">{year}</span>
-              </>
-            )}
-          </div>
-        ))}
+      <div className="exp-wrap">
+        <p className="exp-label">Experience</p>
+        <div className={`exp-list${hovered ? ' exp-list--hover' : ''}`}>
+          {experiences.map(({ title, company, year }, i) => (
+            <div
+              key={title + company}
+              className="exp-row"
+              style={{ opacity: hovered ? 1 : DEFAULT_OPACITIES[i], transition: 'opacity 250ms ease-out' }}
+            >
+              <span className="exp-title">{title}</span>
+              <span className="exp-slash" aria-hidden>/</span>
+              <span className="exp-company">{company}</span>
+              {(hovered || i === 0) && (
+                <>
+                  <span className="exp-slash" aria-hidden>/</span>
+                  <span className="exp-year">{year}</span>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
       <div className="exp-cta-wrap">
-        <Link to="/about" className={`exp-cta${hovered ? ' exp-cta--visible' : ''}`}>See Full Experience →</Link>
+        <Link to="/about" className={`exp-cta link-dotted${hovered ? ' exp-cta--visible' : ''}`}>See Full Experience →</Link>
       </div>
     </div>
   )

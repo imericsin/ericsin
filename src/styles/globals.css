@@ -372,6 +372,8 @@ body {
 
 /* ─── Experience ─────────────────────────────────── */
 .exp-section { display: flex; flex-direction: column; gap: 20px; padding-bottom: 8px; }
+.exp-wrap { display: flex; flex-direction: column; gap: 12px; }
+.exp-label { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--component-fg-3); white-space: nowrap; }
 .exp-list { display: flex; flex-direction: column; gap: 6px; transition: gap 250ms ease-out; }
 .exp-list--hover { gap: 8px; }
 .exp-row { display: flex; align-items: center; gap: 8px; }
@@ -388,11 +390,19 @@ body {
   font-weight: 500;
   line-height: 1rem;
   letter-spacing: 0.01em;
-  color: var(--component-fg-3);
+  color: var(--component-fg-2);
   white-space: nowrap;
   transition: top 250ms ease-out;
 }
 .exp-cta--visible { top: 0; }
+
+/* Dotted underline signifier for inline links */
+.link-dotted {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+  text-decoration-color: currentColor;
+}
 
 /* ─── Card grid ──────────────────────────────────── */
 .section-cards {
