@@ -29,6 +29,7 @@ function CtaButton() {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      <span className="home-cta-fill" />
       <span className="home-cta-label">Let's Chat</span>
       <span className="home-cta-icon">
         {animData && <Lottie lottieRef={lottieRef} animationData={animData} loop={false} autoplay={false} style={{ width: 14, height: 14 }} />}
