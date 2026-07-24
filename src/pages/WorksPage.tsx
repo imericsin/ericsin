@@ -5,12 +5,6 @@ import { useWorkIndex } from '../hooks/useWorkIndex'
 import { useReveal } from '../hooks/useReveal'
 import { useCardDim } from '../components/CardGrid'
 
-const headlinerLines = [
-  'Case studies covering the range',
-  'between brand, product, and',
-  'leadership in design.',
-]
-
 export default function WorksPage() {
   const cards = useWorkIndex({ featuredOnly: false })
   useReveal([cards])
@@ -23,14 +17,8 @@ export default function WorksPage() {
       <section className="section-hero">
         <div className="hero-text hero-text--stack">
           <p className="hero-name anim" style={{ animationDelay: '0.1s' }}>Work</p>
-          <p className="hero-bio" aria-label={headlinerLines.join(' ')}>
-            {headlinerLines.map((line, i) => (
-              <span
-                key={i}
-                className="hero-line"
-                style={{ animationDelay: `${0.15 + i * 0.1}s` }}
-              >{line}</span>
-            ))}
+          <p className="hero-bio anim" style={{ animationDelay: '0.2s' }}>
+            Case studies covering the range between brand, product, and leadership in design.
           </p>
         </div>
       </section>

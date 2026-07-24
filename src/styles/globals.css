@@ -191,11 +191,11 @@ body {
   mix-blend-mode: normal;
 }
 
-/* Hero lines — rise + fade, no blur */
+/* Hero lines */
 .hero-line {
   display: block;
   opacity: 0;
-  animation: riseIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -285,7 +285,7 @@ body {
 }
 .hero-text--stack { flex-direction: column; gap: 8px; }
 .hero-text--stack .hero-name { color: var(--system-hero-secondary); }
-.hero-text--stack .hero-bio { flex: none; width: 100%; }
+.hero-text--stack .hero-bio { flex: none; width: 100%; max-width: 420px; }
 .hero-left { display: flex; flex-direction: column; flex: 0 0 calc(50% - 4px); }
 .hero-name  { font-size: 1.75rem; font-weight: 700; line-height: 1.143; letter-spacing: -0.01em; color: var(--system-hero-primary); white-space: nowrap; }
 .hero-title { font-size: 1.75rem; font-weight: 700; line-height: 1.143; letter-spacing: -0.01em; color: var(--system-hero-secondary); white-space: nowrap; }
