@@ -48,7 +48,7 @@ export default function WorksPage() {
               slug={card.slug}
               href={`/work/${card.slug}`}
               className="reveal"
-              style={{ '--reveal-delay': `${(i % 3) * 0.07}s`, ...getDimStyle(i) } as React.CSSProperties}
+              style={{ '--reveal-delay': `${i * 0.07}s`, ...getDimStyle(i) } as React.CSSProperties}
               onMouseEnter={() => setHoveredIndex(i)}
               onMouseLeave={() => setHoveredIndex(null)}
             />

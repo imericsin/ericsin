@@ -89,19 +89,19 @@ export default function About() {
       <section className="about-cols about-bio">
         {/* Right (Scrollable) — photo */}
         <div className="about-col-scroll">
-          <div className="about-photo-wrap">
+          <div className="about-photo-wrap anim" style={{ animationDelay: '0.2s' }}>
             <img src="/about/photo.jpg" alt="Eric Sin" className="about-photo" />
           </div>
         </div>
         {/* Left (Sticky) — heading + bio */}
         <div className="about-col-sticky">
           <div className="about-bio__inner">
-            <h1 className="about-heading">About</h1>
+            <h1 className="about-heading anim" style={{ animationDelay: '0.05s' }}>About</h1>
             <div className="about-bio__body">
-              <p className="about-bio__p">I've been doing this "design" thing for about 20 years now.</p>
-              <p className="about-bio__p">My career began when I found my way into a small digital art community called Depthcore, working next to some incredible designers until starting as a founding designer for a kid-focused streaming platform.</p>
-              <p className="about-bio__p">Since then, I've become sort of a startup specialist— working to help build out brand &amp; design systems, collaboration processes, and mentoring designers with a focus on scale.</p>
-              <p className="about-bio__p">I'm now married with two insanely adorable kitties, trying to figure out life to the best of my ability.</p>
+              <p className="about-bio__p anim" style={{ animationDelay: '0.1s' }}>I've been doing this "design" thing for about 20 years now.</p>
+              <p className="about-bio__p anim" style={{ animationDelay: '0.15s' }}>My career began when I found my way into a small digital art community called Depthcore, working next to some incredible designers until starting as a founding designer for a kid-focused streaming platform.</p>
+              <p className="about-bio__p anim" style={{ animationDelay: '0.2s' }}>Since then, I've become sort of a startup specialist— working to help build out brand &amp; design systems, collaboration processes, and mentoring designers with a focus on scale.</p>
+              <p className="about-bio__p anim" style={{ animationDelay: '0.25s' }}>I'm now married with two insanely adorable kitties, trying to figure out life to the best of my ability.</p>
             </div>
           </div>
         </div>

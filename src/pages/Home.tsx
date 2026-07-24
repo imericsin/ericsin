@@ -90,7 +90,9 @@ export default function Home() {
             <p className="hero-name">Eric Sin</p>
             <p className="hero-title">Designer / Director</p>
           </div>
-          <ExperienceList />
+          <div className="anim" style={{ animationDelay: '0.2s' }}>
+            <ExperienceList />
+          </div>
         </div>
 
         <div className="home-footer-details anim" style={{ animationDelay: '0.3s' }}>
