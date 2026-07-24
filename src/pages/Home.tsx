@@ -96,20 +96,12 @@ export default function Home() {
         </div>
 
         <div className="home-footer-details anim" style={{ animationDelay: '0.3s' }}>
-          <div className="home-time-wrap">
-            <div className="home-time-row">
-              <span className="home-time">{time}</span>
-              <span className="home-pst-badge">PST</span>
-            </div>
-            <p className="home-date">{date}</p>
-          </div>
-          <p className="home-location">Anaheim, California</p>
           <div className="home-social">
-            <a href="https://www.instagram.com/ericysin" target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label="Instagram">
-              <img src="/assets/icon-ig.svg" alt="" width="16" height="16" />
-            </a>
             <a href="https://www.threads.com/@imericsin" target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label="Threads">
               <img src="/assets/icon-th.svg" alt="" width="16" height="16" />
+            </a>
+            <a href="https://www.instagram.com/ericysin" target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label="Instagram">
+              <img src="/assets/icon-ig.svg" alt="" width="16" height="16" />
             </a>
             <a href="https://www.linkedin.com/in/quickfox/" target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label="LinkedIn">
               <img src="/assets/icon-li.svg" alt="" width="16" height="16" />
@@ -117,6 +109,10 @@ export default function Home() {
             <a href="https://www.youtube.com/@ericsindesign" target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label="YouTube">
               <img src="/assets/icon-yt.svg" alt="" width="16" height="16" />
             </a>
+          </div>
+          <div className="home-time-wrap">
+            <p className="home-date">{date}</p>
+            <p className="home-location">Anaheim, California</p>
           </div>
         </div>
       </div>
