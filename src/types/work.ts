@@ -5,6 +5,7 @@ export interface WorkMeta {
   categories?: string
   featured?: boolean
   date?: string        // YYYY-MM format
+  thumb?: string       // thumbnail filename, e.g. thumbnail.webp
   theme?: WorkTheme
 }
 

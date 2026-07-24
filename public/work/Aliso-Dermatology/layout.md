@@ -1,4 +1,5 @@
 ---
+thumb: thumbnail.webp
 title: Aliso Dermatology
 headliner: Clinical Expertise, Branded To Match
 categories: Brand, Web

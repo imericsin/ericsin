@@ -1,4 +1,5 @@
 ---
+thumb: thumbnail.webp
 title: LilyLink
 headliner: Legitimizing a Vision for Maternal Health
 categories: Brand, Product, Web

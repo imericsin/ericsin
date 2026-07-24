@@ -1,4 +1,5 @@
 ---
+thumb: thumbnail.webp
 title: Producer.AI
 headliner: Enabling Imagination in Music Production
 categories: Brand, Product

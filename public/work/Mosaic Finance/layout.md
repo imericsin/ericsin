@@ -1,4 +1,5 @@
 ---
+thumb: thumbnail.webp
 title: Mosaic Finance
 headliner: Enabling Imagination in Music Production
 categories: Product

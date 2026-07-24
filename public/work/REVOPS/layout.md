@@ -1,4 +1,5 @@
 ---
+thumb: thumbnail.webp
 title: Teladerma
 headliner: Streamlined Equipment Financing, Branded
 categories: Brand, Web

@@ -1,4 +1,5 @@
 ---
+thumb: thumbnail.webp
 title: VICTORY+
 headliner: Creating a Better Fan Experience for Sports
 categories: Brand, Product

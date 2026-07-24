@@ -1,4 +1,5 @@
 ---
+thumb: thumbnail.webp
 title: You.com
 headliner: Enabling Imagination in Music Production
 categories: Brand, Product

@@ -27,17 +27,10 @@ export interface WorkCard {
   date: string
 }
 
-async function resolveHeroAsset(base: string): Promise<{ src: string; type: 'image' | 'video' } | null> {
-  try {
-    // Try thumbnail.mp4 first, then thumbnail.webp, then thumbnail.jpg
-    for (const [name, type] of [['thumbnail.mp4', 'video'], ['thumbnail.webp', 'image'], ['thumbnail.jpg', 'image']] as const) {
-      const res = await fetch(`${base}/${name}`, { method: 'HEAD' })
-      if (res.ok) return { src: `${base}/${name}`, type }
-    }
-    return null
-  } catch {
-    return null
-  }
+function resolveThumb(base: string, thumbFile: string | undefined): { src: string; type: 'image' | 'video' } | null {
+  if (!thumbFile) return null
+  const isVideo = /\.(mp4|webm|mov)$/i.test(thumbFile)
+  return { src: `${base}/${thumbFile}`, type: isVideo ? 'video' : 'image' }
 }
 
 interface WorkIndexOptions {
@@ -65,7 +58,7 @@ export function useWorkIndex({ featuredOnly = true, limit }: WorkIndexOptions = 
           if (featuredOnly && !meta.featured) return null
           if (!meta.date) return null
 
-          const hero = await resolveHeroAsset(base)
+          const hero = resolveThumb(base, meta.thumb)
           if (!hero) return null
 
           return {
