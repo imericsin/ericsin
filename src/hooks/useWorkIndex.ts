@@ -32,6 +32,16 @@ async function resolveHeroAsset(base: string): Promise<{ src: string; type: 'ima
     const r = await fetch(`${base}/assets.json`)
     if (!r.ok) return null
     const files: string[] = await r.json()
+
+    // Prefer thumbnail over full-res hero for card display
+    const thumb = (files as string[]).find(f => /^thumbnail\./i.test(f))
+    if (thumb) {
+      const isVideo = /\.(mp4|webm|mov)$/i.test(thumb)
+      // Use WebP version for images if available
+      const src = isVideo ? `${base}/${thumb}` : `${base}/thumbnail.webp`
+      return { src, type: isVideo ? 'video' : 'image' }
+    }
+
     const hero = files.find(f => /^01_FULLHERO_/i.test(f))
     if (!hero) return null
     const isVideo = /\.(mp4|webm|mov)$/i.test(hero)
