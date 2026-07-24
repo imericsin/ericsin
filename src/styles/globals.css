@@ -57,7 +57,7 @@ a { color: inherit; text-decoration: none; }
   --type-body-semi-weight: 600;
   /* Body—Medium:   Medium 500, 15/18 */
   --type-body-med-size:   0.9375rem;
-  --type-body-med-lh:     1.2;
+  --type-body-med-lh:     1.333;
   --type-body-med-weight: 500;
   /* Label:         Semibold 600, 14/18 */
   --type-label-size:   0.875rem;
