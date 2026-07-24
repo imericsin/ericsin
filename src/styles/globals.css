@@ -381,10 +381,10 @@ body {
 .exp-company { font-size: var(--type-body-bold-size); font-weight: var(--type-body-bold-weight); line-height: var(--type-body-bold-lh); white-space: nowrap; color: var(--component-fg-3); }
 .exp-year    { font-size: var(--type-body-med-size);  font-weight: var(--type-body-med-weight);  line-height: var(--type-body-med-lh);  white-space: nowrap; color: var(--component-fg-3); }
 .exp-slash   { font-size: var(--type-body-med-size);  font-weight: var(--type-body-med-weight);  line-height: var(--type-body-med-lh);  color: var(--component-fg-3); opacity: 0.4; flex-shrink: 0; }
-.exp-cta-wrap { height: 16px; overflow: clip; position: relative; flex-shrink: 0; width: 100%; }
+.exp-cta-wrap { height: 19px; overflow: clip; position: relative; flex-shrink: 0; width: 100%; }
 .exp-cta {
   position: absolute;
-  top: -16px;
+  top: -19px;
   left: 0;
   font-size: 0.8125rem;
   font-weight: 500;
