@@ -32,7 +32,7 @@ function parseFrontmatter(raw: string): { meta: WorkMeta; content: string } {
 
   if (Object.keys(theme).length) meta['theme'] = theme
 
-  return { meta: meta as WorkMeta, content }
+  return { meta: meta as unknown as WorkMeta, content }
 }
 
 export function parseLayout(raw: string, _slug: string): { meta: WorkMeta; blocks: LayoutBlock[] } {
