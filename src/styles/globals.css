@@ -348,7 +348,8 @@ body {
   letter-spacing: 0.015em;
   padding-right: 4px;
 }
-.home-cta-icon { display: flex; align-items: center; width: 14px; height: 14px; flex-shrink: 0; }
+.home-cta-icon { display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; flex-shrink: 0; line-height: 0; }
+.home-cta-icon > div { display: flex !important; }
 
 .home-cards { display: flex; flex-direction: column; gap: 40px; }
 
