@@ -39,7 +39,10 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
     </div>
   ) : (
     <div className={thumbClass}>
-      <img src={thumb} alt={title} style={mediaStyle} />
+      <picture>
+        <source srcSet={thumb.replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
+        <img src={thumb} alt={title} style={mediaStyle} />
+      </picture>
     </div>
   )
 
