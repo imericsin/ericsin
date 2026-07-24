@@ -29,23 +29,12 @@ export interface WorkCard {
 
 async function resolveHeroAsset(base: string): Promise<{ src: string; type: 'image' | 'video' } | null> {
   try {
-    const r = await fetch(`${base}/assets.json`)
-    if (!r.ok) return null
-    const files: string[] = await r.json()
-
-    // Prefer thumbnail over full-res hero for card display
-    const thumb = (files as string[]).find(f => /^thumbnail\./i.test(f))
-    if (thumb) {
-      const isVideo = /\.(mp4|webm|mov)$/i.test(thumb)
-      // Use WebP version for images if available
-      const src = isVideo ? `${base}/${thumb}` : `${base}/thumbnail.webp`
-      return { src, type: isVideo ? 'video' : 'image' }
+    // Try thumbnail.mp4 first, then thumbnail.webp, then thumbnail.jpg
+    for (const [name, type] of [['thumbnail.mp4', 'video'], ['thumbnail.webp', 'image'], ['thumbnail.jpg', 'image']] as const) {
+      const res = await fetch(`${base}/${name}`, { method: 'HEAD' })
+      if (res.ok) return { src: `${base}/${name}`, type }
     }
-
-    const hero = files.find(f => /^01_FULLHERO_/i.test(f))
-    if (!hero) return null
-    const isVideo = /\.(mp4|webm|mov)$/i.test(hero)
-    return { src: `${base}/assets/${hero}`, type: isVideo ? 'video' : 'image' }
+    return null
   } catch {
     return null
   }
