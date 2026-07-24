@@ -398,10 +398,9 @@ body {
 
 /* Dotted underline signifier for inline links */
 .link-dotted {
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 2px;
-  text-decoration-color: currentColor;
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+  padding-bottom: 2px;
 }
 
 /* ─── Card grid ──────────────────────────────────── */
