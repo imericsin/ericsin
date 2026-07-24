@@ -74,7 +74,7 @@ function ExperienceList() {
         </div>
       </div>
       <div className="exp-cta-wrap">
-        <Link to="/about" className={`exp-cta link-dotted${hovered ? ' exp-cta--visible' : ''}`}>See Full Experience →</Link>
+        <Link to="/about" className={`exp-cta${hovered ? ' exp-cta--visible' : ''}`}>See Full Experience →</Link>
       </div>
     </div>
   )
