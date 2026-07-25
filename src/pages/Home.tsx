@@ -8,6 +8,8 @@ function CtaButton() {
   const [hovered, setHovered] = useState(false)
   const [animData, setAnimData] = useState<object | null>(null)
   const lottieRef = useRef<LottieRefCurrentProps>(null)
+  const btnRef = useRef<HTMLAnchorElement>(null)
+  const fillRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     fetch('/assets/arrow-lottie.json').then(r => r.json()).then(setAnimData)
@@ -16,20 +18,28 @@ function CtaButton() {
   useEffect(() => {
     if (!lottieRef.current) return
     if (hovered) {
+      lottieRef.current.setSpeed(0.5)
       lottieRef.current.goToAndPlay(0)
     } else {
       lottieRef.current.goToAndStop(0)
     }
   }, [hovered])
 
+  function updateOrigin(e: React.MouseEvent<HTMLAnchorElement>) {
+    const rect = btnRef.current!.getBoundingClientRect()
+    fillRef.current!.style.left = `${e.clientX - rect.left}px`
+    fillRef.current!.style.top = `${e.clientY - rect.top}px`
+  }
+
   return (
     <a
+      ref={btnRef}
       className={`home-cta-btn${hovered ? ' home-cta-btn--hover' : ''}`}
       href="mailto:eric@2717.design"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={(e) => { updateOrigin(e); setHovered(true) }}
+      onMouseLeave={(e) => { updateOrigin(e); setHovered(false) }}
     >
-      <span className="home-cta-fill" />
+      <span ref={fillRef} className="home-cta-fill" />
       <span className="home-cta-label">Let's Chat</span>
       <span className="home-cta-icon">
         {animData && <Lottie lottieRef={lottieRef} animationData={animData} loop={false} autoplay={false} style={{ width: 14, height: 14 }} />}
