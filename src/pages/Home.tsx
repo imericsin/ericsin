@@ -171,8 +171,12 @@ export default function Home() {
           <p className="home-bio anim" style={{ animationDelay: '0.15s' }}>
             Craft-obsessed, multidisciplinary creative thinker specialized in designing digital experiences across industries
           </p>
-          <div className="anim" style={{ animationDelay: '0.2s' }}>
+          <div className="home-cta-section anim" style={{ animationDelay: '0.2s' }}>
             <CtaButton />
+            <div className="home-cta-availability">
+              <p className="home-cta-avail-label">Current Availability</p>
+              <p className="home-cta-avail-status">Open for Work</p>
+            </div>
           </div>
         </div>
 

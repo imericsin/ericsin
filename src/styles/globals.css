@@ -330,6 +330,11 @@ body {
   color: var(--system-body-primary);
   max-width: 500px;
 }
+.home-cta-section { display: flex; align-items: center; gap: 20px; }
+.home-cta-availability { display: flex; flex-direction: column; gap: 2px; }
+.home-cta-avail-label { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--component-fg-1); }
+.home-cta-avail-status { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--component-fg-2); }
+
 .home-cta-btn {
   display: inline-flex;
   align-items: center;
