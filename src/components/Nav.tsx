@@ -60,7 +60,6 @@ export default function Nav() {
           const active = isActive(href, pathname)
           return (
             <div key={label} className="nav-link-wrap">
-              {active && <div className="dot" />}
               <Link className={`nav-link${active ? ' active' : ''}`} to={href}>{label}</Link>
             </div>
           )

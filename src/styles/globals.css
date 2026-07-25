@@ -253,7 +253,7 @@ body {
 .nav-link-wrap { display: flex; gap: 6px; align-items: center; }
 .dot { width: 8px; height: 8px; background: #ffffff; border-radius: 100px; flex-shrink: 0; }
 .nav-link {
-  font-size: var(--type-body-med-size);
+  font-size: 0.875rem;
   font-weight: var(--type-body-med-weight);
   line-height: var(--type-body-med-lh);
   letter-spacing: 0.005em;
