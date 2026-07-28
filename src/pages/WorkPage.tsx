@@ -56,20 +56,20 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
 
   return (
     <>
-    <div className="page page--work anim anim-2">
-
-      <section className="work-header">
-        <div className="work-header__top">
-          <div className="work-header__title-group">
-            <div className="work-breadcrumb">
-              <span>Work</span>
-              <span className="work-breadcrumb__sep">/</span>
-              <span>{meta.title}</span>
+      <div className="page page--work anim anim-2">
+        <section className="work-header">
+          <div className="work-header__top">
+            <div className="work-header__title-group">
+              <div className="work-breadcrumb">
+                <span>Work</span>
+                <span className="work-breadcrumb__sep">/</span>
+                <span>{meta.title}</span>
+              </div>
+              <h1 className="work-headliner">{meta.headliner}</h1>
             </div>
-            <h1 className="work-headliner">{meta.headliner}</h1>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       {heroBlock && (
         <div className="work-hero reveal in-view" style={{ '--reveal-delay': '0s' } as React.CSSProperties}>
@@ -77,18 +77,19 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
         </div>
       )}
 
-      <div className="work-content" ref={contentRef}>
-        {contentBlocks.map(block => (
-          <LayoutBlockComponent
-            key={`${block.order}_${block.type}`}
-            block={block}
-            categories={block.type === 'CREDITS' ? meta.categories : undefined}
-          />
-        ))}
+      <div className="page page--work">
+        <div className="work-content" ref={contentRef}>
+          {contentBlocks.map(block => (
+            <LayoutBlockComponent
+              key={`${block.order}_${block.type}`}
+              block={block}
+              categories={block.type === 'CREDITS' ? meta.categories : undefined}
+            />
+          ))}
+        </div>
       </div>
 
-    </div>
-    <PageFooter revealClass="anim" />
+      <PageFooter revealClass="anim" />
     </>
   )
 }
