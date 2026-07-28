@@ -528,6 +528,21 @@ body {
   width: 100%;
   padding: 32px var(--body-margin-x) 20px;
 }
+.footer-mobile__left { display: flex; flex-direction: column; gap: 2px; }
+.footer-mobile__copy {
+  font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
+  line-height: 16px; letter-spacing: 0.01em; color: var(--system-body-primary);
+}
+.footer-mobile__sub {
+  font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
+  line-height: 16px; letter-spacing: 0.01em; color: var(--system-hero-secondary);
+}
+.footer-mobile__top {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
+  line-height: 16px; letter-spacing: 0.01em; color: var(--system-body-primary);
+  font-family: inherit;
+}
 .footer-desktop-section, .footer-desktop { display: none; }
 
 /* ─── Work / case study page ─────────────────────── */
@@ -730,21 +745,6 @@ body {
   .home-layout { flex-direction: column; }
   .home-left { display: none; }
   .home-right { padding-top: 120px; padding-bottom: 0; }
-  .footer-mobile__left { display: flex; flex-direction: column; gap: 2px; }
-  .footer-mobile__copy {
-    font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
-    line-height: 16px; letter-spacing: 0.01em; color: var(--system-body-primary);
-  }
-  .footer-mobile__sub {
-    font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
-    line-height: 16px; letter-spacing: 0.01em; color: var(--system-hero-secondary);
-  }
-  .footer-mobile__top {
-    background: none; border: none; padding: 0; cursor: pointer;
-    font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
-    line-height: 16px; letter-spacing: 0.01em; color: var(--system-body-primary);
-    font-family: inherit;
-  }
   .home-bio { font-size: 1.25rem; font-weight: 500; line-height: 24px; letter-spacing: -0.015em; }
   .home-bio-section { gap: 28px; margin-bottom: 48px; }
   /* Latest Work 2×2 grid */
