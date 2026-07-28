@@ -520,10 +520,15 @@ body {
 .footer p { font-size: var(--type-label-size); font-weight: var(--type-label-weight); line-height: var(--type-label-lh); letter-spacing: -0.01em; color: var(--system-body-secondary); }
 .footer .right { text-align: right; }
 
-/* Mobile footer — hidden on desktop */
+/* Footer — universal, replaces old desktop footer */
 .footer-mobile {
-  display: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  padding: 32px var(--body-margin-x) 20px;
 }
+.footer-desktop-section, .footer-desktop { display: none; }
 
 /* ─── Work / case study page ─────────────────────── */
 
@@ -725,10 +730,6 @@ body {
   .home-layout { flex-direction: column; }
   .home-left { display: none; }
   .home-right { padding-top: 120px; padding-bottom: 0; }
-  .footer-mobile {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    width: 100%; padding: 32px var(--body-margin-x) 20px;
-  }
   .footer-mobile__left { display: flex; flex-direction: column; gap: 2px; }
   .footer-mobile__copy {
     font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
@@ -849,8 +850,6 @@ body {
   .about-company-name { font-size: var(--type-body-bold-size); line-height: var(--type-body-bold-lh); }
   .about-company-role { font-size: var(--type-micro-size); line-height: 16px; }
   .about-company-desc { font-size: var(--type-body-med-size); line-height: var(--type-body-med-lh); }
-  /* Hide desktop footer sections on mobile */
-  .footer-desktop-section, .footer-desktop { display: none; }
 }
 
 /* ─── Mobile Nav ─────────────────────────────────── */

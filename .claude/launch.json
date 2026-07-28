@@ -1,0 +1,36 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Halftone Hero",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "3001", "--directory", "parasail/halftone-hero"],
+      "port": 3001
+    },
+    {
+      "name": "Kelvin Wake (Python static server)",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "3000", "--directory", "parasail/wakedistort"],
+      "port": 3000
+    },
+    {
+      "name": "Kelvin Wake (npx serve)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "parasail/wakedistort", "-p", "3000", "--no-clipboard"],
+      "port": 3000
+    },
+    {
+      "name": "Portfolio (static)",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "3456", "--directory", "portfolio"],
+      "port": 3456
+    },
+    {
+      "name": "Portfolio (React)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3457,
+      "autoPort": true
+    }
+  ]
+}
