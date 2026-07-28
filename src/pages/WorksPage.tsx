@@ -8,6 +8,7 @@ import { useCardDim } from '../components/CardGrid'
 export default function WorksPage() {
   const cards = useWorkIndex({ featuredOnly: false })
   useReveal([cards])
+  const { getDimStyle, setHoveredIndex } = useCardDim(cards.length)
 
   return (
     <>
