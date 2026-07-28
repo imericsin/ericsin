@@ -55,6 +55,7 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
   const contentBlocks = blocks.filter(b => b.type !== 'FULLHERO')
 
   return (
+    <>
     <div className="page page--work anim anim-2">
 
       <section className="work-header">
@@ -86,7 +87,8 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
         ))}
       </div>
 
-      <PageFooter revealClass="anim" />
     </div>
+    <PageFooter revealClass="anim" />
+    </>
   )
 }

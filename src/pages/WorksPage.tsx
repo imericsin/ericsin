@@ -8,9 +8,9 @@ import { useCardDim } from '../components/CardGrid'
 export default function WorksPage() {
   const cards = useWorkIndex({ featuredOnly: false })
   useReveal([cards])
-  const { setHoveredIndex, getDimStyle } = useCardDim(cards.length)
 
   return (
+    <>
     <div className="page">
       <div className="spacer-4" />
 
@@ -45,8 +45,8 @@ export default function WorksPage() {
       </section>
 
       <div className="spacer-4" />
-
-      <PageFooter revealClass="reveal" />
     </div>
+    <PageFooter revealClass="reveal" />
+    </>
   )
 }

@@ -77,11 +77,20 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
       {inner}
       {variant === 'work' ? (
         <div className="card-meta">
-          <div className="card-meta__row1">
-            {name && <p className="card-name">{name}</p>}
-            {tags && <p className="card-categories">{tags}</p>}
+          <div className="card-meta__top">
+            <div className="card-meta__row1">
+              {name && <p className="card-name">{name}</p>}
+              {tags && <p className="card-categories card-categories--desktop">{tags}</p>}
+            </div>
+            <p className="card-title">{title}</p>
           </div>
-          <p className="card-title">{title}</p>
+          {tags && (
+            <div className="card-tags">
+              {tags.split(',').map(t => (
+                <span key={t.trim()} className="card-tag">{t.trim()}</span>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <div className="card-caption">

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Nav from './components/Nav'
+import NavMobile from './components/NavMobile'
 import Home from './pages/Home'
 import About from './pages/About'
 import WorksPage from './pages/WorksPage'
@@ -24,6 +25,10 @@ export default function App() {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
+    document.body.dataset.page = location.pathname === '/about' ? 'about' : ''
+  }, [location.pathname])
+
+  useEffect(() => {
     if (location.pathname === displayLocation.pathname) return
     if (!location.pathname.startsWith('/work/')) pendingTheme.current = null
 
@@ -44,6 +49,7 @@ export default function App() {
   return (
     <>
       <Nav />
+      <NavMobile />
       <div className="app">
         <div
           key={displayLocation.pathname}

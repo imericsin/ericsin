@@ -1,3 +1,5 @@
+import PageFooter from '../components/PageFooter'
+
 const logoRows = [
   [
     { src: '/about/logos/nike.svg', alt: 'Nike' },
@@ -83,10 +85,27 @@ const interests = [
 
 export default function About() {
   return (
+    <>
+      {/* ── Mobile-only: full-bleed hero photo — sibling of .page, no padding context ── */}
+      <div className="about-hero-mobile">
+        <img src="/about/photo-mobile.jpg" alt="Eric Sin" className="about-hero-mobile__img" />
+      </div>
+
     <div className="page page--about">
 
-      {/* ── Section 1: Bio ── */}
-      <section className="about-cols about-bio">
+      {/* ── Mobile-only: bio text section ── */}
+      <div className="about-bio-mobile">
+        <h1 className="about-heading-mobile">About</h1>
+        <div className="about-bio-mobile__body">
+          <p>I've been doing this "design" thing for about 20 years now.</p>
+          <p>My career began when I found my way into a small digital art community called Depthcore, working next to some incredible designers until starting as a founding designer for a kid-focused streaming platform.</p>
+          <p>Since then, I've become sort of a startup specialist— working to help build out brand &amp; design systems, collaboration processes, and mentoring designers with a focus on scale.</p>
+          <p>I'm now married with two insanely adorable kitties, trying to figure out life to the best of my ability.</p>
+        </div>
+      </div>
+
+      {/* ── Section 1: Bio — desktop only ── */}
+      <section className="about-cols about-bio about-bio--desktop">
         {/* Right (Scrollable) — photo */}
         <div className="about-col-scroll">
           <div className="about-photo-wrap anim" style={{ animationDelay: '0.2s' }}>
@@ -172,5 +191,7 @@ export default function About() {
       </section>}
 
     </div>
+    <PageFooter />
+    </>
   )
 }
