@@ -256,16 +256,16 @@ body {
   padding: 20px var(--body-margin-x);
 }
 .nav-logo-fill { flex: 0 0 calc(50% + 10px - 14px); min-width: 0; display: flex; align-items: center; }
-.nav-logo { display: block; color: #ffffff; width: 61.27px; height: 18px; flex-shrink: 0; }
+.nav-logo { display: block; color: var(--system-hero-primary); width: 61.27px; height: 18px; flex-shrink: 0; }
 .nav-links-fill { flex: 1 0 0; min-width: 0; display: flex; align-items: center; gap: 28px; }
 .nav-link-wrap { display: flex; gap: 6px; align-items: center; }
-.dot { width: 8px; height: 8px; background: #ffffff; border-radius: 100px; flex-shrink: 0; }
+.dot { width: 8px; height: 8px; background: var(--system-hero-primary); border-radius: 100px; flex-shrink: 0; }
 .nav-link {
   font-size: 0.875rem;
   font-weight: var(--type-body-med-weight);
   line-height: var(--type-body-med-lh);
   letter-spacing: 0.005em;
-  color: #ffffff;
+  color: var(--system-hero-primary);
   white-space: nowrap;
   cursor: pointer;
 }
