@@ -612,7 +612,7 @@ body {
 .block-full + .block-full,
 .block-full + .block-2col-images,
 .block-2col-images + .block-full,
-.block-2col-images + .block-2col-images { margin-top: -58px; }
+.block-2col-images + .block-2col-images { margin-top: -52px; }
 .block-full__media { width: 100%; height: auto; border-radius: var(--radius-card); display: block; }
 
 /* CREDITS — 3-col: left team, spacer, right large body copy */
@@ -876,9 +876,9 @@ body {
   .block-full { padding: 0 var(--body-margin-x); }
   .work-content .block-2col__media,
   .work-content .block-3col__media { padding: 0 var(--body-margin-x); }
-  /* Image blocks use section gap rhythm on mobile */
+  /* Image blocks use tight 12px gap on mobile (inset with padding, no negative margin trick) */
   .block-full,
-  .block-2col-images { margin-bottom: var(--gap-section); }
+  .block-2col-images { margin-bottom: 12px; }
   .block-full:last-child,
   .block-2col-images:last-child { margin-bottom: 0; }
   /* Reset negative margin overlap — no longer needed with inset padding */
