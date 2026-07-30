@@ -975,17 +975,15 @@ body {
 @media (max-width: 640px) {
   /* Nav: hide desktop, show mobile */
   .nav { display: none; }
-  .nav-mobile { display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: transparent; isolation: isolate; }
+  .nav-mobile { display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: transparent; }
   .nav-mobile-inner {
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 16px 16px 20px;
     position: relative; /* anchor for mnav-panel */
-    transition: background 0.2s ease, backdrop-filter 0.2s ease;
+    transition: background 0.2s ease;
   }
   .nav-mobile-inner--scrolled {
-    background: color-mix(in srgb, var(--system-background-1) 85%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--system-background-1);
   }
   .nav-mobile-identity { display: flex; flex-direction: column; gap: 0; text-decoration: none; }
   .nav-mobile-name {

@@ -73,7 +73,7 @@ export default function NavMobile() {
 
   return (
     <nav className="nav-mobile">
-      <div className={`nav-mobile-inner${scrolled ? ' nav-mobile-inner--scrolled' : ''}`}>
+      <div className={`nav-mobile-inner${scrolled && !open ? ' nav-mobile-inner--scrolled' : ''}`}>
         <Link to="/" className="nav-mobile-identity">
           <p className="nav-mobile-name">Eric Sin</p>
           <p className="nav-mobile-title">Designer / Director</p>
