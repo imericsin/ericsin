@@ -826,7 +826,7 @@ body {
   .footer { grid-template-columns: 1fr; gap: 8px; }
   .footer .right { text-align: left; }
   /* Case study */
-  .work-header, .work-content .block-2col__text, .work-content .block-3col__text, .work-content .block-text, .work-content .block-credits { padding-left: 0; padding-right: 0; }
+  .work-header, .work-content .block-2col__text, .work-content .block-3col__text, .work-content .block-text, .work-content .block-credits { padding-left: var(--body-margin-x); padding-right: var(--body-margin-x); }
   .work-headliner { font-size: 1.5rem; line-height: 1.2; }
   .work-breadcrumb { font-size: var(--type-micro-size); }
   .block-text__inner { font-size: 1.25rem; line-height: 24px; }
