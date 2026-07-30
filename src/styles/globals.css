@@ -245,7 +245,6 @@ body {
   right: 0;
   z-index: 100;
   background: transparent;
-  mix-blend-mode: difference;
 }
 .nav-inner {
   display: flex;
@@ -458,9 +457,7 @@ body {
 .card-grid   { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 12px; row-gap: 40px; width: 100%; }
 .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
 
-.card { display: flex; flex-direction: column; gap: 12px; transition: opacity 250ms ease-out; }
-.card-grid--dim .card { opacity: 0.25 !important; animation: none !important; }
-.card-grid--dim .card:hover { opacity: 1 !important; }
+.card { display: flex; flex-direction: column; gap: 12px; }
 .card-thumb {
   border-radius: 4px;
   overflow: hidden;
@@ -558,7 +555,7 @@ body {
   flex-direction: column;
   gap: 24px;
   width: 100%;
-  padding: 0 var(--body-margin-x);
+  padding: 0 var(--body-margin-x) 16px;
 }
 .work-header__top { display: flex; flex-direction: column; }
 .work-breadcrumb { margin-bottom: 4px; }
@@ -848,12 +845,13 @@ body {
   .footer .right { text-align: left; }
   /* Case study */
   .work-header, .work-content .block-2col__text, .work-content .block-3col__text, .work-content .block-text, .work-content .block-credits { padding-left: var(--body-margin-x); padding-right: var(--body-margin-x); }
+  .work-header { padding-bottom: 0; }
   .work-headliner { font-size: 1.5rem; line-height: 1.2; }
   .work-breadcrumb { font-size: var(--type-micro-size); }
   .block-text__inner { font-size: 1.25rem; line-height: 24px; }
   .block-text__inner h2, .block-text__inner h3 { font-size: 0.8125rem; line-height: 16px; }
   /* CREDITS: hide left col (metadata now in work-metadata-mobile), show only overview */
-  .block-credits { grid-template-columns: 1fr; gap: 0; padding: 0 0 24px; }
+  .block-credits { grid-template-columns: 1fr; gap: 0; padding: 24px 0 24px; }
   .block-credits__left { display: none; }
   .block-credits__right { font-size: 1.25rem; line-height: 24px; }
   .block-credits__right h2, .block-credits__right h3 { font-size: 0.8125rem; line-height: 16px; color: var(--system-body-secondary); margin-bottom: 12px; }
@@ -878,7 +876,12 @@ body {
   .block-full { padding: 0 var(--body-margin-x); }
   .work-content .block-2col__media,
   .work-content .block-3col__media { padding: 0 var(--body-margin-x); }
-  /* Reset tight negative margins — images are inset on mobile, gaps handle spacing */
+  /* Image blocks use tight 12px gap on mobile, matching collapsed grid gap */
+  .block-full,
+  .block-2col-images { margin-bottom: 12px; }
+  .block-full:last-child,
+  .block-2col-images:last-child { margin-bottom: 0; }
+  /* Reset negative margin overlap — no longer needed with inset padding */
   .block-full + .block-full,
   .block-full + .block-2col-images,
   .block-2col-images + .block-full,

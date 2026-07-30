@@ -3,12 +3,10 @@ import Card from '../components/Card'
 import PageFooter from '../components/PageFooter'
 import { useWorkIndex } from '../hooks/useWorkIndex'
 import { useReveal } from '../hooks/useReveal'
-import { useCardDim } from '../components/CardGrid'
 
 export default function WorksPage() {
   const cards = useWorkIndex({ featuredOnly: false })
   useReveal([cards])
-  const { getDimStyle, setHoveredIndex } = useCardDim(cards.length)
 
   return (
     <>
@@ -37,9 +35,7 @@ export default function WorksPage() {
               slug={card.slug}
               href={`/work/${card.slug}`}
               className="reveal"
-              style={{ '--reveal-delay': `${i * 0.07}s`, ...getDimStyle(i) } as React.CSSProperties}
-              onMouseEnter={() => setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
+              style={{ '--reveal-delay': `${i * 0.07}s` } as React.CSSProperties}
             />
           ))}
         </div>
