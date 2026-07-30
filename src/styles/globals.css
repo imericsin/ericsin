@@ -823,6 +823,10 @@ body {
   .work-content .block-3col__text,
   .work-content .block-text,
   .work-content .block-credits { padding-left: calc(100vw / 12); padding-right: calc(100vw / 12); }
+  /* Metadata row visible at tablet too, left col hidden */
+  .work-metadata-mobile { display: flex; padding-left: calc(100vw / 12); padding-right: calc(100vw / 12); }
+  .block-credits__left { display: none; }
+  .block-credits { padding: 0 0 24px; }
 }
 
 @media (max-width: 640px) {
@@ -869,6 +873,16 @@ body {
   .work-metadata-mobile__values p { margin: 0; line-height: 16px; }
   .block-3col__media { grid-template-columns: 1fr; }
   .block-2col__media { grid-template-columns: 1fr; }
+  /* Stack 2col images vertically + add global padding to all image sections */
+  .block-2col-images { grid-template-columns: 1fr; padding: 0 var(--body-margin-x); }
+  .block-full { padding: 0 var(--body-margin-x); }
+  .work-content .block-2col__media,
+  .work-content .block-3col__media { padding: 0 var(--body-margin-x); }
+  /* Reset tight negative margins — images are inset on mobile, gaps handle spacing */
+  .block-full + .block-full,
+  .block-full + .block-2col-images,
+  .block-2col-images + .block-full,
+  .block-2col-images + .block-2col-images { margin-top: 0; }
   /* About page — mobile layout */
   .about-hero-mobile { display: block; }
   .about-bio-mobile { display: flex; }
