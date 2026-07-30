@@ -607,9 +607,12 @@ body {
 .block { width: 100%; margin-bottom: 64px; }
 .block:last-child { margin-bottom: 0; }
 
-/* Consecutive FULL images stay tight */
+/* Consecutive image-only blocks stay tight */
 .block-full { padding: 0; }
-.block-full + .block-full { margin-top: -58px; }
+.block-full + .block-full,
+.block-full + .block-2col-images,
+.block-2col-images + .block-full,
+.block-2col-images + .block-2col-images { margin-top: -58px; }
 .block-full__media { width: 100%; height: auto; border-radius: var(--radius-card); display: block; }
 
 /* CREDITS — 3-col: left team, spacer, right large body copy */
