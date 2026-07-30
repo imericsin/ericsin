@@ -876,9 +876,9 @@ body {
   .block-full { padding: 0 var(--body-margin-x); }
   .work-content .block-2col__media,
   .work-content .block-3col__media { padding: 0 var(--body-margin-x); }
-  /* Image blocks use tight 12px gap on mobile, matching collapsed grid gap */
+  /* Image blocks use section gap rhythm on mobile */
   .block-full,
-  .block-2col-images { margin-bottom: 12px; }
+  .block-2col-images { margin-bottom: var(--gap-section); }
   .block-full:last-child,
   .block-2col-images:last-child { margin-bottom: 0; }
   /* Reset negative margin overlap — no longer needed with inset padding */
