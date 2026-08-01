@@ -931,7 +931,19 @@ body {
   .about-exp .about-col-scroll,
   .about-exp .about-col-sticky { width: 100% !important; flex-shrink: 1 !important; min-width: 0 !important; }
   .about-exp { padding-top: 0; }
-  .about-exp__left-inner { padding-bottom: 28px; }
+  .about-exp__left-inner { padding-bottom: 28px; width: 100%; min-width: 0; }
+  /* Logos scale with the column instead of fixed px, which overflowed */
+  .about-logo-grid { width: 100%; min-width: 0; }
+  .about-logo-row { width: 100%; min-width: 0; gap: 4%; }
+  .about-logo-row .about-logo {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: auto;
+    max-height: 36px;
+    object-fit: contain;
+    object-position: left center;
+  }
   /* Home — single col like mobile */
   .home-layout { flex-direction: column; }
   .home-left { display: none; }
@@ -1111,10 +1123,21 @@ body {
   .about-exp .about-col-sticky { width: 100% !important; flex-shrink: 1 !important; min-width: 0 !important; }
   /* Experience type scale */
   .about-exp { padding-top: 0; }
-  .about-exp__left-inner { padding-bottom: 28px; }
+  .about-exp__left-inner { padding-bottom: 28px; width: 100%; min-width: 0; }
   .about-section-heading { font-size: var(--type-large-body-size); line-height: var(--type-large-body-lh); font-weight: var(--type-large-body-weight); letter-spacing: var(--type-large-body-ls); }
   .about-section-sub { font-size: var(--type-micro-size); line-height: 16px; letter-spacing: 0.01em; color: var(--system-hero-secondary); }
-  .about-logo-grid { display: flex; }
+  /* Logos scale with the column instead of fixed px, which overflowed */
+  .about-logo-grid { display: flex; width: 100%; min-width: 0; gap: 24px; }
+  .about-logo-row { width: 100%; min-width: 0; gap: 4%; }
+  .about-logo-row .about-logo {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: auto;
+    max-height: 36px;
+    object-fit: contain;
+    object-position: left center;
+  }
   .about-company-row { gap: 24px; padding-top: 48px; padding-bottom: 32px; }
   .about-company-name { font-size: var(--type-body-bold-size); line-height: var(--type-body-bold-lh); }
   .about-company-role { font-size: var(--type-micro-size); line-height: 16px; }
