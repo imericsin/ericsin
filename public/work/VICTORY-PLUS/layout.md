@@ -1,10 +1,24 @@
 ---
-thumb: thumbnail.webp
+thumb: assets/thumbnail.jpg
 title: VICTORY+
 headliner: Creating a Better Fan Experience for Sports
-categories: Brand, Product
+categories: Brand, Product, Design Systems, Web
 featured: true
 date: 2026-07
+role: |
+  Head of Design
+  2024-2026
+industry: |
+  Entertainment
+  Sports
+  Technology
+links:
+  - label: VICTORY+ Outpaces NHL Viewership by 8X
+    date: May 18, 2026
+    url: https://www.businesswire.com/news/home/20260518515145/en/Victory-Outpaces-NHL-Viewership-Market-Averages-by-up-to-8x-Capturing-Massive-Regular-Season-Growth
+  - label: VICTORY+ Reaches Peak Viewership of 340K
+    date: May 12, 2026
+    url: https://www.businesswire.com/news/home/20260312526629/en/Victory-Shatters-Records-with-342000-Viewers-for-Dallas-StarsColorado-Avalanche-Matchup-Validating-Free-Local-Streaming-at-National-Scale
 theme:
   --system-background-1: "#121212"
   --system-body-primary: "#ffffff"
@@ -21,13 +35,7 @@ theme:
 
 ::01_FULLHERO
 
-::02_CREDITS
-**Team**
-Eric Sin
-Brian Lao
-Lukasz Kasprzak
-Sunhee Lee
-
+::02_OVERVIEW
 ---
 
 ## The Challenge
@@ -61,7 +69,7 @@ Constrained resources forced a more disciplined approach — rather than spreadi
 In addition, I introduced a phased process—Concept → Design → Build —that forced alignment upfront instead of endless revisions; the result was work shipping with significantly less rounds of feedback instead of immeasurable iterations.
 
 ::08_3COL
-Contextually-Informed Design Systems at Scale
+## Contextually-Informed Design Systems at Scale
 
 Expression points across marketing and in-app, without compromising the clear, simple UX the product depended on.
 
@@ -79,7 +87,7 @@ In addition, we had to rework the core logotype in a way that would be more of a
 ::12_FULL
 
 ::13_3COL
-Refinement, not reinvention
+## Refinement, not reinvention
 
 VICTORY+ already had built equity amongst a standing audience of 200K+ active users. Any adjustments had to be made in consideration of existing brand equity—forcing restrained, deliberate adjustments.
 

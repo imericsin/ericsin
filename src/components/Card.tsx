@@ -1,5 +1,7 @@
 import type { CSSProperties, AnimationEvent, MouseEventHandler } from 'react'
+import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { CardTooltipContext } from '../App'
 
 interface Props {
   title: string
@@ -19,6 +21,7 @@ interface Props {
 
 export default function Card({ title, name, tags, thumb, type = 'image', thumbType = 'image', variant = 'work', href, slug, className, style, onMouseEnter, onMouseLeave }: Props) {
   const navigate = useNavigate()
+  const { onEnter, onLeave } = useContext(CardTooltipContext)
   const thumbClass = `card-thumb thumb-${variant}`
 
   const mediaStyle = { position: 'absolute' as const, inset: 0, width: '100%', height: '100%', objectFit: 'cover' as const, display: 'block' }
@@ -35,14 +38,15 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
     </div>
   ) : thumbType === 'video' ? (
     <div className={thumbClass}>
-      <video src={thumb} autoPlay muted loop playsInline style={mediaStyle} />
+      <video
+        src={thumb}
+        poster={thumb.replace(/\.(mp4|webm|mov)$/i, '.jpg')}
+        autoPlay muted loop playsInline style={mediaStyle}
+      />
     </div>
   ) : (
     <div className={thumbClass}>
-      <picture>
-        <source srcSet={thumb.replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
-        <img src={thumb} alt={title} style={mediaStyle} />
-      </picture>
+      <img src={thumb} alt={title} style={mediaStyle} />
     </div>
   )
 
@@ -71,8 +75,8 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
       href={href ?? '#'}
       onClick={handleClick}
       onAnimationEnd={handleAnimationEnd}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={e => { onEnter(); onMouseEnter?.(e) }}
+      onMouseLeave={e => { onLeave(); onMouseLeave?.(e) }}
     >
       {inner}
       {variant === 'work' ? (

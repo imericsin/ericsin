@@ -1,10 +1,20 @@
 ---
-thumb: thumbnail.mp4
+thumb: assets/thumbnail.jpg
 title: Teladerma
 headliner: Branding the Accessibility Gap in Dermatology
 categories: Brand, Web
 featured: false
-date: 2025-01
+date: 2023-10
+role: |
+  Lead Designer
+  Q4—2023
+scope: |
+  Brand
+  Product
+  Web
+industry: |
+  Healthcare
+  Technology
 theme:
   --system-background-1: "#FFFFFF"
   --system-body-primary: "#0A2F28"
@@ -23,11 +33,7 @@ theme:
 
 ::01_FULLHERO
 
-::02_CREDITS
-**Team**
-Eric Sin
-
-
+::02_OVERVIEW
 ---
 
 ## Overview

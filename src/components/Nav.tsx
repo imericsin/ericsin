@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react'
 import CommandPalette from './CommandPalette'
 
 const navLinks = [
-  { label: 'Home',  href: '/' },
-  { label: 'Work',  href: '/work' },
-  { label: 'About', href: '/about' },
+  { label: 'Index',    href: '/' },
+  { label: 'Work',     href: '/work' },
+  { label: 'About',    href: '/about' },
+  { label: 'Archives', href: '/archives' },
 ]
 
 function isActive(href: string, pathname: string) {
@@ -13,9 +14,27 @@ function isActive(href: string, pathname: string) {
   return pathname === href || pathname.startsWith(href + '/')
 }
 
+// 8 blur layers matching the cleanpixels progressive blur technique
+// Each layer covers a 12.5% band, blur doubles each step: 0.195 → 25px
+const BLUR_LAYERS = [0.195, 0.39, 0.78, 1.5625, 3.125, 6.25, 12.5, 25].map((blur, i) => {
+  const step = 12.5
+  const start = i * step
+  return {
+    blur,
+    mask: `linear-gradient(to top, rgba(0,0,0,0) ${start}%, rgba(0,0,0,1) ${start + step}%, rgba(0,0,0,1) ${start + step * 2}%, rgba(0,0,0,0) ${start + step * 3}%)`,
+  }
+})
+
 export default function Nav() {
   const { pathname } = useLocation()
   const [cmdOpen, setCmdOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    function onScroll() { setScrolled(window.scrollY > 0) }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -30,6 +49,18 @@ export default function Nav() {
   }, [])
 
   return (
+    <>
+    <div className={`nav-fader${scrolled ? ' nav-fader--visible' : ''}`}>
+      {BLUR_LAYERS.map(({ blur, mask }, i) => (
+        <div key={i} className="nav-fader__blur" style={{
+          backdropFilter: `blur(${blur}px)`,
+          WebkitBackdropFilter: `blur(${blur}px)`,
+          maskImage: mask,
+          WebkitMaskImage: mask,
+          zIndex: i + 1,
+        }} />
+      ))}
+    </div>
     <nav className="nav anim anim-1">
       <div className="nav-inner">
       <div className="nav-logo-fill">
@@ -69,5 +100,6 @@ export default function Nav() {
       <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
       </div>
     </nav>
+    </>
   )
 }

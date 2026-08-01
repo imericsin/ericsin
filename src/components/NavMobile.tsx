@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navLinks = [
-  { label: 'Home',     href: '/' },
+  { label: 'Index',    href: '/' },
   { label: 'Work',     href: '/work' },
-  { label: 'About',   href: '/about' },
+  { label: 'About',    href: '/about' },
   { label: 'Archives', href: '/archives' },
 ]
 
@@ -76,7 +76,7 @@ export default function NavMobile() {
       <div className={`nav-mobile-inner${scrolled ? ' nav-mobile-inner--scrolled' : ''}`}>
         <Link to="/" className="nav-mobile-identity">
           <p className="nav-mobile-name">Eric Sin</p>
-          <p className="nav-mobile-title">Designer / Director</p>
+          <p className="nav-mobile-title">Brand & Product</p>
         </Link>
         <button
           className={`nav-mobile-menu${open ? ' nav-mobile-menu--open' : ''}`}

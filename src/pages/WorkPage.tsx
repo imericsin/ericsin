@@ -52,16 +52,7 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
   if (!meta) return null
 
   const heroBlock = blocks.find(b => b.type === 'FULLHERO')
-  const creditsBlock = blocks.find(b => b.type === 'CREDITS')
   const contentBlocks = blocks.filter(b => b.type !== 'FULLHERO')
-
-  // Parse team names from CREDITS for mobile metadata row
-  const creditsRaw = creditsBlock?.text?.split(/\n---\n/)[0] ?? ''
-  const teamNames = creditsRaw
-    .split('\n')
-    .map(l => l.replace(/^\*+|\*+$/g, '').trim())
-    .filter(l => l && l.toLowerCase() !== 'team')
-  const typeList = meta.categories?.split(',').map(c => c.trim()).filter(Boolean) ?? []
 
   return (
     <>
@@ -86,21 +77,6 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
         </div>
       )}
 
-      {/* Mobile-only metadata row: Team + Type */}
-      <div className="work-metadata-mobile">
-        <div className="work-metadata-mobile__col">
-          <p className="work-metadata-mobile__label">Team</p>
-          <div className="work-metadata-mobile__values">
-            {teamNames.map(n => <p key={n}>{n}</p>)}
-          </div>
-        </div>
-        <div className="work-metadata-mobile__col">
-          <p className="work-metadata-mobile__label">Type</p>
-          <div className="work-metadata-mobile__values">
-            {typeList.map(t => <p key={t}>{t}</p>)}
-          </div>
-        </div>
-      </div>
 
       <div className="page page--work">
         <div className="work-content" ref={contentRef}>
@@ -108,7 +84,8 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
             <LayoutBlockComponent
               key={`${block.order}_${block.type}`}
               block={block}
-              categories={block.type === 'CREDITS' ? meta.categories : undefined}
+              categories={block.type === 'OVERVIEW' ? meta.categories : undefined}
+              meta={block.type === 'OVERVIEW' ? meta : undefined}
             />
           ))}
         </div>

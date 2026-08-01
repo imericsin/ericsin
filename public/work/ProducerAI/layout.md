@@ -1,10 +1,21 @@
 ---
-thumb: thumbnail.webp
+thumb: assets/thumbnail.jpg
 title: Producer.AI
 headliner: Enabling Imagination in Music Production
-categories: Brand, Product
+categories: Brand, Product, Design Systems
 featured: true
 date: 2025-07
+role: |
+  Lead Designer
+  Q3—2024
+industry: |
+  AI / LLMs
+  Technology
+  Music
+links:
+  - label: Google Acquires Music AI Startup Producer.AI
+    date: February 24, 2026
+    url: https://www.billboard.com/pro/google-acquires-producerai-ai-music-startup/
 theme:
   --system-background-1: "#0D505D"
   --system-body-primary: "#B2F1FF"
@@ -23,10 +34,7 @@ theme:
 
 ::01_FULLHERO
 
-::02_CREDITS
-**Team**
-Eric Sin
-
+::02_OVERVIEW
 ---
 
 ## The Challenge

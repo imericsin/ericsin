@@ -7,6 +7,12 @@ export interface WorkMeta {
   date?: string        // YYYY-MM format
   thumb?: string       // thumbnail filename, e.g. thumbnail.webp
   theme?: WorkTheme
+  // Overview section metadata
+  role?: string        // newline-separated, e.g. "Lead Designer\nQ3—2024"
+  scope?: string       // newline-separated, e.g. "Product\nBrand"
+  industry?: string    // newline-separated, e.g. "AI / LLMs\nTechnology"
+  // LinkCards (array)
+  links?: { label: string; url: string; date?: string }[]
 }
 
 // Placeholder theme shape — slots will be named from Figma semantics
@@ -23,7 +29,8 @@ export type LayoutType =
   | '2COL'
   | '3COL'
   | 'TEXT'
-  | 'CREDITS'
+  | 'OVERVIEW'
+  | 'COMP'
 
 export interface LayoutBlock {
   order: string        // e.g. "01", "02"

@@ -136,7 +136,7 @@ export default function Home() {
         <div className="home-left__top">
           <div className="home-identity anim" style={{ animationDelay: '0.1s' }}>
             <p className="hero-name">Eric Sin</p>
-            <p className="hero-title">Designer / Director</p>
+            <p className="hero-title">Brand & Product</p>
           </div>
           <div className="anim" style={{ animationDelay: '0.2s' }}>
             <ExperienceList />
@@ -169,7 +169,7 @@ export default function Home() {
       <div className="home-right">
         <div className="home-bio-section">
           <p className="home-bio anim" style={{ animationDelay: '0.15s' }}>
-            Craft-obsessed, multidisciplinary creative thinker specialized in designing digital experiences across industries
+            Designer in practice, engineer at heart.<br />20+ years shipping consumer experiences and enterprise software.
           </p>
           <div className="home-cta-section anim" style={{ animationDelay: '0.2s' }}>
             <CtaButton />

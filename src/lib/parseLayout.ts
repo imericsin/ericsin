@@ -11,11 +11,60 @@ function parseFrontmatter(raw: string): { meta: WorkMeta; content: string } {
   const theme: Record<string, string> = {}
   let inTheme = false
 
-  for (const line of yaml.split('\n')) {
-    if (line.trim() === 'theme:') { inTheme = true; continue }
+  const lines = yaml.split('\n')
+  let blockKey: string | null = null
+  const blockLines: string[] = []
+  let inLinks = false
+  let currentLink: Record<string, string> | null = null
+  const links: { label: string; url: string; date?: string }[] = []
+
+  const flushBlock = () => {
+    if (blockKey) meta[blockKey] = blockLines.join('\n').trimEnd()
+    blockKey = null
+    blockLines.length = 0
+  }
+
+  const flushLink = () => {
+    if (currentLink && currentLink.label && currentLink.url) {
+      links.push(currentLink as { label: string; url: string; date?: string })
+    }
+    currentLink = null
+  }
+
+  for (const line of lines) {
+    // Inside a block scalar (|)
+    if (blockKey !== null) {
+      if (line.match(/^\s+/) || line === '') {
+        blockLines.push(line.trim())
+        continue
+      }
+      flushBlock()
+    }
+
+    if (line.trim() === 'theme:') { inTheme = true; inLinks = false; continue }
+    if (line.trim() === 'links:') { inLinks = true; inTheme = false; continue }
+
+    if (inLinks) {
+      const listItem = line.match(/^\s+-\s+(\w+):\s*(.+)$/)
+      const listProp = line.match(/^\s{4,}(\w+):\s*(.+)$/)
+      if (line.match(/^\s+-\s+/)) {
+        // new list item starting with "- key: val"
+        flushLink()
+        currentLink = {}
+        const m = line.match(/^\s+-\s+(\w+):\s*(.+)$/)
+        if (m) currentLink[m[1]] = m[2].replace(/^["']|["']$/g, '').trim()
+        continue
+      } else if (listProp && currentLink) {
+        currentLink[listProp[1]] = listProp[2].replace(/^["']|["']$/g, '').trim()
+        continue
+      } else if (line.trim() === '' || line.match(/^\S/)) {
+        flushLink()
+        inLinks = false
+        if (line.trim() === '') continue
+      }
+    }
 
     if (inTheme) {
-      // Theme lines: "  --token: "#hexval""
       const tm = line.match(/^\s+(--[\w-]+):\s*["']?(#[\w]+)["']?/)
       if (tm) { theme[tm[1]] = tm[2]; continue }
       inTheme = false
@@ -24,11 +73,18 @@ function parseFrontmatter(raw: string): { meta: WorkMeta; content: string } {
     const m = line.match(/^([\w-]+):\s*(.*)$/)
     if (!m) continue
     const [, key, val] = m
+    if (val.trim() === '|') {
+      blockKey = key
+      continue
+    }
     const clean = val.replace(/^["']|["']$/g, '').trim()
     if (clean === 'true') meta[key] = true
     else if (clean === 'false') meta[key] = false
     else meta[key] = clean
   }
+  flushBlock()
+  flushLink()
+  if (links.length) meta['links'] = links
 
   if (Object.keys(theme).length) meta['theme'] = theme
 
@@ -70,7 +126,7 @@ export function parseLayout(raw: string, _slug: string): { meta: WorkMeta; block
 }
 
 export function resolveAssets(filenames: string[], slug: string, blocks: LayoutBlock[]): LayoutBlock[] {
-  const ASSET_RE = /^(\d{2})_([A-Z0-9]+)_(Image|Video|hero)(?:-(\d{2}))?\.(\w+)$/i
+  const ASSET_RE = /^(\d{2})_([A-Z0-9]+)_(Image|Video|hero)(?:-(\d{1,2}))?\.(\w+)$/i
 
   const assets: AssetFile[] = []
 
@@ -82,7 +138,7 @@ export function resolveAssets(filenames: string[], slug: string, blocks: LayoutB
       order,
       layoutType: layoutType as LayoutType,
       kind: kind.toLowerCase() === 'video' ? 'Video' : 'Image',
-      slot: slot ?? '01',
+      slot: slot ? slot.padStart(2, '0') : '01',
       src: `/work/${slug}/assets/${filename}`,
     })
   }

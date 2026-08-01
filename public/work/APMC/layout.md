@@ -1,10 +1,19 @@
 ---
-thumb: thumbnail.mp4
+thumb: assets/thumbnail.mp4
 title: APMC (A Parent Media Co. Inc.)
 headliner: A Decade of Growth, One Story
 categories: Brand, Web
 featured: true
 date: 2024-11
+role: |
+  Head of Design
+  2024—Present
+scope: |
+  Brand
+  Web
+industry: |
+  Technology
+  Entertainment
 theme:
   --system-background-1: "#ffffff"
   --system-body-primary: "#121212"
@@ -18,14 +27,8 @@ theme:
 
 ::01_FULLHERO
 
-::02_CREDITS
-**Team**
-Eric Sin
-Maricha Tempel
-Sunhee Lee
-
+::02_OVERVIEW
 ---
-
 
 ## Overview
 

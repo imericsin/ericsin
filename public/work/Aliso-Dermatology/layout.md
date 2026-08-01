@@ -1,5 +1,5 @@
 ---
-thumb: thumbnail.webp
+thumb: assets/thumbnail.jpg
 title: Aliso Dermatology
 headliner: Clinical Expertise, Branded To Match
 categories: Brand, Web
@@ -18,13 +18,7 @@ theme:
 
 ::01_FULL
 
-::02_CREDITS
-**Product**
-Your Name
-
-**Brand**
-Your Name
-
+::02_OVERVIEW
 ---
 
 Short description of the project and your role.

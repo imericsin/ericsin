@@ -1,10 +1,19 @@
 ---
-thumb: thumbnail.webp
+thumb: assets/thumbnail.jpg
 title: Teladerma
 headliner: Streamlined Equipment Financing, Branded
 categories: Brand, Web
 featured: false
 date: 2024-07
+role: |
+  Lead Designer
+  Q3—2024
+scope: |
+  Brand
+  Web
+industry: |
+  Finance
+  Technology
 theme:
   --system-background-1: "#F7F8FA"
   --system-body-primary: "#121212"
@@ -18,12 +27,7 @@ theme:
 
 ::01_FULLHERO
 
-::02_CREDITS
-**Team**
-Eric Sin
-Timothy Ho
-
-
+::02_OVERVIEW
 ---
 
 ## Overview

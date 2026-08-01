@@ -1,10 +1,20 @@
 ---
-thumb: thumbnail.webp
+thumb: assets/thumbnail.jpg
 title: LilyLink
 headliner: Legitimizing a Vision for Maternal Health
 categories: Brand, Product, Web
 featured: false
 date: 2025-01
+role: |
+  Lead Designer
+  Q1—2025
+scope: |
+  Brand
+  Product
+  Design Systems
+industry: |
+  Healthcare
+  Technology
 theme:
   --system-background-1: "#E9EFEA"
   --system-body-primary: "#1E4D3E"
@@ -23,11 +33,7 @@ theme:
 
 ::01_FULLHERO
 
-::02_CREDITS
-**Team**
-Eric Sin
-
-
+::02_OVERVIEW
 ---
 
 ## Overview
