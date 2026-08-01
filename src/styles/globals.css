@@ -512,6 +512,67 @@ body {
   width: 100%;
   padding: 0 var(--body-margin-x);
 }
+
+/* ── Filter controls ── */
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+/* Tabs wrap to multiple rows on narrow screens — stack the label above them
+   rather than leaving it centered against a taller block. */
+@media (max-width: 640px) {
+  .filter-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+.filter-controls__label {
+  font-size: 0.875rem;
+  font-weight: var(--type-body-med-weight);
+  line-height: 18px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-3);
+  white-space: nowrap;
+}
+.filter-controls__options {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.filter-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border: none;
+  border-radius: var(--radius-badge);
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: var(--type-body-med-weight);
+  line-height: 18px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-3);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.filter-tab:hover {
+  background: rgba(240, 240, 240, 0.5);
+  color: var(--component-fg-2);
+}
+.filter-tab--selected,
+.filter-tab--selected:hover {
+  background: var(--color-card-bg);
+  color: var(--component-fg-1);
+}
 .section-label { font-size: var(--type-label-size); font-weight: var(--type-label-weight); line-height: var(--type-label-lh); color: var(--system-body-secondary); }
 
 .card-grid   { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 12px; row-gap: 40px; width: 100%; }
