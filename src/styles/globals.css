@@ -2067,7 +2067,8 @@ body {
 .archive-overlay__artwork {
   max-width: 1200px;
   max-height: 80vh;
-  width: 100%;
+  /* Hugs the media so clicks beside it reach the overlay and close it */
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: center;

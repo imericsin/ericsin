@@ -108,9 +108,9 @@ function Overlay({ items, index, onClose, onNav }: OverlayProps) {
         </button>
       </div>
 
-      {/* Artwork */}
-      <div className="archive-overlay__content" onClick={e => e.stopPropagation()}>
-        <div className="archive-overlay__artwork">
+      {/* Artwork — clicks on the surrounding empty space fall through to close */}
+      <div className="archive-overlay__content">
+        <div className="archive-overlay__artwork" onClick={e => e.stopPropagation()}>
           {video ? (
             <video
               key={src}
@@ -148,6 +148,34 @@ export default function Archives() {
       .then(setItems)
       .catch(() => setItems([]))
   }, [])
+
+  // Lock background scroll while the overlay is open. Pinning the body at a
+  // negative offset keeps the scroll position and — unlike overflow:hidden —
+  // stops the page from jumping when the scrollbar disappears.
+  useEffect(() => {
+    if (activeIndex === null) return
+    const y = window.scrollY
+    const { body } = document
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      paddingRight: body.style.paddingRight,
+    }
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth
+    body.style.position = 'fixed'
+    body.style.top = `-${y}px`
+    body.style.width = '100%'
+    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`
+
+    return () => {
+      body.style.position = prev.position
+      body.style.top = prev.top
+      body.style.width = prev.width
+      body.style.paddingRight = prev.paddingRight
+      window.scrollTo(0, y)
+    }
+  }, [activeIndex])
 
   const openOverlay = useCallback((i: number) => {
     setActiveIndex(i)
