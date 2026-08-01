@@ -3,7 +3,7 @@ thumb: assets/thumbnail.mp4
 title: Lime
 headliner: A Facelift for A Recognizable Disruptor
 categories: Brand, Web
-featured: true
+featured: false
 date: 2021-08
 role: |
   Designer
