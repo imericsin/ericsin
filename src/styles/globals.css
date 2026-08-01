@@ -1979,7 +1979,7 @@ body {
   z-index: 200;
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(237, 237, 237, 0.4);
   opacity: 0;
   pointer-events: none;
   transition: opacity 350ms ease;
