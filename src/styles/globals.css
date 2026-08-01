@@ -1057,15 +1057,15 @@ body {
 }
 
 @media (max-width: 640px) {
-  :root { --gap-section: 40px; --body-margin-x: 20px; }
+  :root { --gap-section: 40px; --body-margin-x: 16px; }
   .app { padding-top: 64px; }
   .page { padding-top: 0; }
   .nav { gap: 12px; padding: 16px var(--page-px); }
   [data-hide-mobile] { display: none; }
   .hero-text { flex-direction: column; gap: 16px; }
   .hero-left { flex: none; width: 100%; }
-  .hero-name { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); flex: none; width: 100%; }
-  .hero-title, .hero-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); flex: none; width: 100%; }
+  .hero-name { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: 24px; letter-spacing: var(--type-large-body-ls); flex: none; width: 100%; }
+  .hero-title, .hero-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: 24px; letter-spacing: var(--type-large-body-ls); flex: none; width: 100%; }
   .experience { align-items: flex-start; }
   .card-grid, .card-grid-2 { grid-template-columns: 1fr; column-gap: 12px; row-gap: 20px; }
   .section-3col { grid-template-columns: 1fr; gap: 32px; }
@@ -1296,7 +1296,7 @@ body {
   .home-right { padding-top: 240px; padding-bottom: 0; }
   .home-bio-section { gap: 28px; margin-bottom: 64px; }
   .home-bio {
-    font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls);
+    font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: 24px; letter-spacing: var(--type-large-body-ls);
   }
 
   /* Mobile cards section */
@@ -2106,4 +2106,9 @@ body {
 @media (max-width: 640px) {
   .archives-grid { grid-template-columns: repeat(2, 1fr); }
   .archives-col { padding: 0 var(--body-margin-x); gap: 24px; }
+  .archives-title, .archives-sub {
+    font-size: var(--type-large-body-size);
+    line-height: 24px;
+    letter-spacing: var(--type-large-body-ls);
+  }
 }
