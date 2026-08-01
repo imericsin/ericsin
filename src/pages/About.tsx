@@ -1,4 +1,5 @@
 import PageFooter from '../components/PageFooter'
+import { delayAt } from '../lib/revealDelay'
 
 const logoRows = [
   [
@@ -132,14 +133,20 @@ export default function About() {
         <div className="about-col-scroll">
           <div className="about-exp__left-inner">
             <div className="about-exp__label-group">
-              <h2 className="about-section-heading">Experience</h2>
-              <p className="about-section-sub">I've worked as a key contributor in the roles listed, but have gotten to work with some other incredible brands as well.</p>
+              <h2 className="about-section-heading anim" style={{ animationDelay: delayAt(0, 0) }}>Experience</h2>
+              <p className="about-section-sub anim" style={{ animationDelay: delayAt(1, 0) }}>I've worked as a key contributor in the roles listed, but have gotten to work with some other incredible brands as well.</p>
             </div>
             <div className="about-logo-grid">
               {logoRows.map((row, i) => (
                 <div key={i} className="about-logo-row">
-                  {row.map(({ src, alt }) => (
-                    <img key={alt} src={src} alt={alt} className="about-logo" />
+                  {row.map(({ src, alt }, j) => (
+                    <img
+                      key={alt}
+                      src={src}
+                      alt={alt}
+                      className="about-logo anim"
+                      style={{ animationDelay: delayAt(2 + i, j) }}
+                    />
                   ))}
                 </div>
               ))}
@@ -149,7 +156,7 @@ export default function About() {
         {/* Right (Scrollable) — company rows */}
         <div className="about-col-sticky about-exp__right">
           {companies.map((co, i) => (
-            <div key={i} className="about-company-row">
+            <div key={i} className="about-company-row anim" style={{ animationDelay: delayAt(i, 1) }}>
               <div className="about-company-logo-wrap">
                 {co.logo
                   ? <img src={co.logo} alt={co.name} className="about-company-logo" />

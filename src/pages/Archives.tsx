@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useContext } from 'react'
 import { createPortal } from 'react-dom'
 import PageFooter from '../components/PageFooter'
 import { CardTooltipContext } from '../App'
+import { delayAt } from '../lib/revealDelay'
 
 interface ArchiveItem {
   filename: string
@@ -48,14 +49,21 @@ interface ArchiveCardProps {
   onClick: () => void
   onEnter: () => void
   onLeave: () => void
+  delay: string
 }
 
-function ArchiveCard({ item, onClick, onEnter, onLeave }: ArchiveCardProps) {
+function ArchiveCard({ item, onClick, onEnter, onLeave, delay }: ArchiveCardProps) {
   const src = `/archives/${item.filename}`
   const video = isVideo(item.filename)
 
   return (
-    <div className="archive-card" onClick={onClick} onMouseEnter={onEnter} onMouseLeave={onLeave}>
+    <div
+      className="archive-card anim"
+      style={{ animationDelay: delay }}
+      onClick={onClick}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+    >
       <div className="archive-card__asset">
         {video ? (
           <video src={src} muted playsInline preload="metadata" className="archive-card__media" />
@@ -187,6 +195,7 @@ export default function Archives() {
                     onClick={() => openOverlay(globalIndex)}
                     onEnter={onEnter}
                     onLeave={onLeave}
+                    delay={delayAt(ri, ci)}
                   />
                 )
               })}
