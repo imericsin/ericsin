@@ -337,9 +337,21 @@ body {
   align-items: flex-start;
   width: 100%;
 }
-.hero-text--stack { flex-direction: column; gap: 8px; }
-.hero-text--stack .hero-name { color: var(--system-hero-secondary); }
-.hero-text--stack .hero-bio { flex: none; width: 100%; max-width: 420px; }
+/* Work hero — matches the Archives header: both lines share the display-semi
+   style and sit flush, distinguished only by color. */
+.hero-text--stack { flex-direction: column; gap: 0; }
+.hero-text--stack .hero-name { color: var(--system-hero-primary); }
+.hero-text--stack .hero-bio {
+  flex: none;
+  width: 100%;
+  max-width: none;
+  font-family: var(--type-display-semi-font);
+  font-size: var(--type-display-semi-size);
+  font-weight: var(--type-display-semi-weight);
+  line-height: var(--type-display-semi-lh);
+  letter-spacing: var(--type-display-semi-ls);
+  color: var(--system-body-secondary);
+}
 .hero-left { display: flex; flex-direction: column; flex: 0 0 calc(50% - 4px); }
 .hero-name  { font-family: var(--type-display-semi-font); font-size: var(--type-display-semi-size); font-weight: var(--type-display-semi-weight); line-height: var(--type-display-semi-lh); letter-spacing: var(--type-display-semi-ls); color: var(--system-hero-primary); white-space: nowrap; }
 .hero-title { font-family: var(--type-display-semi-font); font-size: var(--type-display-semi-size); font-weight: var(--type-display-semi-weight); line-height: var(--type-display-semi-lh); letter-spacing: var(--type-display-semi-ls); color: var(--system-hero-secondary); white-space: nowrap; }
@@ -962,6 +974,14 @@ body {
   .hero-name { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); }
   .hero-title { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); }
   .hero-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); }
+  /* Work hero opts out of the micro-label treatment to match Archives */
+  .hero-text--stack .hero-name,
+  .hero-text--stack .hero-bio {
+    font-size: var(--type-display-semi-size);
+    font-weight: var(--type-display-semi-weight);
+    line-height: var(--type-display-semi-lh);
+    letter-spacing: var(--type-display-semi-ls);
+  }
   /* About — keep 2-col but update text */
   .about-bio__p { font-size: var(--type-large-body-size); line-height: var(--type-large-body-lh); }
   .about-heading { font-size: var(--type-large-body-size); line-height: var(--type-large-body-lh); }
@@ -1066,6 +1086,14 @@ body {
   .hero-left { flex: none; width: 100%; }
   .hero-name { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: 24px; letter-spacing: var(--type-large-body-ls); flex: none; width: 100%; }
   .hero-title, .hero-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: 24px; letter-spacing: var(--type-large-body-ls); flex: none; width: 100%; }
+  /* Work hero keeps parity with the Archives header at mobile too */
+  .hero-text--stack { gap: 0; }
+  .hero-text--stack .hero-name,
+  .hero-text--stack .hero-bio {
+    font-size: var(--type-large-body-size);
+    font-weight: var(--type-display-semi-weight);
+    line-height: 24px;
+  }
   .experience { align-items: flex-start; }
   .card-grid, .card-grid-2 { grid-template-columns: 1fr; column-gap: 12px; row-gap: 20px; }
   .section-3col { grid-template-columns: 1fr; gap: 32px; }
