@@ -1910,7 +1910,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 48px;
-  padding: 0 40px;
+  /* Scales with the column so gutters don't swallow the card as it narrows */
+  padding: 0 clamp(12px, 2.5vw, 40px);
+  min-width: 0;
 }
 
 /* Archive Card */
@@ -2083,7 +2085,8 @@ body {
   border-radius: var(--radius-card);
 }
 
-@media (max-width: 1024px) {
+/* 4 columns get cramped below ~1280px — drop to 3 while cards still read */
+@media (max-width: 1280px) {
   .archives-grid { grid-template-columns: repeat(3, 1fr); }
 }
 

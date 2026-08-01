@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useContext } from 'react'
 import { createPortal } from 'react-dom'
 import PageFooter from '../components/PageFooter'
 import { CardTooltipContext } from '../App'
+import { useColumns } from '../hooks/useColumns'
 import { delayAt } from '../lib/revealDelay'
 
 interface ArchiveItem {
@@ -10,23 +11,12 @@ interface ArchiveItem {
 }
 
 const VIDEO_RE = /\.mp4$/i
-function useNumCols() {
-  const [n, setN] = useState(() => {
-    if (window.innerWidth <= 640) return 2
-    if (window.innerWidth <= 1024) return 3
-    return 4
-  })
-  useEffect(() => {
-    function update() {
-      if (window.innerWidth <= 640) setN(2)
-      else if (window.innerWidth <= 1024) setN(3)
-      else setN(4)
-    }
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
-  }, [])
-  return n
-}
+
+// Mirrors .archives-grid in globals.css
+const ARCHIVES_BREAKPOINTS = [
+  { maxWidth: 640, columns: 2 },
+  { maxWidth: 1280, columns: 3 },
+]
 
 function isVideo(filename: string) {
   return VIDEO_RE.test(filename)
@@ -149,7 +139,7 @@ export default function Archives() {
   const [items, setItems] = useState<ArchiveItem[]>([])
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const [overlayVisible, setOverlayVisible] = useState(false)
-  const numCols = useNumCols()
+  const numCols = useColumns(ARCHIVES_BREAKPOINTS, 4)
   const { onEnter, onLeave } = useContext(CardTooltipContext)
 
   useEffect(() => {
@@ -179,8 +169,8 @@ export default function Archives() {
     <>
       <div className="page archives-page">
         <div className="archives-header">
-          <h1 className="archives-title">Archives</h1>
-          <p className="archives-sub">More things I've made, just unorganized.</p>
+          <h1 className="archives-title anim" style={{ animationDelay: '0.1s' }}>Archives</h1>
+          <p className="archives-sub anim" style={{ animationDelay: '0.2s' }}>More things I've made, just unorganized.</p>
         </div>
 
         <div className="archives-grid">
