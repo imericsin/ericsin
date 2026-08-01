@@ -944,6 +944,7 @@ body {
     object-fit: contain;
     object-position: left center;
   }
+  .about-logo-row .about-logo--ghost { display: block; }
   /* Home — single col like mobile */
   .home-layout { flex-direction: column; }
   .home-left { display: none; }
@@ -1138,6 +1139,7 @@ body {
     object-fit: contain;
     object-position: left center;
   }
+  .about-logo-row .about-logo--ghost { display: block; }
   .about-company-row { gap: 24px; padding-top: 48px; padding-bottom: 32px; }
   .about-company-name { font-size: var(--type-body-bold-size); line-height: var(--type-body-bold-lh); }
   .about-company-role { font-size: var(--type-micro-size); line-height: 16px; }
@@ -1612,6 +1614,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-width: 480px;
 }
 .about-bio-mobile__body p {
   font-size: var(--type-large-body-size);
@@ -1698,6 +1701,15 @@ body {
   width: auto;
   object-fit: contain;
   display: block;
+}
+
+/* Invisible spacer that reserves a slot in short rows — desktop rows are
+   intrinsically sized, so it only needs to take up space once the mobile
+   breakpoints make each logo an equal flex child. */
+.about-logo--ghost {
+  display: none;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Company rows */
