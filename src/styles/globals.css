@@ -374,7 +374,7 @@ body {
   flex-direction: column;
   gap: 0;
   padding-top: var(--page-topspacer);
-  padding-bottom: 20px;
+  padding-bottom: 24px;
 }
 .home-bio-section { display: flex; flex-direction: column; gap: 36px; margin-bottom: 128px; }
 .home-bio {
@@ -935,7 +935,7 @@ body {
   /* Home — single col like mobile */
   .home-layout { flex-direction: column; }
   .home-left { display: none; }
-  .home-right { padding-top: 120px; padding-bottom: 0; }
+  .home-right { padding-top: 120px; padding-bottom: 24px; }
   .home-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); }
   .home-bio-section { gap: 28px; margin-bottom: 48px; }
   /* Latest Work 2×2 grid */
@@ -1268,7 +1268,7 @@ body {
   /* Home mobile layout */
   .home-layout { flex-direction: column; }
   .home-left { display: none; }
-  .home-right { padding-top: 240px; padding-bottom: 0; }
+  .home-right { padding-top: 240px; padding-bottom: 24px; }
   .home-bio-section { gap: 28px; margin-bottom: 64px; }
   .home-bio {
     font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls);
