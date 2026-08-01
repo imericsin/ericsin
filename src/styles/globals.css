@@ -216,14 +216,6 @@ body {
   animation: 300ms ease-out both vt-fade-in;
 }
 
-/* Hero morph — suppress default crossfade, let geometry animate */
-::view-transition-image-pair(*) { isolation: isolate; }
-::view-transition-old(*):not(::view-transition-old(root)),
-::view-transition-new(*):not(::view-transition-new(root)) {
-  animation-duration: 400ms;
-  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  mix-blend-mode: normal;
-}
 
 /* Hero lines */
 .hero-line {
@@ -509,7 +501,7 @@ body {
 
 .card { display: flex; flex-direction: column; gap: 12px; }
 .card-thumb {
-  border-radius: 0;
+  border-radius: 4px;
   overflow: hidden;
   position: relative;
   width: 100%;
