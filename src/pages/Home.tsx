@@ -200,7 +200,7 @@ export default function Home() {
         </div>
       </div>
     </div>
-    <PageFooter revealClass="anim" />
+    <PageFooter revealClass="anim" className="footer-mobile--home" />
     </>
   )
 }

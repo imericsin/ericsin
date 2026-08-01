@@ -591,6 +591,12 @@ body {
   line-height: 16px; letter-spacing: 0.01em; color: var(--system-body-primary);
   font-family: inherit;
 }
+/* Home only: footer is mobile-exclusive */
+.footer-mobile--home { display: none; }
+@media (max-width: 640px) {
+  .footer-mobile--home { display: flex; }
+}
+
 .footer-desktop-section, .footer-desktop { display: none; }
 
 /* ─── Work / case study page ─────────────────────── */

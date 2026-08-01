@@ -1,14 +1,15 @@
 interface Props {
   revealClass?: string
+  className?: string
 }
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-export default function PageFooter({ revealClass }: Props) {
+export default function PageFooter({ revealClass, className }: Props) {
   return (
-    <footer className={`footer-mobile${revealClass ? ` ${revealClass}` : ''}`}>
+    <footer className={['footer-mobile', revealClass, className].filter(Boolean).join(' ')}>
       <div className="footer-mobile__left">
         <p className="footer-mobile__copy">© 2026 Eric Sin</p>
         <p className="footer-mobile__sub">❤️ Made in California</p>
