@@ -72,7 +72,7 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
       </div>
 
       {heroBlock && (
-        <div className="work-hero reveal in-view" style={{ '--reveal-delay': '0s' } as React.CSSProperties}>
+        <div className="work-hero">
           <LayoutBlockComponent block={heroBlock} />
         </div>
       )}
