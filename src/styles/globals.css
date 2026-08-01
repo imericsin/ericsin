@@ -395,7 +395,6 @@ body {
   line-height: var(--type-display-lh);
   letter-spacing: var(--type-display-ls);
   color: var(--system-body-primary);
-  max-width: 410px;
   /* Even out line lengths so the ragged edge reads optically balanced */
   text-wrap: balance;
 }
