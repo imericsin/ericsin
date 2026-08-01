@@ -142,10 +142,6 @@ body {
   opacity: 0;
   animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-/* Page-level containers should fade in without blur to avoid edge artifacts */
-.page.anim {
-  animation-name: fadeIn;
-}
 .anim-done { opacity: 1; }
 
 .anim-1 { animation-delay: 0.05s; }

@@ -56,16 +56,16 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
 
   return (
     <>
-      <div className="page page--work anim anim-2">
+      <div className="page page--work">
         <section className="work-header">
           <div className="work-header__top">
             <div className="work-header__title-group">
-              <div className="work-breadcrumb">
+              <div className="work-breadcrumb anim" style={{ animationDelay: '0.1s' }}>
                 <span>Work</span>
                 <span className="work-breadcrumb__sep">/</span>
                 <span>{meta.title}</span>
               </div>
-              <h1 className="work-headliner">{meta.headliner}</h1>
+              <h1 className="work-headliner anim" style={{ animationDelay: '0.2s' }}>{meta.headliner}</h1>
             </div>
           </div>
         </section>
