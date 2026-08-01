@@ -395,7 +395,9 @@ body {
   line-height: var(--type-display-lh);
   letter-spacing: var(--type-display-ls);
   color: var(--system-body-primary);
-  max-width: 500px;
+  max-width: 410px;
+  /* Even out line lengths so the ragged edge reads optically balanced */
+  text-wrap: balance;
 }
 .home-cta-section { display: flex; align-items: center; gap: 20px; }
 .home-cta-availability { display: flex; flex-direction: column; gap: 2px; }
@@ -1246,22 +1248,25 @@ body {
   font-size: var(--type-body-med-size); font-weight: 500;
   line-height: var(--type-body-med-lh); letter-spacing: 0.005em;
   color: #999999; text-decoration: none;
-  opacity: 0; filter: blur(6px);
+  /* Resolved state is the default — the panel is only in the DOM while open,
+     so a closed resting state of opacity:0 strands the links blurred if the
+     animation never fires (seen on iOS Safari). */
+  opacity: 1; filter: none;
   animation: none;
 }
 .mnav-panel--open .mnav-link {
-  animation: blurIn 350ms ease-out forwards;
+  animation: blurIn 350ms ease-out backwards;
 }
 .mnav-link--active { color: #ffffff; }
 
 /* Footer */
 .mnav-footer {
   display: flex; flex-direction: column; gap: 20px;
-  opacity: 0; filter: blur(6px);
+  opacity: 1; filter: none;
   animation: none;
 }
 .mnav-panel--open .mnav-footer {
-  animation: blurIn 350ms ease-out forwards;
+  animation: blurIn 350ms ease-out backwards;
 }
 .mnav-social { display: flex; align-items: center; gap: 14px; }
 .mnav-social-link { display: flex; align-items: center; opacity: 0.6; }
