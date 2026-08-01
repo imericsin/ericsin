@@ -67,6 +67,7 @@ export default function App() {
 
   useEffect(() => {
     document.body.dataset.page = location.pathname === '/about' ? 'about' : ''
+    setTooltipVisible(false)
   }, [location.pathname])
 
   useEffect(() => {

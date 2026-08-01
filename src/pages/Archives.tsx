@@ -1,43 +1,7 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useContext } from 'react'
 import { createPortal } from 'react-dom'
 import PageFooter from '../components/PageFooter'
-
-const LERP = 0.1 // 0=no movement, 1=instant — lower = more lag
-
-function useMouseTrail(enabled: boolean) {
-  const target = useRef({ x: -200, y: -200 })
-  const current = useRef({ x: -200, y: -200 })
-  const raf = useRef<number | null>(null)
-  const elRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    function onMove(e: MouseEvent) {
-      target.current = { x: e.clientX, y: e.clientY }
-    }
-    window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
-  }, [])
-
-  useEffect(() => {
-    if (!enabled) {
-      if (raf.current) { cancelAnimationFrame(raf.current); raf.current = null }
-      return
-    }
-
-    function loop() {
-      current.current.x += (target.current.x - current.current.x) * LERP
-      current.current.y += (target.current.y - current.current.y) * LERP
-      if (elRef.current) {
-        elRef.current.style.transform = `translate(${current.current.x}px, ${current.current.y}px)`
-      }
-      raf.current = requestAnimationFrame(loop)
-    }
-    raf.current = requestAnimationFrame(loop)
-    return () => { if (raf.current) cancelAnimationFrame(raf.current) }
-  }, [enabled])
-
-  return elRef
-}
+import { CardTooltipContext } from '../App'
 
 interface ArchiveItem {
   filename: string
@@ -177,9 +141,8 @@ export default function Archives() {
   const [items, setItems] = useState<ArchiveItem[]>([])
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const [overlayVisible, setOverlayVisible] = useState(false)
-  const [tooltipVisible, setTooltipVisible] = useState(false)
   const numCols = useNumCols()
-  const tooltipRef = useMouseTrail(tooltipVisible)
+  const { onEnter, onLeave } = useContext(CardTooltipContext)
 
   useEffect(() => {
     fetch('/archives/manifest.json')
@@ -222,8 +185,8 @@ export default function Archives() {
                     key={item.filename}
                     item={item}
                     onClick={() => openOverlay(globalIndex)}
-                    onEnter={() => setTooltipVisible(true)}
-                    onLeave={() => setTooltipVisible(false)}
+                    onEnter={onEnter}
+                    onLeave={onLeave}
                   />
                 )
               })}
@@ -233,17 +196,6 @@ export default function Archives() {
       </div>
 
       <PageFooter revealClass="anim" />
-
-      {createPortal(
-        <div
-          ref={tooltipRef}
-          className={`archive-tooltip${tooltipVisible ? ' archive-tooltip--visible' : ''}`}
-          aria-hidden
-        >
-          View Details
-        </div>,
-        document.body
-      )}
 
       {activeIndex !== null && createPortal(
         <div className={`archive-overlay-wrap${overlayVisible ? ' archive-overlay-wrap--visible' : ''}`}>
