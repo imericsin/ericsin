@@ -1615,15 +1615,15 @@ body {
 .about-bio__body {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   max-width: 480px;
 }
 
 .about-bio__p {
-  font-size: 1.75rem;       /* 28px — Large Body Medium */
-  line-height: 36px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-size: var(--type-large-body-size);   /* 20px — Large Body Regular */
+  line-height: var(--type-large-body-lh);
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--system-hero-secondary);
 }
 
