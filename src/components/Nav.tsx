@@ -36,17 +36,20 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault()
-        setCmdOpen(o => !o)
-      }
-      if (e.key === 'Escape') setCmdOpen(false)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  // ⌘K is parked while the command palette gets a new UI. The component and
+  // its styles are kept intact — re-enable by restoring this listener and the
+  // <CommandPalette> mount below.
+  // useEffect(() => {
+  //   function onKey(e: KeyboardEvent) {
+  //     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+  //       e.preventDefault()
+  //       setCmdOpen(o => !o)
+  //     }
+  //     if (e.key === 'Escape') setCmdOpen(false)
+  //   }
+  //   window.addEventListener('keydown', onKey)
+  //   return () => window.removeEventListener('keydown', onKey)
+  // }, [])
 
   return (
     <>
@@ -97,7 +100,7 @@ export default function Nav() {
         })}
       </div>
 
-      <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
+      {/* <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} /> */}
       </div>
     </nav>
     </>
