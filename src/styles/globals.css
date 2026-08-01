@@ -344,7 +344,8 @@ body {
 .hero-text--stack .hero-bio {
   flex: none;
   width: 100%;
-  max-width: none;
+  max-width: 410px;
+  text-wrap: balance;
   font-family: var(--type-display-semi-font);
   font-size: var(--type-display-semi-size);
   font-weight: var(--type-display-semi-weight);
@@ -1939,6 +1940,8 @@ body {
   line-height: var(--type-display-semi-lh);
   letter-spacing: var(--type-display-semi-ls);
   color: var(--system-body-secondary);
+  max-width: 410px;
+  text-wrap: balance;
 }
 
 /* Masonry-style: 4 equal columns, no max-width */
