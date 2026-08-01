@@ -118,6 +118,10 @@ body {
   from { opacity: 0; filter: blur(8px); }
   to   { opacity: 1; filter: blur(0); }
 }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(10px); filter: blur(6px); }
@@ -137,6 +141,10 @@ body {
 .anim {
   opacity: 0;
   animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+/* Page-level containers should fade in without blur to avoid edge artifacts */
+.page.anim {
+  animation-name: fadeIn;
 }
 .anim-done { opacity: 1; }
 
