@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Lottie, { type LottieRefCurrentProps } from 'lottie-react'
 import Card from '../components/Card'
+import PageFooter from '../components/PageFooter'
 import { useWorkIndex } from '../hooks/useWorkIndex'
 
 function CtaButton() {
@@ -130,6 +131,7 @@ export default function Home() {
   const { time, date } = useAnaheimTime()
 
   return (
+    <>
     <div className="home-layout">
       {/* Left — sticky */}
       <div className="home-left">
@@ -198,5 +200,7 @@ export default function Home() {
         </div>
       </div>
     </div>
+    <PageFooter revealClass="anim" />
+    </>
   )
 }
