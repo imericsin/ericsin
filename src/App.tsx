@@ -76,6 +76,7 @@ export default function App() {
 
     setFading(true)
     timer.current = setTimeout(() => {
+      window.scrollTo(0, 0)
       applyTheme(pendingTheme.current)
       setDisplayLocation(location)
       setFading(false)
