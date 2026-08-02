@@ -23,7 +23,7 @@ export default function FilterControls({
 
   return (
     <div className={['filter-controls', className].filter(Boolean).join(' ')} style={style}>
-      <p className="filter-controls__label">{label}</p>
+      {/* Label is visually hidden — kept as the group's accessible name. */}
       <div className="filter-controls__options" role="group" aria-label={label}>
         {items.map(item => {
           const selected = item === ALL ? active === null : active === item
