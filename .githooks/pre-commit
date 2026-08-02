@@ -1,0 +1,22 @@
+#!/bin/sh
+# Keep public/archives/dates.json in sync with the files on disk.
+#
+# The archives grid sorts by these dates. Git doesn't preserve mtimes, so a
+# fresh CI clone can't derive them — they have to be committed. This stamps
+# any newly added archive file from its local mtime and stages the result, so
+# adding images never silently ships an unordered grid.
+#
+# Skips cleanly if node is unavailable (e.g. a GUI client with a bare PATH).
+
+command -v node >/dev/null 2>&1 || exit 0
+[ -f scripts/sync-archive-dates.mjs ] || exit 0
+
+node scripts/sync-archive-dates.mjs || exit 1
+
+# Only stage if the sync actually changed something.
+if ! git diff --quiet -- public/archives/dates.json 2>/dev/null; then
+  git add public/archives/dates.json
+  echo "pre-commit: updated and staged public/archives/dates.json"
+fi
+
+exit 0
