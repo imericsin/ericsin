@@ -1,6 +1,8 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import CommandPalette from './CommandPalette'
+// Parked with the ⌘K handler below — kept out of the bundle while unmounted
+// so cmdk isn't shipped. Restore alongside the listener and the JSX mount.
+// import CommandPalette from './CommandPalette'
 
 const navLinks = [
   { label: 'Index',    href: '/' },

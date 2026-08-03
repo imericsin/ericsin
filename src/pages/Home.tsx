@@ -1,6 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
-import Lottie, { type LottieRefCurrentProps } from 'lottie-react'
+import type { LottieRefCurrentProps } from 'lottie-react'
+
+// lottie-web is ~25MB unpacked and drives one 14x14 hover arrow. Splitting it
+// out keeps it off the main bundle; the icon already renders only once its
+// JSON has been fetched, so nothing appears differently.
+const Lottie = lazy(() => import('lottie-react'))
 import Card from '../components/Card'
 import PageFooter from '../components/PageFooter'
 import { useWorkIndex } from '../hooks/useWorkIndex'
@@ -43,7 +48,11 @@ function CtaButton() {
       <span ref={fillRef} className="home-cta-fill" />
       <span className="home-cta-label">Let's Chat</span>
       <span className="home-cta-icon">
-        {animData && <Lottie lottieRef={lottieRef} animationData={animData} loop={false} autoplay={false} style={{ width: 14, height: 14 }} />}
+        {animData && (
+          <Suspense fallback={null}>
+            <Lottie lottieRef={lottieRef} animationData={animData} loop={false} autoplay={false} style={{ width: 14, height: 14 }} />
+          </Suspense>
+        )}
       </span>
     </a>
   )
