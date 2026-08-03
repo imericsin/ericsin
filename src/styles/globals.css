@@ -402,7 +402,7 @@ body {
   justify-content: space-between;
   padding-top: var(--page-topspacer);
 }
-.home-left__top { display: flex; flex-direction: column; gap: 72px; }
+.home-left__top { display: flex; flex-direction: column; gap: 64px; }
 .home-identity { display: flex; flex-direction: column; }
 .home-right {
   flex: 1 0 0;
@@ -413,7 +413,7 @@ body {
   padding-top: var(--page-topspacer);
   padding-bottom: 20px;
 }
-.home-bio-section { display: flex; flex-direction: column; gap: 36px; margin-bottom: 128px; }
+.home-bio-section { display: flex; flex-direction: column; gap: 28px; margin-bottom: 128px; }
 .home-bio {
   font-size: var(--type-display-size);
   font-weight: var(--type-display-weight);
