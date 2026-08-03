@@ -881,6 +881,13 @@ body {
 .block-text__inner p:last-child { margin-bottom: 0; }
 .block-text__inner h2, .block-text__inner h3 { color: var(--system-body-secondary); font-size: var(--type-large-body-size); font-weight: 500; line-height: 1.4; letter-spacing: -0.01875em; margin-bottom: 1em; }
 
+/* Inline links inside case study copy. Distinct from the Experience list's
+   .link-dotted so the two treatments can diverge. */
+.csblock-link {
+  text-decoration: underline dotted;
+  color: inherit;
+}
+
 /* 2COL — left label text (~18.5%), right media (~81.5%) */
 .block-2col {
   display: grid;

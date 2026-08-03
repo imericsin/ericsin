@@ -4,16 +4,23 @@ title: Sage Dermatology
 headliner: Redefining Dermatology Branding in Toronto
 categories: Brand, Web
 featured: true
-date: 2024-11
+date: 2023-06
 role: |
   Lead Designer
-  Q4—2024
+  Q2—2023
 scope: |
   Brand
   Web
 industry: |
   Healthcare
   Retail
+links:
+  - label: SAGE DERMATOLOGY • Full-Service Dermatology based in Toronto
+    date: Feb 5, 2023
+    url: https://www.sagedermatology.ca
+  - label: MaxiBestOf — Best Beauty & Cosemtics Website Designs
+    date: Mar 31, 2023
+    url: https://maxibestof.one/collections/best-beauty-cosmetics-website-designs
 theme:
   --system-background-1: "#ffffff"
   --system-body-primary: "#121212"
@@ -32,9 +39,9 @@ theme:
 
 ## Overview
 
-APMC (A Parent Media Co. Inc.) is a Calgary-based business building monetizable streaming solutions for brands and creators. After a decade of operation, the company needed to consolidate and refresh its visual identity in 2025.
+Sage Dermatology is a full-service dermatology centre in Toronto, Canada, focused on evidence-based dermatological treatment. Dr. Ben Kim reached out in 2022 to build a brand for the private practice he wanted to open, seeing a shortage of board-certified dermatologists in Toronto that left many patients without access to professional consults. 
 
-Following some initial exploratory work ultimately leading to a standstill, I joined the team and led this project as my first significant challenge at the company—refocusing the work around narrative alignment, stakeholder management, and craft.
+I worked closely with Ben as an ongoing creative partner rather than a one-off vendor — brand and visual decisions, and even some interior direction for the physical space, were run through me before being finalized, keeping the identity consistent from the website down to the clinic itself.
 
 ::03_FULL
 
@@ -47,3 +54,10 @@ Following some initial exploratory work ultimately leading to a standstill, I jo
 ::07_FULL
 
 ::08_FULL
+
+::09_TEXT
+## Results
+
+Since launch, Sage Dermatology has built a strong reputation in Toronto, holding a 4.1-star rating across 200+ Google reviews, with patients consistently highlighting staff expertise and professionalism — the exact positioning the brand set out to earn. 
+
+On the design side, the site was recognized by [MaxiBestOf](https://maxibestof.one/websites/49459-sage-dermatology), a design inspiration platform, in 2024, external validation that the brand stood out relative to competitors in a category where most practices default to generic, stock-photo-driven design.

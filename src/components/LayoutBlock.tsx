@@ -11,6 +11,23 @@ interface Props {
   meta?: import('../types/work').WorkMeta
 }
 
+// Inline links inside case study copy. Separate from the Experience list's
+// .link-dotted so the two can diverge. Applied via ReactMarkdown's component
+// map so every block picks it up without per-call-site markup.
+const MD_COMPONENTS = {
+  a: ({ href, children, ...props }: React.ComponentPropsWithoutRef<'a'>) => (
+    <a
+      {...props}
+      href={href}
+      className="csblock-link"
+      target={href?.startsWith('http') ? '_blank' : undefined}
+      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+    >
+      {children}
+    </a>
+  ),
+}
+
 // Parses block text: lines starting with "## " become the subhead; remaining lines are body
 function parseBlockText(text: string | undefined) {
   const lines = (text ?? '').trim().split('\n')
@@ -49,7 +66,7 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
       return (
         <section className="block block-text">
           <div className="block-text__inner">
-            {text && <ReactMarkdown>{text}</ReactMarkdown>}
+            {text && <ReactMarkdown components={MD_COMPONENTS}>{text}</ReactMarkdown>}
           </div>
         </section>
       )
@@ -70,7 +87,7 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
       const overviewCol = (
         <div className="block-credits__overview">
           <div className="block-credits__overview-body">
-            <ReactMarkdown>{introRaw.trim()}</ReactMarkdown>
+            <ReactMarkdown components={MD_COMPONENTS}>{introRaw.trim()}</ReactMarkdown>
           </div>
         </div>
       )
@@ -149,7 +166,7 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
         <section className="block block-2col">
           <div className="block-2col__text">
             {subhead && <p className="block-2col__label">{subhead}</p>}
-            {body && <ReactMarkdown>{body}</ReactMarkdown>}
+            {body && <ReactMarkdown components={MD_COMPONENTS}>{body}</ReactMarkdown>}
           </div>
           <div className="block-2col__media">
             {assets.map(asset => (
@@ -166,7 +183,11 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
         <section className="block block-3col">
           <div className="block-3col__text">
             {subhead && <p className="block-3col__label">{subhead}</p>}
-            {body && <p className="block-3col__body">{body}</p>}
+            {body && (
+              <div className="block-3col__body">
+                <ReactMarkdown components={MD_COMPONENTS}>{body}</ReactMarkdown>
+              </div>
+            )}
           </div>
           <div className="block-3col__media">
             {assets.map(asset => (
@@ -191,7 +212,7 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
           {hasText && (
             <div className="block-comp__text">
               {subhead && <p className="block-2col__label">{subhead}</p>}
-              {body && <p>{body}</p>}
+              {body && <ReactMarkdown components={MD_COMPONENTS}>{body}</ReactMarkdown>}
             </div>
           )}
           <div className="block-comp__media">

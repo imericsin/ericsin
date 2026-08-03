@@ -4,10 +4,10 @@ title: LilyLink
 headliner: Legitimizing a Vision for Maternal Health
 categories: Brand, Product, Web
 featured: false
-date: 2025-01
+date: 2024-12
 role: |
   Lead Designer
-  Q1—2025
+  Q4—2024
 scope: |
   Brand
   Product
@@ -15,6 +15,13 @@ scope: |
 industry: |
   Healthcare
   Technology
+links:
+  - label: Ouma Partners with LilyLink to Expand Gestational Diabetes Care Nationwide
+    date: Jul 14, 2026
+    url: https://www.oumahealth.com/ouma-partners-with-lilylink-to-expand-gestational-diabetes-care-nationwide
+  - label: LilyLink — Intelligent diabetes care designed for pregnancy
+    date: Dec 20, 2024
+    url: https://www.lilylink.com/
 theme:
   --system-background-1: "#E9EFEA"
   --system-body-primary: "#1E4D3E"
@@ -25,7 +32,7 @@ theme:
   --component-fg-2: "#7B9582"
   --component-fg-3: "#B5D0C7"
   --component-fg-4: "#CEE6D7"
-  --component-border-1: "#666678"
+  --component-border-1: "#7B9582"
   --component-border-2: "#B5D0C7"
   --component-border-3: "#CEE6D7"
   --component-border-4: "#E9EFEA"
