@@ -29,19 +29,18 @@ function archivesManifestPlugin(): Plugin {
     return fs.readdirSync(archivesDir)
       .filter(f => SUPPORTED.test(f) && !f.startsWith('.'))
       .map(filename => {
+        const stat = fs.statSync(path.join(archivesDir, filename))
         const recorded = dates[filename]
-        const time = recorded
-          ? new Date(`${recorded}T12:00:00`).getTime()
-          : fs.statSync(path.join(archivesDir, filename)).mtimeMs
-        return { filename, time }
+        const time = recorded ? new Date(`${recorded}T12:00:00`).getTime() : stat.mtimeMs
+        return { filename, time, size: stat.size }
       })
       .sort((a, b) => b.time - a.time)
-      .map(({ filename, time }) => {
+      .map(({ filename, time, size }) => {
         const d = new Date(time)
         const dd = String(d.getDate()).padStart(2, '0')
         const mm = String(d.getMonth() + 1).padStart(2, '0')
         const yyyy = d.getFullYear()
-        return { filename, date: `${dd}.${mm}.${yyyy}` }
+        return { filename, date: `${dd}.${mm}.${yyyy}`, size }
       })
   }
 

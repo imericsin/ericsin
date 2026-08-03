@@ -8,9 +8,14 @@ import { delayAt } from '../lib/revealDelay'
 interface ArchiveItem {
   filename: string
   date: string
+  size: number
 }
 
 const VIDEO_RE = /\.mp4$/i
+// Videos at or under this size autoplay inline in the grid, like an animated
+// thumbnail — matches the case study Card treatment. Larger ones show a
+// static first frame and only play once opened in the overlay.
+const INLINE_VIDEO_MAX_BYTES = 2 * 1024 * 1024
 
 // Mirrors .archives-grid in globals.css
 const ARCHIVES_BREAKPOINTS = [
@@ -45,6 +50,7 @@ interface ArchiveCardProps {
 function ArchiveCard({ item, onClick, onEnter, onLeave, delay }: ArchiveCardProps) {
   const src = `/archives/${item.filename}`
   const video = isVideo(item.filename)
+  const inlinePlay = video && item.size <= INLINE_VIDEO_MAX_BYTES
 
   return (
     <div
@@ -56,7 +62,16 @@ function ArchiveCard({ item, onClick, onEnter, onLeave, delay }: ArchiveCardProp
     >
       <div className="archive-card__asset">
         {video ? (
-          <video src={src} muted playsInline preload="metadata" className="archive-card__media" />
+          <video
+            src={src}
+            muted
+            playsInline
+            loop
+            autoPlay={inlinePlay}
+            preload={inlinePlay ? 'auto' : 'metadata'}
+            controls={false}
+            className="archive-card__media"
+          />
         ) : (
           <img src={src} alt={item.filename} className="archive-card__media" loading="lazy" />
         )}
