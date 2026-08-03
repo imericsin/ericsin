@@ -46,7 +46,7 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
     </div>
   ) : (
     <div className={thumbClass}>
-      <img src={thumb} alt={title} style={mediaStyle} />
+      <img src={thumb} alt={title} style={mediaStyle} loading="lazy" decoding="async" />
     </div>
   )
 

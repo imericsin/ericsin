@@ -9,6 +9,8 @@ interface ArchiveItem {
   filename: string
   date: string
   size: number
+  width?: number
+  height?: number
 }
 
 const VIDEO_RE = /\.mp4$/i
@@ -60,7 +62,13 @@ function ArchiveCard({ item, onClick, onEnter, onLeave, delay }: ArchiveCardProp
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
     >
-      <div className="archive-card__asset">
+      {/* Intrinsic dimensions reserve layout height before the image decodes.
+          Without them every card is zero-height on first paint, the grid
+          collapses into the viewport, and loading="lazy" fetches everything. */}
+      <div
+        className="archive-card__asset"
+        style={item.width && item.height ? { aspectRatio: `${item.width} / ${item.height}` } : undefined}
+      >
         {video ? (
           <video
             src={src}
@@ -73,7 +81,15 @@ function ArchiveCard({ item, onClick, onEnter, onLeave, delay }: ArchiveCardProp
             className="archive-card__media"
           />
         ) : (
-          <img src={src} alt={item.filename} className="archive-card__media" loading="lazy" />
+          <img
+            src={src}
+            alt={item.filename}
+            className="archive-card__media"
+            loading="lazy"
+            decoding="async"
+            width={item.width}
+            height={item.height}
+          />
         )}
       </div>
       <div className="archive-card__meta">
