@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useLocalTime } from '../hooks/useLocalTime'
 
 const navLinks = [
   { label: 'Index',    href: '/' },
@@ -15,24 +16,6 @@ const socialLinks = [
   { href: 'https://www.youtube.com/@ericsindesign',   icon: '/assets/icon-yt.svg', label: 'YouTube' },
 ]
 
-function useAnaheimTime() {
-  const [time, setTime] = useState('')
-  const [location] = useState('Anaheim, California')
-  useEffect(() => {
-    function update() {
-      setTime(new Date().toLocaleString('en-US', {
-        timeZone: 'America/Los_Angeles',
-        month: 'long', day: 'numeric',
-        hour: 'numeric', minute: '2-digit', hour12: true,
-      }))
-    }
-    update()
-    const id = setInterval(update, 10000)
-    return () => clearInterval(id)
-  }, [])
-  return { time, location }
-}
-
 // Exact match only — see Nav.tsx; a case study isn't the Work page.
 function isActive(href: string, pathname: string) {
   return pathname === href
@@ -43,7 +26,7 @@ export default function NavMobile() {
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { time, location } = useAnaheimTime()
+  const { stamp, location } = useLocalTime()
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 8) }
@@ -118,7 +101,7 @@ export default function NavMobile() {
               ))}
             </div>
             <div className="mnav-time">
-              <p className="mnav-time-val">{time}</p>
+              <p className="mnav-time-val">{stamp}</p>
               <p className="mnav-time-loc">{location}</p>
             </div>
           </div>

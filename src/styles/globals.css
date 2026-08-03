@@ -399,16 +399,16 @@ body {
 .hero-text--stack .hero-bio {
   flex: none;
   width: 100%;
-  max-width: 410px;
+  max-width: 400px;
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 24px;
   letter-spacing: -0.015em;
   color: var(--component-fg-3);
+  text-wrap: balance;
 }
 .hero-left { display: flex; flex-direction: column; flex: 0 0 calc(50% - 4px); }
 .hero-name  { font-family: var(--type-display-semi-font); font-size: var(--type-display-semi-size); font-weight: var(--type-display-semi-weight); line-height: var(--type-display-semi-lh); letter-spacing: var(--type-display-semi-ls); color: var(--system-hero-primary); white-space: nowrap; }
-.hero-title { font-family: var(--type-display-semi-font); font-size: var(--type-display-semi-size); font-weight: var(--type-display-semi-weight); line-height: var(--type-display-semi-lh); letter-spacing: var(--type-display-semi-ls); color: var(--system-hero-secondary); white-space: nowrap; }
 .hero-bio   { font-size: var(--type-display-size); font-weight: var(--type-display-weight); line-height: var(--type-display-lh); letter-spacing: var(--type-display-ls); color: var(--system-hero-primary); flex: 1 1 0; min-width: 0; }
 
 /* ─── Home layout ────────────────────────────────── */
@@ -432,7 +432,6 @@ body {
   padding-top: var(--page-topspacer);
 }
 .home-left__top { display: flex; flex-direction: column; gap: 64px; }
-.home-identity { display: flex; flex-direction: column; }
 .home-right {
   flex: 1 0 0;
   min-width: 0;
@@ -520,8 +519,17 @@ body {
 .home-date     { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--system-hero-primary); }
 .home-location { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--system-hero-secondary); }
 .home-social { display: flex; align-items: center; gap: 12px; }
-.home-social-link { display: flex; align-items: center; opacity: 1; }
-.home-social-link img { display: block; filter: var(--icon-filter); }
+/* Icons are inline SVG with fill="currentColor", so color cascades from the
+   link. The :hover is scoped to each link, so one icon doesn't trigger the
+   others. Orange matches the CTA button's fill. */
+.home-social-link {
+  display: flex;
+  align-items: center;
+  color: var(--component-fg-1);
+  transition: color 150ms ease;
+}
+.home-social-link:hover { color: #FF6F00; }
+.home-social-icon { display: block; }
 
 /* ─── Experience ─────────────────────────────────── */
 .exp-section { display: flex; flex-direction: column; gap: 20px; padding-bottom: 8px; max-width: 440px; }
@@ -1094,7 +1102,6 @@ body {
   .home-cards .card { margin-bottom: 0; }
   /* Type scale — match mobile */
   .hero-name { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); }
-  .hero-title { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); }
   .hero-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); }
   /* Work hero opts out of the micro-label treatment to match Archives */
   .hero-text--stack .hero-name,
@@ -1275,7 +1282,6 @@ body {
   /* Experience type scale */
   .about-exp { padding-top: 0; }
   .about-exp__left-inner { padding-bottom: 28px; width: 100%; min-width: 0; }
-  .about-section-heading { font-size: var(--type-large-body-size); line-height: var(--type-large-body-lh); font-weight: var(--type-large-body-weight); letter-spacing: var(--type-large-body-ls); }
   .about-section-sub { font-size: var(--type-micro-size); line-height: 16px; letter-spacing: 0.01em; color: var(--system-hero-secondary); }
   /* Logos scale with the column instead of fixed px, which overflowed */
   .about-logo-grid { display: flex; width: 100%; min-width: 0; gap: 24px; }
@@ -1736,6 +1742,17 @@ body {
   padding-top: var(--page-topspacer);
 }
 
+/* Experience section — a single rule spans both columns to separate it from
+   the About block above. The border is carried here rather than on the first
+   CompanyRow so it runs the full width. */
+.about-exp {
+  border-top: 1px solid var(--component-border-1);
+}
+/* Lead-in above Experience — desktop/tablet only. */
+@media (min-width: 641px) {
+  .about-exp .about-col-scroll { padding-top: 48px; }
+}
+
 .about-photo-wrap {
   width: 364px;
   height: 364px;
@@ -1813,6 +1830,7 @@ body {
   flex-direction: column;
   gap: 16px;
   max-width: 480px;
+  padding-bottom: 128px;   /* desktop/tablet only — reset at 640px */
 }
 
 .about-bio__p {
@@ -1838,9 +1856,9 @@ body {
 }
 
 .about-section-heading {
-  font-size: 1.75rem;
-  line-height: 34px;
-  font-weight: 700;
+  font-size: 1.25rem;      /* 20px */
+  line-height: 24px;
+  font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--system-hero-primary);
 }
@@ -1888,6 +1906,8 @@ body {
   flex-direction: column;
 }
 
+/* The rule above the first row now lives on .about-exp, which spans both
+   columns — so the first row drops its own border to avoid doubling up. */
 .about-company-row {
   border-top: 1px solid var(--component-border-1);
   padding-top: 48px;
@@ -1896,6 +1916,7 @@ body {
   flex-direction: column;
   gap: 24px;
 }
+.about-company-row:first-child { border-top: none; }
 
 .about-company-logo-wrap {
   flex-shrink: 0;
@@ -2076,7 +2097,8 @@ body {
   line-height: 24px;
   letter-spacing: -0.015em;
   color: var(--component-fg-3);
-  max-width: 410px;
+  max-width: 400px;
+  text-wrap: balance;
 }
 
 /* Masonry-style: 4 equal columns, no max-width */
