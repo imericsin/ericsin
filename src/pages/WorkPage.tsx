@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import LayoutBlockComponent from '../components/LayoutBlock'
 import PageFooter from '../components/PageFooter'
 import { parseLayout, resolveAssets } from '../lib/parseLayout'
@@ -61,7 +61,7 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
           <div className="work-header__top">
             <div className="work-header__title-group">
               <div className="work-breadcrumb anim" style={{ animationDelay: '0.1s' }}>
-                <span>Work</span>
+                <Link to="/work" className="work-breadcrumb__link">Work</Link>
                 <span className="work-breadcrumb__sep">/</span>
                 <span>{meta.title}</span>
               </div>

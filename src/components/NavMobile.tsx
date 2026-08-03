@@ -33,9 +33,9 @@ function useAnaheimTime() {
   return { time, location }
 }
 
+// Exact match only — see Nav.tsx; a case study isn't the Work page.
 function isActive(href: string, pathname: string) {
-  if (href === '/') return pathname === '/'
-  return pathname === href || pathname.startsWith(href + '/')
+  return pathname === href
 }
 
 export default function NavMobile() {

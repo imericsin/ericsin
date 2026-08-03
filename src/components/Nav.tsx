@@ -9,9 +9,10 @@ const navLinks = [
   { label: 'Archives', href: '/archives' },
 ]
 
+// Exact match only — a case study at /work/:slug is its own destination, so
+// "Work" shouldn't read as the current page while you're inside one.
 function isActive(href: string, pathname: string) {
-  if (href === '/') return pathname === '/'
-  return pathname === href || pathname.startsWith(href + '/')
+  return pathname === href
 }
 
 // 8 blur layers matching the cleanpixels progressive blur technique

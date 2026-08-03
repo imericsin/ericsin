@@ -691,7 +691,7 @@ body {
   padding: 0 var(--body-margin-x) 16px;
 }
 .work-header__top { display: flex; flex-direction: column; }
-.work-breadcrumb { margin-bottom: 4px; }
+.work-breadcrumb { margin-bottom: 12px; }
 .work-header { margin-top: 70px; }
 .work-breadcrumb {
   display: flex;
@@ -703,6 +703,14 @@ body {
   color: var(--system-body-primary);
 }
 .work-breadcrumb__sep { opacity: 0.5; }
+.work-breadcrumb__link {
+  font: inherit;
+  text-decoration: none;
+  color: var(--system-hero-secondary);
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+.work-breadcrumb__link:hover { color: var(--system-hero-primary); }
 .work-headliner {
   font-family: var(--type-display-semi-font);
   font-size: 2.5rem;

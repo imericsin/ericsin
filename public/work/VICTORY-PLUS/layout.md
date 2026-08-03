@@ -1,7 +1,7 @@
 ---
 thumb: assets/thumbnail.jpg
 title: VICTORY+
-headliner: Creating a Better Fan Experience for Sports
+headliner: Influencing Leadership, Culture, and Product through Design
 categories: Brand, Product, Design Systems, Web
 featured: true
 date: 2026-07
