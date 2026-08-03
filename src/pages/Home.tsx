@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, lazy, Suspense } from 'react'
-import { Link } from 'react-router-dom'
 import type { LottieRefCurrentProps } from 'lottie-react'
 
 // lottie-web is ~25MB unpacked and drives one 14x14 hover arrow. Splitting it
@@ -87,53 +86,6 @@ function useAnaheimTime() {
   return { time, date }
 }
 
-const experiences = [
-  { title: 'VP, Design',           company: 'A Parent Media Co. Inc.', year: 'Current' },
-  { title: 'Sr. Product Designer', company: 'You.com',                 year: '2024' },
-  { title: 'Sr. Product Designer', company: 'Mosaic Finance',          year: '2023—2024' },
-  { title: 'Sr. Product Designer', company: 'AuditBoard',              year: '2022—2023' },
-  { title: 'Design Manager',       company: 'AuditBoard',              year: '2020—2022' },
-]
-
-const DEFAULT_OPACITIES = [1, 0.5, 0.25, 0.12, 0.05]
-
-function ExperienceList() {
-  const [hovered, setHovered] = useState(false)
-
-  return (
-    <div
-      className="exp-section"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="exp-wrap">
-        <p className="exp-label">Experience</p>
-        <div className={`exp-list${hovered ? ' exp-list--hover' : ''}`}>
-          {experiences.map(({ title, company, year }, i) => (
-            <div
-              key={title + company}
-              className="exp-row"
-              style={{ opacity: hovered ? 1 : DEFAULT_OPACITIES[i], transition: 'opacity 250ms ease-out' }}
-            >
-              <span className="exp-title">{title}</span>
-              <span className="exp-slash" aria-hidden>/</span>
-              <span className="exp-company">{company}</span>
-              {(hovered || i === 0) && (
-                <>
-                  <span className="exp-slash" aria-hidden>/</span>
-                  <span className="exp-year">{year}</span>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="exp-cta-wrap">
-        <Link to="/about" className={`exp-cta${hovered ? ' exp-cta--visible' : ''}`}><span className="exp-cta-text">See Full Experience</span> →</Link>
-      </div>
-    </div>
-  )
-}
 
 export default function Home() {
   const workCards = useWorkIndex({ featuredOnly: true, limit: 4 })
@@ -145,12 +97,17 @@ export default function Home() {
       {/* Left — sticky */}
       <div className="home-left">
         <div className="home-left__top">
-          <div className="home-identity anim" style={{ animationDelay: '0.1s' }}>
-            <p className="hero-name">Eric Sin</p>
-            <p className="hero-title">Brand & Product</p>
-          </div>
-          <div className="anim" style={{ animationDelay: '0.2s' }}>
-            <ExperienceList />
+          <div className="home-bio-section">
+            <p className="home-bio anim" style={{ animationDelay: '0.1s' }}>
+              Designer in practice, engineer at heart.<br />20+ years shipping consumer experiences and enterprise software.
+            </p>
+            <div className="home-cta-section anim" style={{ animationDelay: '0.15s' }}>
+              <CtaButton />
+              <div className="home-cta-availability">
+                <p className="home-cta-avail-label">Current Role</p>
+                <p className="home-cta-avail-status">VP, Design @ APMC</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -178,18 +135,7 @@ export default function Home() {
 
       {/* Right — scrollable */}
       <div className="home-right">
-        <div className="home-bio-section">
-          <p className="home-bio anim" style={{ animationDelay: '0.15s' }}>
-            Designer in practice, engineer at heart.<br />20+ years shipping consumer experiences and enterprise software.
-          </p>
-          <div className="home-cta-section anim" style={{ animationDelay: '0.2s' }}>
-            <CtaButton />
-            <div className="home-cta-availability">
-              <p className="home-cta-avail-label">Current Availability</p>
-              <p className="home-cta-avail-status">Open for Work</p>
-            </div>
-          </div>
-        </div>
+        <p className="home-cards-label anim" style={{ animationDelay: '0.2s' }}>Latest Work</p>
 
         <div className="home-cards">
           {workCards.map((card, i) => (

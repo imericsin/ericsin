@@ -318,23 +318,45 @@ body {
 
 .nav-inner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--gap-col);
   width: 100%;
   max-width: var(--content-mw);
   margin: 0 auto;
-  padding: 20px var(--body-margin-x);
+  padding: 16px var(--body-margin-x);
 }
 .nav-logo-fill { flex: 0 0 calc(50% + 10px - 14px); min-width: 0; display: flex; align-items: center; }
 .nav-logo { display: block; color: var(--system-hero-primary); width: 61.27px; height: 18px; flex-shrink: 0; }
+/* Nav identity — mirrors the mobile "Eric Sin / Brand & Product" stack */
+.nav-identity {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-decoration: none;
+  min-width: 0;
+}
+.nav-identity__name {
+  font-size: var(--type-micro-size);
+  font-weight: var(--type-body-bold-weight);
+  line-height: var(--type-micro-lh);
+  letter-spacing: 0.01em;
+  color: var(--system-hero-primary);
+}
+.nav-identity__title {
+  font-size: var(--type-micro-size);
+  font-weight: var(--type-micro-weight);
+  line-height: var(--type-micro-lh);
+  letter-spacing: 0.01em;
+  color: var(--system-hero-secondary);
+}
 .nav-links-fill { flex: 1 0 0; min-width: 0; display: flex; align-items: center; gap: 28px; }
 .nav-link-wrap { display: flex; gap: 6px; align-items: center; }
 .dot { width: 8px; height: 8px; background: var(--system-hero-primary); border-radius: 100px; flex-shrink: 0; }
 .nav-link {
-  font-size: 0.875rem;
-  font-weight: var(--type-body-med-weight);
-  line-height: var(--type-body-med-lh);
-  letter-spacing: 0.005em;
+  font-size: var(--type-micro-size);   /* 13px */
+  font-weight: var(--type-micro-weight);
+  line-height: var(--type-micro-lh);   /* 16px */
+  letter-spacing: 0.01em;
   color: var(--system-hero-primary);
   white-space: nowrap;
   cursor: pointer;
@@ -364,18 +386,25 @@ body {
 /* Work hero — matches the Archives header: both lines share the display-semi
    style and sit flush, distinguished only by color. */
 .hero-text--stack { flex-direction: column; gap: 0; }
-.hero-text--stack .hero-name { color: var(--system-hero-primary); }
+/* Page hero — 20/24, title Bold over a Semibold tertiary sub. Matches the
+   Home bio scale so Work, Archives, and Home all read at one size. */
+.hero-text--stack .hero-name {
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.015em;
+  color: var(--system-body-primary);
+}
 .hero-text--stack .hero-bio {
   flex: none;
   width: 100%;
   max-width: 410px;
-  text-wrap: balance;
-  font-family: var(--type-display-semi-font);
-  font-size: var(--type-display-semi-size);
-  font-weight: var(--type-display-semi-weight);
-  line-height: var(--type-display-semi-lh);
-  letter-spacing: var(--type-display-semi-ls);
-  color: var(--system-body-secondary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.015em;
+  color: var(--component-fg-3);
 }
 .hero-left { display: flex; flex-direction: column; flex: 0 0 calc(50% - 4px); }
 .hero-name  { font-family: var(--type-display-semi-font); font-size: var(--type-display-semi-size); font-weight: var(--type-display-semi-weight); line-height: var(--type-display-semi-lh); letter-spacing: var(--type-display-semi-ls); color: var(--system-hero-primary); white-space: nowrap; }
@@ -415,27 +444,28 @@ body {
 }
 .home-bio-section { display: flex; flex-direction: column; gap: 28px; margin-bottom: 128px; }
 .home-bio {
-  font-size: var(--type-display-size);
-  font-weight: var(--type-display-weight);
-  line-height: var(--type-display-lh);
-  letter-spacing: var(--type-display-ls);
+  font-size: 1.25rem;        /* 20px */
+  font-weight: 600;          /* Semibold */
+  line-height: 24px;
+  letter-spacing: -0.015em;  /* -1.5% */
   color: var(--system-body-primary);
-  /* Even out line lengths so the ragged edge reads optically balanced */
-  text-wrap: balance;
+  max-width: 360px;
 }
 .home-cta-section { display: flex; align-items: center; gap: 20px; }
 .home-cta-availability { display: flex; flex-direction: column; gap: 2px; }
-.home-cta-avail-label { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--component-fg-1); }
-.home-cta-avail-status { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--component-fg-2); }
+/* Label is the muted line; the role itself reads primary. */
+.home-cta-avail-label { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--system-hero-secondary); }
+.home-cta-avail-status { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--system-hero-primary); }
 
 .home-cta-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 2px;
   background: var(--component-fg-1);
   color: #ffffff;
-  padding: 10px 16px 10px 20px;
-  border-radius: 100px;
+  padding: 8px 10px 8px 14px;
+  border-radius: var(--radius-badge);
   white-space: nowrap;
   text-decoration: none;
   overflow: hidden;
@@ -458,13 +488,12 @@ body {
   transform: translate(-50%, -50%) scale(1);
 }
 .home-cta-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 18px;
-  letter-spacing: 0.015em;
+  font-size: var(--type-micro-size);   /* 13px */
+  font-weight: var(--type-micro-weight);
+  line-height: var(--type-micro-lh);
+  letter-spacing: 0.01em;
   padding-right: 4px;
   position: relative;
-  top: -0.5px;
   z-index: 1;
 }
 .home-cta-icon { display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; flex-shrink: 0; position: relative; z-index: 1; }
@@ -1041,12 +1070,21 @@ body {
     object-position: left center;
   }
   .about-logo-row .about-logo--ghost { display: block; }
-  /* Home — single col like mobile */
+  /* Home — single col. .home-left carries the bio + CTA, so it stays visible
+     and unsticks; only the footer details (social/time) drop out. */
   .home-layout { flex-direction: column; }
-  .home-left { display: none; }
-  .home-right { padding-top: 120px; padding-bottom: 0; }
-  .home-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); }
-  .home-bio-section { gap: 28px; margin-bottom: 48px; }
+  .home-left {
+    display: block;
+    width: 100%;
+    height: auto;
+    position: static;
+    padding-top: 120px;
+  }
+  .home-left__top { gap: 0; }
+  .home-footer-details { display: none; }
+  .home-right { padding-top: 0; padding-bottom: 0; }
+  .home-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); max-width: 500px; }
+  .home-bio-section { gap: 20px; margin-bottom: 48px; }
   /* Latest Work 2×2 grid */
   .home-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .home-cards-label { display: block; grid-column: 1 / -1;
@@ -1364,7 +1402,16 @@ body {
 }
 
 /* ─── Status Tags / Card Pills ───────────────────── */
-.home-cards-label { display: none; }
+/* "Latest Work" label above the card list — Micro, fg/3 */
+.home-cards-label {
+  display: block;
+  font-size: var(--type-micro-size);
+  font-weight: var(--type-micro-weight);
+  line-height: var(--type-micro-lh);
+  letter-spacing: 0.01em;
+  color: var(--component-fg-3);
+  margin-bottom: 16px;
+}
 .card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
 .card-tag {
   display: inline-flex; align-items: center; justify-content: center;
@@ -1407,11 +1454,19 @@ body {
 
   /* Home mobile layout */
   .home-layout { flex-direction: column; }
-  .home-left { display: none; }
-  .home-right { padding-top: 240px; padding-bottom: 0; }
-  .home-bio-section { gap: 28px; margin-bottom: 64px; }
+  .home-left {
+    display: block;
+    width: 100%;
+    height: auto;
+    position: static;
+    padding-top: 240px;
+  }
+  .home-left__top { gap: 0; }
+  .home-footer-details { display: none; }
+  .home-right { padding-top: 0; padding-bottom: 0; }
+  .home-bio-section { gap: 20px; margin-bottom: 64px; }
   .home-bio {
-    font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: 24px; letter-spacing: var(--type-large-body-ls);
+    font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: 24px; letter-spacing: var(--type-large-body-ls); max-width: 500px;
   }
 
   /* Mobile cards section */
@@ -1746,10 +1801,10 @@ body {
 }
 
 .about-heading {
-  font-size: 1.75rem;       /* 28px */
-  line-height: 34px;
+  font-size: 1.25rem;       /* 20px */
+  line-height: 24px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   color: var(--system-hero-primary);
 }
 
@@ -2006,24 +2061,22 @@ body {
   padding: 0 var(--body-margin-x) var(--gap-section);
 }
 
+/* Matches the Work hero and Home bio scale — 20/24 Bold over Semibold. */
 .archives-title {
-  font-family: var(--type-display-semi-font);
-  font-size: var(--type-display-semi-size);
-  font-weight: var(--type-display-semi-weight);
-  line-height: var(--type-display-semi-lh);
-  letter-spacing: var(--type-display-semi-ls);
-  color: var(--system-hero-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.015em;
+  color: var(--system-body-primary);
 }
 
 .archives-sub {
-  font-family: var(--type-display-semi-font);
-  font-size: var(--type-display-semi-size);
-  font-weight: var(--type-display-semi-weight);
-  line-height: var(--type-display-semi-lh);
-  letter-spacing: var(--type-display-semi-ls);
-  color: var(--system-body-secondary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.015em;
+  color: var(--component-fg-3);
   max-width: 410px;
-  text-wrap: balance;
 }
 
 /* Masonry-style: 4 equal columns, no max-width */

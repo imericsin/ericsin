@@ -49,7 +49,7 @@ export default function WorksPage() {
         <div className="hero-text hero-text--stack">
           <p className="hero-name anim" style={{ animationDelay: '0.1s' }}>Work</p>
           <p className="hero-bio anim" style={{ animationDelay: '0.2s' }}>
-            Case studies covering the range between brand, product, and leadership in design.
+            Case studies covering the range between brand, product, and leadership in design organizations.
           </p>
         </div>
       </section>

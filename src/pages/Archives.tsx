@@ -229,7 +229,7 @@ export default function Archives() {
       <div className="page archives-page">
         <div className="archives-header">
           <h1 className="archives-title anim" style={{ animationDelay: '0.1s' }}>Archives</h1>
-          <p className="archives-sub anim" style={{ animationDelay: '0.2s' }}>More things I've made, just unorganized.</p>
+          <p className="archives-sub anim" style={{ animationDelay: '0.2s' }}>20 years of ideas, snippets, and small projects that left a trail of my work</p>
         </div>
 
         <div className="archives-grid">
