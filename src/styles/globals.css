@@ -66,6 +66,9 @@ a { color: inherit; text-decoration: none; }
   --component-border-2:       #999999;   /* Component/Border/2 */
   --component-border-3:       #666666;   /* Component/Border/3 */
   --component-border-4:       #121212;   /* Component/Border/4 — heaviest */
+  --component-bg-1:           rgba(18, 18, 18, 0);      /* Component/Background/1 — transparent */
+  --component-bg-2:           rgba(18, 18, 18, 0.04);   /* Component/Background/2 — Tab active, ExperienceCard fill */
+  --component-bg-3:           rgba(18, 18, 18, 0.1);    /* Component/Background/3 — Tab active (mobile) */
 
   /* ── Non-semantic values (not in Figma variable system) ── */
   --color-card-bg:  #f0f0f0;
