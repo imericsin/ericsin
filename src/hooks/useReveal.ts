@@ -5,7 +5,12 @@ export function useReveal(deps: unknown[] = []) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
+          // Reveal on entry, but also if the element is already above the
+          // viewport — a fast scroll can carry a newly mounted card past the
+          // fold before it's ever observed, which would strand it at
+          // opacity: 0 permanently.
+          const scrolledPast = entry.boundingClientRect.bottom < 0
+          if (entry.isIntersecting || scrolledPast) {
             entry.target.classList.add('in-view')
             observer.unobserve(entry.target)
           }

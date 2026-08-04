@@ -1,6 +1,6 @@
 ---
 thumb: assets/thumbnail.jpg
-title: Teladerma
+title: REVOPS
 headliner: Streamlined Equipment Financing, Branded
 categories: Brand, Web
 featured: false

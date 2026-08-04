@@ -10,6 +10,7 @@ import PageFooter from '../components/PageFooter'
 import { useWorkIndex } from '../hooks/useWorkIndex'
 import { useLocalTime } from '../hooks/useLocalTime'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
+import { useReveal } from '../hooks/useReveal'
 
 // Social icons inlined as SVG so `fill="currentColor"` lets CSS drive the
 // color. An <img> can't be recolored from outside, and a filter chain can't
@@ -99,6 +100,9 @@ export default function Home() {
   )
   const { visible: workCards, sentinelRef, hasMore } = useInfiniteScroll(ordered, 4, 3)
 
+  // Re-scan whenever a batch is appended so the new .reveal cards get observed.
+  useReveal([workCards.length])
+
   return (
     <>
     <div className="home-layout">
@@ -154,10 +158,12 @@ export default function Home() {
               thumbType={card.thumbType}
               slug={card.slug}
               href={`/work/${card.slug}`}
-              className="anim"
-              // Stagger only the first batch; appended cards fade in promptly
-              // rather than inheriting an ever-growing delay.
-              style={{ animationDelay: `${i < 4 ? 0.25 + i * 0.06 : 0}s` }}
+              // The first batch animates on mount with a stagger. Appended
+              // cards use .reveal instead so each fades in when it actually
+              // scrolls into view — the sentinel fires 600px early, so a
+              // mount animation would finish before the card is ever seen.
+              className={i < 4 ? 'anim' : 'reveal'}
+              style={i < 4 ? { animationDelay: `${0.25 + i * 0.06}s` } : undefined}
             />
           ))}
         </div>
