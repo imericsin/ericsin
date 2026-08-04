@@ -1732,6 +1732,10 @@ body {
 @media (min-width: 641px) {
   .about-exp .about-col-scroll { padding-top: 48px; }
 }
+/* Mobile-only lead-in above "Experience" */
+@media (max-width: 640px) {
+  .about-exp .about-col-scroll { padding-top: 40px; }
+}
 
 .about-photo-wrap {
   width: 364px;
@@ -1831,7 +1835,7 @@ body {
 .about-exp__label-group {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
   max-width: 420px;
 }
 
