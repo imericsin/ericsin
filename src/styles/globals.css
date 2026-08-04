@@ -323,17 +323,6 @@ body {
 }
 @media (max-width: 640px) { .nav-fader { display: none; } }
 
-.nav-inner {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--gap-col);
-  width: 100%;
-  max-width: var(--content-mw);
-  margin: 0 auto;
-  padding: 16px var(--body-margin-x);
-}
-.nav-logo-fill { flex: 0 0 calc(50% + 10px - 14px); min-width: 0; display: flex; align-items: center; }
-.nav-logo { display: block; color: var(--system-hero-primary); width: 61.27px; height: 18px; flex-shrink: 0; }
 /* Nav identity — mirrors the mobile "Eric Sin / Brand & Product" stack */
 .nav-identity {
   display: flex;
@@ -356,20 +345,21 @@ body {
   letter-spacing: 0.01em;
   color: var(--system-hero-secondary);
 }
-.nav-links-fill { flex: 1 0 0; min-width: 0; display: flex; align-items: center; gap: 28px; }
-.nav-link-wrap { display: flex; gap: 6px; align-items: center; }
-.dot { width: 8px; height: 8px; background: var(--system-hero-primary); border-radius: 100px; flex-shrink: 0; }
-.nav-link {
-  font-size: var(--type-micro-size);   /* 13px */
-  font-weight: var(--type-micro-weight);
-  line-height: var(--type-micro-lh);   /* 16px */
-  letter-spacing: 0.01em;
-  color: var(--system-hero-primary);
-  white-space: nowrap;
-  cursor: pointer;
+.navbar-v2 {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  width: 100%;
+  max-width: var(--content-mw);
+  margin: 0 auto;
+  padding: 16px var(--body-margin-x);
+  position: relative;
+  z-index: 100;
 }
-.nav-link-wrap { transition: opacity 150ms ease; opacity: 0.4; }
-.nav-link-wrap:has(.active), .nav-link-wrap:hover { opacity: 1; }
+.navbar-v2__left { flex: 1 0 0; min-width: 0; display: flex; align-items: center; }
+.navbar-v2__controller { flex: 1 0 0; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.navbar-v2__tabs { flex: 1 0 0; min-width: 0; display: flex; align-items: center; }
+.navbar-v2__menu-wrap { position: relative; flex-shrink: 0; }
 
 /* ─── Spacer ─────────────────────────────────────── */
 .spacer-4 { height: 22px; width: 100%; max-width: 1300px; }

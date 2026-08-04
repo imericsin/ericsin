@@ -1,20 +1,6 @@
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-// Parked with the ⌘K handler below — kept out of the bundle while unmounted
-// so cmdk isn't shipped. Restore alongside the listener and the JSX mount.
-// import CommandPalette from './CommandPalette'
-
-const navLinks = [
-  { label: 'Work',     href: '/' },
-  { label: 'About',    href: '/about' },
-  { label: 'Archives', href: '/archives' },
-]
-
-// Exact match only — a case study at /work/:slug is its own destination, so
-// "Work" shouldn't read as the current page while you're inside one.
-function isActive(href: string, pathname: string) {
-  return pathname === href
-}
+import NavbarV2, { type TabDef } from './NavbarV2'
 
 // 8 blur layers matching the cleanpixels progressive blur technique
 // Each layer covers a 12.5% band, blur doubles each step: 0.195 → 25px
@@ -27,10 +13,17 @@ const BLUR_LAYERS = [0.195, 0.39, 0.78, 1.5625, 3.125, 6.25, 12.5, 25].map((blur
   }
 })
 
-export default function Nav() {
+interface Props {
+  tabs?: TabDef[]
+  activeTab?: string | null
+  onTabChange?: (label: string | null) => void
+}
+
+export default function Nav({ tabs, activeTab, onTabChange }: Props) {
   const { pathname } = useLocation()
-  const [cmdOpen, setCmdOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [overlayVisible, setOverlayVisible] = useState(false)
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 0) }
@@ -38,20 +31,22 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // ⌘K is parked while the command palette gets a new UI. The component and
-  // its styles are kept intact — re-enable by restoring this listener and the
-  // <CommandPalette> mount below.
-  // useEffect(() => {
-  //   function onKey(e: KeyboardEvent) {
-  //     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-  //       e.preventDefault()
-  //       setCmdOpen(o => !o)
-  //     }
-  //     if (e.key === 'Escape') setCmdOpen(false)
-  //   }
-  //   window.addEventListener('keydown', onKey)
-  //   return () => window.removeEventListener('keydown', onKey)
-  // }, [])
+  function openMenu() {
+    setMenuOpen(true)
+    requestAnimationFrame(() => requestAnimationFrame(() => setOverlayVisible(true)))
+  }
+
+  function closeMenu() {
+    setOverlayVisible(false)
+    setTimeout(() => setMenuOpen(false), 320)
+  }
+
+  useEffect(() => {
+    closeMenu()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
+
+  const variant = pathname === '/' ? 'index' : 'about-archives'
 
   return (
     <>
@@ -67,27 +62,16 @@ export default function Nav() {
       ))}
     </div>
     <nav className="nav anim anim-1">
-      <div className="nav-inner">
-      <div className="nav-logo-fill">
-        <Link to="/" className="nav-identity" aria-label="Home">
-          <span className="nav-identity__name">Eric Sin</span>
-          <span className="nav-identity__title">Brand &amp; Product</span>
-        </Link>
-      </div>
-
-      <div className="nav-links-fill">
-        {navLinks.map(({ label, href }) => {
-          const active = isActive(href, pathname)
-          return (
-            <div key={label} className="nav-link-wrap">
-              <Link className={`nav-link${active ? ' active' : ''}`} to={href}>{label}</Link>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} /> */}
-      </div>
+      <NavbarV2
+        variant={variant}
+        tabs={variant === 'index' ? tabs : undefined}
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+        menuOpen={menuOpen}
+        onMenuToggle={menuOpen ? closeMenu : openMenu}
+        overlayVisible={overlayVisible}
+        onOverlayLinkClick={closeMenu}
+      />
     </nav>
     </>
   )
