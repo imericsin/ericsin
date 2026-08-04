@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, createContext, useContext } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo, createContext, useContext } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import Nav from './components/Nav'
@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import WorkPage from './pages/WorkPage'
 import Archives from './pages/Archives'
+import { useWorkIndex } from './hooks/useWorkIndex'
 
 // WorksPage (the old /work index) is kept in the codebase for possible
 // future reuse but is intentionally unmounted — Home is now the Work index.
@@ -68,6 +69,27 @@ export default function App() {
   const onEnter = useCallback(() => setTooltipVisible(true), [])
   const onLeave = useCallback(() => setTooltipVisible(false), [])
 
+  const allWorkCards = useWorkIndex({ featuredOnly: false })
+  const [activeTab, setActiveTab] = useState<string | null>(null)
+  const tabs = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const card of allWorkCards) {
+      for (const cat of card.categories.split(',').map(c => c.trim()).filter(Boolean)) {
+        counts.set(cat, (counts.get(cat) ?? 0) + 1)
+      }
+    }
+    const order = ['Brand', 'Product', 'Web', 'Design Systems']
+    return order
+      .filter(label => counts.has(label))
+      .map(label => ({ label, count: counts.get(label)! }))
+  }, [allWorkCards])
+  const filteredWorkCards = useMemo(
+    () => activeTab
+      ? allWorkCards.filter(c => c.categories.split(',').map(t => t.trim()).includes(activeTab))
+      : allWorkCards,
+    [allWorkCards, activeTab]
+  )
+
   useEffect(() => {
     document.body.dataset.page = location.pathname === '/about' ? 'about' : ''
     setTooltipVisible(false)
@@ -94,7 +116,7 @@ export default function App() {
 
   return (
     <CardTooltipContext.Provider value={{ onEnter, onLeave }}>
-      <Nav />
+      <Nav tabs={tabs} totalCount={allWorkCards.length} activeTab={activeTab} onTabChange={setActiveTab} />
       <NavMobile />
       <div className="app">
         <div
@@ -102,7 +124,7 @@ export default function App() {
           style={{ width: '100%', opacity: fading ? 0 : 1, transition: 'opacity 0.28s ease' }}
         >
           <Routes location={displayLocation}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home cards={filteredWorkCards} />} />
             <Route path="/about" element={<About />} />
             <Route path="/work" element={<Navigate to="/" replace />} />
             <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} />} />

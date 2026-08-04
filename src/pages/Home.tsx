@@ -7,7 +7,7 @@ import type { LottieRefCurrentProps } from 'lottie-react'
 const Lottie = lazy(() => import('lottie-react'))
 import Card from '../components/Card'
 import PageFooter from '../components/PageFooter'
-import { useWorkIndex } from '../hooks/useWorkIndex'
+import type { WorkCard } from '../hooks/useWorkIndex'
 import { useLocalTime } from '../hooks/useLocalTime'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 import { useReveal } from '../hooks/useReveal'
@@ -88,8 +88,11 @@ function CtaButton() {
 }
 
 
-export default function Home() {
-  const allCards = useWorkIndex({ featuredOnly: false })
+interface Props {
+  cards: WorkCard[]
+}
+
+export default function Home({ cards: allCards }: Props) {
   const { stamp, location } = useLocalTime()
 
   // Featured work leads the feed; the rest follows, each group newest-first.
@@ -110,9 +113,14 @@ export default function Home() {
       <div className="home-left">
         <div className="home-left__top">
           <div className="home-bio-section">
-            <p className="home-bio anim" style={{ animationDelay: '0.1s' }}>
-              Designer in practice, engineer at heart.<br />20+ years shipping consumer experiences and enterprise software.
-            </p>
+            <div className="home-bio-text">
+              <p className="home-bio anim" style={{ animationDelay: '0.1s' }}>
+                Designer in practice, engineer at heart.<br />20+ years shipping consumer experiences and enterprise software.
+              </p>
+              <p className="home-bio-sub anim" style={{ animationDelay: '0.125s' }}>
+                I believe in design with a purpose—an ideology anchored around community, thoughtfulness, and craft. If that sounds like you, let's build something together.
+              </p>
+            </div>
             <div className="home-cta-section anim" style={{ animationDelay: '0.15s' }}>
               <CtaButton />
               <div className="home-cta-availability">

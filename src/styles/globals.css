@@ -438,13 +438,22 @@ body {
   padding-top: var(--page-topspacer);
   padding-bottom: 20px;
 }
-.home-bio-section { display: flex; flex-direction: column; gap: 28px; margin-bottom: 128px; }
+.home-bio-section { display: flex; flex-direction: column; gap: 36px; margin-bottom: 128px; }
+.home-bio-text { display: flex; flex-direction: column; gap: 16px; }
 .home-bio {
   font-size: 1.25rem;        /* 20px */
   font-weight: 600;          /* Semibold */
   line-height: 24px;
   letter-spacing: -0.015em;  /* -1.5% */
   color: var(--system-body-primary);
+  max-width: 360px;
+}
+.home-bio-sub {
+  font-size: var(--type-body-reg-size);
+  font-weight: var(--type-body-reg-weight);
+  line-height: var(--type-body-reg-lh);
+  letter-spacing: 0.005em;
+  color: var(--system-body-secondary);
   max-width: 360px;
 }
 .home-cta-section { display: flex; align-items: center; gap: 20px; }
@@ -1433,7 +1442,7 @@ body {
 }
 
 /* ─── Status Tags / Card Pills ───────────────────── */
-.card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.card-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
 .card-tag {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 4px 8px;

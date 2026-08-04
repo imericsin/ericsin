@@ -11,6 +11,7 @@ export interface TabDef {
 interface Props {
   variant: 'index' | 'about-archives'
   tabs?: TabDef[]
+  totalCount?: number
   activeTab?: string | null
   onTabChange?: (label: string | null) => void
   menuOpen: boolean
@@ -22,6 +23,7 @@ interface Props {
 export default function NavbarV2({
   variant,
   tabs,
+  totalCount = 0,
   activeTab = null,
   onTabChange,
   menuOpen,
@@ -44,7 +46,7 @@ export default function NavbarV2({
             <div className="tab-row">
               <Tab
                 label="All"
-                count={tabs.reduce((sum, t) => sum + t.count, 0)}
+                count={totalCount}
                 active={activeTab === null}
                 onClick={() => onTabChange?.(null)}
               />

@@ -15,11 +15,12 @@ const BLUR_LAYERS = [0.195, 0.39, 0.78, 1.5625, 3.125, 6.25, 12.5, 25].map((blur
 
 interface Props {
   tabs?: TabDef[]
+  totalCount?: number
   activeTab?: string | null
   onTabChange?: (label: string | null) => void
 }
 
-export default function Nav({ tabs, activeTab, onTabChange }: Props) {
+export default function Nav({ tabs, totalCount, activeTab, onTabChange }: Props) {
   const { pathname } = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -65,6 +66,7 @@ export default function Nav({ tabs, activeTab, onTabChange }: Props) {
       <NavbarV2
         variant={variant}
         tabs={variant === 'index' ? tabs : undefined}
+        totalCount={totalCount}
         activeTab={activeTab}
         onTabChange={onTabChange}
         menuOpen={menuOpen}
