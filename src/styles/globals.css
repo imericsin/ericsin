@@ -1150,7 +1150,6 @@ body {
   .about-heading { font-size: var(--type-large-body-size); line-height: var(--type-large-body-lh); }
   .about-section-heading { font-size: var(--type-large-body-size); line-height: var(--type-large-body-lh); }
   .about-section-sub { font-size: var(--type-micro-size); line-height: 16px; }
-  .about-company-desc { font-size: var(--type-body-med-size); line-height: var(--type-body-med-lh); }
   /* Cards */
   .card-name { font-size: var(--type-micro-size); line-height: var(--type-micro-lh); }
   .card-meta .card-title { font-size: var(--type-micro-size); font-weight: 500; line-height: var(--type-micro-lh); }
@@ -1330,10 +1329,6 @@ body {
     object-position: left center;
   }
   .about-logo-row .about-logo--ghost { display: block; }
-  .about-company-row { gap: 24px; padding-top: 48px; padding-bottom: 32px; }
-  .about-company-name { font-size: var(--type-body-bold-size); line-height: var(--type-body-bold-lh); }
-  .about-company-role { font-size: var(--type-micro-size); line-height: 16px; }
-  .about-company-desc { font-size: var(--type-body-med-size); line-height: var(--type-body-med-lh); }
 }
 
 /* ─── Mobile Nav ─────────────────────────────────── */
@@ -1917,84 +1912,100 @@ body {
   flex-direction: column;
 }
 
-/* The rule above the first row now lives on .about-exp, which spans both
-   columns — so the first row drops its own border to avoid doubling up. */
-.about-company-row {
-  border-top: 1px solid var(--component-border-1);
-  padding-top: 48px;
-  padding-bottom: 32px;
+
+/* ExperienceCard — replaces .about-company-row markup above */
+.exp-card {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 24px;
+  width: 100%;
+  position: relative;
+  border: none;
+  border-radius: 6px;
+  background: var(--component-bg-2);
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background-color 150ms ease;
 }
-.about-company-row:first-child { border-top: none; }
-
-.about-company-logo-wrap {
-  flex-shrink: 0;
-}
-
-.about-company-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  object-fit: cover;
-  display: block;
-}
-
-.about-company-logo--placeholder {
-  background: var(--color-card-bg);
-}
-
-.about-company-info__top {
+.exp-card:hover { background: var(--component-bg-3); }
+.exp-card--expanded { background: var(--component-bg-2); padding-top: 12px; padding-bottom: 14px; }
+.exp-card__row {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 20px;
+  width: 100%;
 }
-
-.about-company-info__name-role {
+.exp-card__label-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+  width: 103px;
+  padding-top: 2px;
+}
+.exp-card__chip {
+  flex-shrink: 0;
+  font-size: 10px;
+  line-height: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--component-fg-2);
+  border: 1px solid var(--component-border-1);
+  border-radius: 24px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+.exp-card__info-col {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1 0 0;
+  min-width: 0;
 }
-
-.about-company-name {
+.exp-card__name {
   font-size: var(--type-body-bold-size);
   line-height: var(--type-body-bold-lh);
   font-weight: var(--type-body-bold-weight);
+  letter-spacing: 0.01em;
   color: var(--system-body-primary);
 }
-
-.about-company-role {
+.exp-card__role {
   font-size: var(--type-micro-size);
   line-height: var(--type-micro-lh);
   font-weight: var(--type-micro-weight);
+  letter-spacing: 0.01em;
   color: var(--system-body-secondary);
 }
-
-.about-chip {
-  flex-shrink: 0;
-  font-size: var(--type-micro-size);
-  line-height: var(--type-micro-lh);
-  font-weight: var(--type-micro-weight);
-  color: var(--component-fg-2);
-  border: 1px solid var(--component-border-1);
-  border-radius: 100px;
-  padding: 4px 10px;
-  white-space: nowrap;
-}
-
-.about-company-descs {
+.exp-card__paras {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1 0 0;
+  min-width: 0;
 }
-
-.about-company-desc {
+.exp-card__para {
   font-size: var(--type-body-med-size);
   line-height: var(--type-body-med-lh);
   font-weight: var(--type-body-med-weight);
+  letter-spacing: 0.005em;
   color: var(--component-fg-3);
+}
+.exp-card__toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--component-fg-3);
+  flex-shrink: 0;
 }
 
 /* Interests section — full width, single column */

@@ -1,4 +1,5 @@
 import PageFooter from '../components/PageFooter'
+import ExperienceCard from '../components/ExperienceCard'
 import { delayAt } from '../lib/revealDelay'
 
 const logoRows = [
@@ -162,25 +163,8 @@ export default function About() {
         {/* Right (Scrollable) — company rows */}
         <div className="about-col-sticky about-exp__right">
           {companies.map((co, i) => (
-            <div key={i} className="about-company-row anim" style={{ animationDelay: delayAt(i, 1) }}>
-              <div className="about-company-logo-wrap">
-                {co.logo
-                  ? <img src={co.logo} alt={co.name} className="about-company-logo" />
-                  : <div className="about-company-logo about-company-logo--placeholder" />
-                }
-              </div>
-              <div className="about-company-info__top">
-                <div className="about-company-info__name-role">
-                  <span className="about-company-name">{co.name}</span>
-                  <span className="about-company-role">{co.role}</span>
-                </div>
-                {co.status && <span className="about-chip">{co.status}</span>}
-              </div>
-              <div className="about-company-descs">
-                {co.paras.map((p, j) => (
-                  <p key={j} className="about-company-desc">{p}</p>
-                ))}
-              </div>
+            <div key={i} className="anim" style={{ animationDelay: delayAt(i, 1) }}>
+              <ExperienceCard name={co.name} role={co.role} status={co.status} paras={co.paras} />
             </div>
           ))}
         </div>
