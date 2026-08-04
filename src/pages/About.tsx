@@ -174,7 +174,7 @@ export default function About() {
                   <span className="about-company-name">{co.name}</span>
                   <span className="about-company-role">{co.role}</span>
                 </div>
-                {co.status && <span className="about-status-tag">{co.status}</span>}
+                {co.status && <span className="about-chip">{co.status}</span>}
               </div>
               <div className="about-company-descs">
                 {co.paras.map((p, j) => (

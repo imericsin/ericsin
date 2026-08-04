@@ -1952,7 +1952,7 @@ body {
   color: var(--system-body-secondary);
 }
 
-.about-status-tag {
+.about-chip {
   flex-shrink: 0;
   font-size: var(--type-micro-size);
   line-height: var(--type-micro-lh);
