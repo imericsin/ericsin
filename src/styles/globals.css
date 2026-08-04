@@ -1349,29 +1349,25 @@ body {
 /* ─── Mobile Nav ─────────────────────────────────── */
 .nav-mobile { display: none; }
 
-/* Hamburger button */
-.nav-mobile-menu {
+/* Shared hamburger/X toggle used by both the mobile trigger and desktop MenuIcon */
+.menu-icon {
   background: none; border: none; padding: 0; cursor: pointer;
   color: var(--system-hero-primary);
   width: 28px; height: 28px;
   position: relative; flex-shrink: 0;
   z-index: 300;
 }
-.nav-mobile-menu__line {
+.menu-icon__line {
   display: block; position: absolute;
   left: 7px; width: 14px; height: 1px;
   background: currentColor;
   transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), top 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-.nav-mobile-menu__line--top { top: 10px; }
-.nav-mobile-menu__line--bot { top: 17px; }
-.nav-mobile-menu--open .nav-mobile-menu__line--top {
-  top: 13.5px; transform: rotate(-45deg);
-}
-.nav-mobile-menu--open .nav-mobile-menu__line--bot {
-  top: 13.5px; transform: rotate(45deg);
-}
-.nav-mobile-menu--open { color: #ffffff; }
+.menu-icon__line--a { top: 10px; }
+.menu-icon__line--b { top: 17px; }
+.menu-icon--open .menu-icon__line--a { top: 13.5px; transform: rotate(-45deg); }
+.menu-icon--open .menu-icon__line--b { top: 13.5px; transform: rotate(45deg); }
+.menu-icon--open { color: #ffffff; }
 
 /* Panel */
 .mnav-panel {
@@ -1485,13 +1481,6 @@ body {
     font-size: 0.8125rem; font-weight: 500; line-height: 16px; letter-spacing: 0.01em;
     color: var(--system-hero-secondary);
   }
-  .nav-mobile-menu {
-    background: none; border: none; padding: 0; cursor: pointer;
-    color: var(--system-hero-primary); display: flex; align-items: center; justify-content: center;
-    width: 28px; height: 28px;
-  }
-  .nav-mobile-menu--open { color: #ffffff; }
-
   /* Home mobile layout */
   .home-layout { flex-direction: column; }
   .home-left {
