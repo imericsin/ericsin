@@ -61,7 +61,7 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
           <div className="work-header__top">
             <div className="work-header__title-group">
               <div className="work-breadcrumb anim" style={{ animationDelay: '0.1s' }}>
-                <Link to="/work" className="work-breadcrumb__link">Work</Link>
+                <Link to="/" className="work-breadcrumb__link">Work</Link>
                 <span className="work-breadcrumb__sep">/</span>
                 <span>{meta.title}</span>
               </div>

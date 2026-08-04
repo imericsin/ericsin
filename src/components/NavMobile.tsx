@@ -3,8 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useLocalTime } from '../hooks/useLocalTime'
 
 const navLinks = [
-  { label: 'Index',    href: '/' },
-  { label: 'Work',     href: '/work' },
+  { label: 'Work',     href: '/' },
   { label: 'About',    href: '/about' },
   { label: 'Archives', href: '/archives' },
 ]

@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState, useCallback, createContext, useContext } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import Nav from './components/Nav'
 import NavMobile from './components/NavMobile'
 import Home from './pages/Home'
 import About from './pages/About'
-import WorksPage from './pages/WorksPage'
 import WorkPage from './pages/WorkPage'
 import Archives from './pages/Archives'
+
+// WorksPage (the old /work index) is kept in the codebase for possible
+// future reuse but is intentionally unmounted — Home is now the Work index.
+// import WorksPage from './pages/WorksPage'
 
 const LERP = 0.1
 
@@ -101,7 +104,7 @@ export default function App() {
           <Routes location={displayLocation}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/work" element={<WorksPage />} />
+            <Route path="/work" element={<Navigate to="/" replace />} />
             <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} />} />
             <Route path="/archives" element={<Archives />} />
           </Routes>
