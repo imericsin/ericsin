@@ -69,6 +69,13 @@ const companies = [
     ],
   },
   {
+    logo: '/about/logos/apmc.jpg',
+    name: 'A Parent Media Co. Inc.',
+    role: 'Creative Director',
+    status: null,
+    paras: [],
+  },
+  {
     logo: '/about/logos/rooster.jpg',
     name: 'Rooster Creatives',
     role: 'Sr. Designer',
@@ -101,44 +108,42 @@ export default function About() {
       <div className="about-bio-mobile">
         <h1 className="about-heading-mobile">About</h1>
         <div className="about-bio-mobile__body">
-          <p>I've been doing this "design" thing for about 20 years now.</p>
-          <p>My career began when I found my way into a small digital art community called Depthcore, working next to some incredible designers until starting as a founding designer for a kid-focused streaming platform.</p>
-          <p>Since then, I've become sort of a startup specialist— working to help build out brand &amp; design systems, collaboration processes, and mentoring designers with a focus on scale.</p>
-          <p>I'm now married with two insanely adorable kitties, trying to figure out life to the best of my ability.</p>
+          <p>I'm a multidisciplinary designer that's been working to help businesses scale and build brand and product systems since 2006.</p>
+          <p>I've been extremely lucky to be able to work across all sorts of verticals in a close manner—often working directly with founders, directors, and CEOs.</p>
+          <p>My philosophy for design has always the same no matter the medium or discipline—problem solving at its core with uncompromising craft.</p>
+          <p>This is the way I've been able to adapt across all teams and shifts in the industry and contribute at a high level everywhere I've gone.</p>
         </div>
       </div>
 
-      {/* ── Section 1: Bio — desktop only ── */}
+      {/* ── Section 1: About — desktop only, 10-column: label / image / spacer / content ── */}
       <section className="about-cols about-bio about-bio--desktop">
-        {/* Right (Scrollable) — photo */}
+        <div className="about-col-label">
+          <h1 className="about-heading anim" style={{ animationDelay: '0.05s' }}>About</h1>
+        </div>
         <div className="about-col-scroll">
           <div className="about-photo-wrap anim" style={{ animationDelay: '0.2s' }}>
             <img src="/about/photo.jpg" alt="Eric Sin" className="about-photo" />
           </div>
         </div>
-        {/* Left (Sticky) — heading + bio */}
+        <div aria-hidden />
         <div className="about-col-sticky">
-          <div className="about-bio__inner">
-            <h1 className="about-heading anim" style={{ animationDelay: '0.05s' }}>About</h1>
-            <div className="about-bio__body">
-              <p className="about-bio__p anim" style={{ animationDelay: '0.1s' }}>I've been doing this "design" thing for about 20 years now.</p>
-              <p className="about-bio__p anim" style={{ animationDelay: '0.15s' }}>My career began when I found my way into a small digital art community called Depthcore, working next to some incredible designers until starting as a founding designer for a kid-focused streaming platform.</p>
-              <p className="about-bio__p anim" style={{ animationDelay: '0.2s' }}>Since then, I've become sort of a startup specialist— working to help build out brand &amp; design systems, collaboration processes, and mentoring designers with a focus on scale.</p>
-              <p className="about-bio__p anim" style={{ animationDelay: '0.25s' }}>I'm now married with two insanely adorable kitties, trying to figure out life to the best of my ability.</p>
-            </div>
+          <div className="about-bio__body">
+            <p className="about-bio__p anim" style={{ animationDelay: '0.1s' }}>I'm a multidisciplinary designer that's been working to help businesses scale and build brand and product systems since 2006.</p>
+            <p className="about-bio__p anim" style={{ animationDelay: '0.15s' }}>I've been extremely lucky to be able to work across all sorts of verticals in a close manner—often working directly with founders, directors, and CEOs.</p>
+            <p className="about-bio__p anim" style={{ animationDelay: '0.2s' }}>My philosophy for design has always the same no matter the medium or discipline—problem solving at its core with uncompromising craft.</p>
+            <p className="about-bio__p anim" style={{ animationDelay: '0.25s' }}>This is the way I've been able to adapt across all teams and shifts in the industry and contribute at a high level everywhere I've gone.</p>
           </div>
         </div>
       </section>
 
-      {/* ── Section 2: Experience ── */}
+      {/* ── Section 2: Experience — 10-column: label / logos / spacer / cards ── */}
       <section className="about-cols about-exp">
-        {/* Left — heading + logos */}
+        <div className="about-col-label">
+          <h2 className="about-section-heading anim" style={{ animationDelay: delayAt(0, 0) }}>Experience</h2>
+        </div>
         <div className="about-col-scroll">
           <div className="about-exp__left-inner">
-            <div className="about-exp__label-group">
-              <h2 className="about-section-heading anim" style={{ animationDelay: delayAt(0, 0) }}>Experience</h2>
-              <p className="about-section-sub anim" style={{ animationDelay: delayAt(1, 0) }}>I've worked as a key contributor in the roles listed, but have gotten to work with some other incredible brands as well.</p>
-            </div>
+            <p className="about-section-sub anim" style={{ animationDelay: delayAt(1, 0) }}>I've worked as a key contributor in the roles listed, but have gotten to work with some other incredible brands as well.</p>
             <div className="about-logo-grid">
               {logoRows.map((row, i) => (
                 <div key={i} className="about-logo-row">
@@ -160,7 +165,7 @@ export default function About() {
             </div>
           </div>
         </div>
-        {/* Right (Scrollable) — company rows */}
+        <div aria-hidden />
         <div className="about-col-sticky about-exp__right">
           {companies.map((co, i) => (
             <div key={i} className="anim" style={{ animationDelay: delayAt(i, 1) }}>

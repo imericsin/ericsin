@@ -1107,10 +1107,10 @@ body {
   /* About page gap */
   .page--about { gap: 40px; }
   /* Experience section stacks on tablet/mobile */
-  .about-exp { flex-direction: column; gap: 0; }
+  .about-exp { grid-template-columns: 1fr; gap: 0; padding-top: 0; }
+  .about-exp .about-col-label { display: none; }
   .about-exp .about-col-scroll,
-  .about-exp .about-col-sticky { width: 100% !important; flex-shrink: 1 !important; min-width: 0 !important; }
-  .about-exp { padding-top: 0; }
+  .about-exp .about-col-sticky { grid-column: 1 / 2; width: 100%; min-width: 0; }
   .about-exp__left-inner { padding-bottom: 28px; width: 100%; min-width: 0; }
   /* Logos scale with the column instead of fixed px, which overflowed */
   .about-logo-grid { width: 100%; min-width: 0; }
@@ -1318,11 +1318,11 @@ body {
   .about-bio-mobile { display: flex; }
   .about-bio--desktop { display: none; }
   /* Experience section stacks on mobile */
-  .about-exp { flex-direction: column; gap: 0; }
+  .about-exp { grid-template-columns: 1fr; gap: 0; padding-top: 0; }
+  .about-exp .about-col-label { display: none; }
   .about-exp .about-col-scroll,
-  .about-exp .about-col-sticky { width: 100% !important; flex-shrink: 1 !important; min-width: 0 !important; }
+  .about-exp .about-col-sticky { grid-column: 1 / 2; width: 100%; min-width: 0; }
   /* Experience type scale */
-  .about-exp { padding-top: 0; }
   .about-exp__left-inner { padding-bottom: 28px; width: 100%; min-width: 0; }
   .about-section-sub { font-size: var(--type-micro-size); line-height: 16px; letter-spacing: 0.01em; color: var(--system-hero-secondary); }
   /* Logos scale with the column instead of fixed px, which overflowed */
@@ -1721,31 +1721,44 @@ body {
 .cmdk-send:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ─── About page ─────────────────────────────────── */
+/* Page wrapper owns only top padding + gap between sections — no L/R
+   padding here, each section below owns its own global inset instead
+   (matching the standard section wrapper used elsewhere in the app). */
 .page--about {
-  max-width: var(--content-mw);
-  margin: 0 auto;
-  padding: 40px var(--body-margin-x) 80px;
+  padding-top: 40px;
+  padding-bottom: 80px;
   display: flex;
   flex-direction: column;
   gap: 64px;
 }
 
-/* Two-column rows — no sticky, just flex */
+/* 10-column split via CSS Grid so the 2/3/1/4 ratios (label / image /
+   spacer / content) hold at any container width, rather than the fixed
+   px values Figma renders at its specific 1322px frame. */
 .about-cols {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr 4fr;
+  align-items: start;
+  gap: 24px;
   width: 100%;
+  max-width: var(--content-mw);
+  margin: 0 auto;
+  padding: 0 var(--body-margin-x);
 }
 
 .about-col-scroll {
-  width: 50%;
-  flex-shrink: 0;
+  grid-column: 2 / 3;
 }
 
 .about-col-sticky {
-  flex: 1 0 0;
+  grid-column: 4 / 5;
   min-width: 0;
+}
+
+.about-col-label {
+  grid-column: 1 / 2;
+  position: sticky;
+  top: 0;
 }
 
 /* Bio section */
@@ -1769,12 +1782,11 @@ body {
 }
 
 .about-photo-wrap {
-  width: 364px;
-  height: 364px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 6px;
   overflow: hidden;
   background: var(--color-card-bg);
-  flex-shrink: 0;
 }
 
 .about-photo {
@@ -1798,12 +1810,13 @@ body {
   display: block;
 }
 
-/* Mobile-only bio section — .page already provides side padding */
+/* Mobile-only bio section — page--about no longer carries L/R padding
+   itself (each section owns its own inset), so this owns it directly. */
 .about-bio-mobile {
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  padding-bottom: 64px;
+  padding: 0 var(--body-margin-x) 64px;
 }
 .about-heading-mobile {
   font-size: var(--type-large-body-size);
@@ -1826,16 +1839,10 @@ body {
   color: var(--system-body-secondary);
 }
 
-.about-bio__inner {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
 .about-heading {
   font-size: 1.25rem;       /* 20px */
   line-height: 24px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--system-hero-primary);
 }
@@ -1860,14 +1867,7 @@ body {
 .about-exp__left-inner {
   display: flex;
   flex-direction: column;
-  gap: 64px;
-}
-
-.about-exp__label-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 420px;
+  gap: 32px;
 }
 
 .about-section-heading {
@@ -1954,6 +1954,11 @@ body {
   flex-shrink: 0;
   width: 103px;
   padding-top: 2px;
+}
+/* Shrink to fit the chip below tablet width — the fixed 103px crowds out
+   the name/role column once the card itself is narrower than desktop. */
+@media (max-width: 860px) {
+  .exp-card__label-col { width: auto; min-width: 0; }
 }
 .exp-card__chip {
   flex-shrink: 0;
