@@ -25,6 +25,7 @@ export interface WorkCard {
   thumb: string
   thumbType: 'image' | 'video'
   date: string
+  featured: boolean
 }
 
 function resolveThumb(base: string, thumbFile: string | undefined): { src: string; type: 'image' | 'video' } | null {
@@ -69,6 +70,7 @@ export function useWorkIndex({ featuredOnly = true, limit }: WorkIndexOptions = 
             thumb: hero.src,
             thumbType: hero.type,
             date: meta.date!,
+            featured: !!meta.featured,
           } satisfies WorkCard
         })
       )

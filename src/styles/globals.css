@@ -1095,10 +1095,6 @@ body {
   .home-bio-section { gap: 20px; margin-bottom: 48px; }
   /* Latest Work 2×2 grid */
   .home-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .home-cards-label { display: block; grid-column: 1 / -1;
-    font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
-    line-height: var(--type-micro-lh); letter-spacing: 0.01em;
-    color: var(--component-fg-3); margin-bottom: 0; }
   .home-cards .card { margin-bottom: 0; }
   /* Type scale — match mobile */
   .hero-name { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); }
@@ -1408,16 +1404,6 @@ body {
 }
 
 /* ─── Status Tags / Card Pills ───────────────────── */
-/* "Latest Work" label above the card list — Micro, fg/3 */
-.home-cards-label {
-  display: block;
-  font-size: var(--type-micro-size);
-  font-weight: var(--type-micro-weight);
-  line-height: var(--type-micro-lh);
-  letter-spacing: 0.01em;
-  color: var(--component-fg-3);
-  margin-bottom: 16px;
-}
 .card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
 .card-tag {
   display: inline-flex; align-items: center; justify-content: center;
@@ -1477,12 +1463,6 @@ body {
 
   /* Mobile cards section */
   .home-cards { display: flex; flex-direction: column; gap: 0; }
-  .home-cards-label {
-    display: block;
-    font-size: var(--type-micro-size); font-weight: var(--type-micro-weight);
-    line-height: var(--type-micro-lh); letter-spacing: 0.01em;
-    color: var(--component-fg-3); margin-bottom: 14px;
-  }
   .home-cards .card { margin-bottom: 40px; }
   .home-cards .card:last-child { margin-bottom: 0; }
 

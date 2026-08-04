@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, lazy, Suspense } from 'react'
+import { useEffect, useRef, useState, useMemo, lazy, Suspense } from 'react'
 import type { LottieRefCurrentProps } from 'lottie-react'
 
 // lottie-web is ~25MB unpacked and drives one 14x14 hover arrow. Splitting it
@@ -9,6 +9,7 @@ import Card from '../components/Card'
 import PageFooter from '../components/PageFooter'
 import { useWorkIndex } from '../hooks/useWorkIndex'
 import { useLocalTime } from '../hooks/useLocalTime'
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 
 // Social icons inlined as SVG so `fill="currentColor"` lets CSS drive the
 // color. An <img> can't be recolored from outside, and a filter chain can't
@@ -87,8 +88,16 @@ function CtaButton() {
 
 
 export default function Home() {
-  const workCards = useWorkIndex({ featuredOnly: true, limit: 4 })
+  const allCards = useWorkIndex({ featuredOnly: false })
   const { stamp, location } = useLocalTime()
+
+  // Featured work leads the feed; the rest follows, each group newest-first.
+  // The hook already sorted by date, so a stable partition preserves that.
+  const ordered = useMemo(
+    () => [...allCards.filter(c => c.featured), ...allCards.filter(c => !c.featured)],
+    [allCards]
+  )
+  const { visible: workCards, sentinelRef, hasMore } = useInfiniteScroll(ordered, 4, 3)
 
   return (
     <>
@@ -134,8 +143,6 @@ export default function Home() {
 
       {/* Right — scrollable */}
       <div className="home-right">
-        <p className="home-cards-label anim" style={{ animationDelay: '0.2s' }}>Latest Work</p>
-
         <div className="home-cards">
           {workCards.map((card, i) => (
             <Card
@@ -148,10 +155,13 @@ export default function Home() {
               slug={card.slug}
               href={`/work/${card.slug}`}
               className="anim"
-              style={{ animationDelay: `${0.25 + i * 0.06}s` }}
+              // Stagger only the first batch; appended cards fade in promptly
+              // rather than inheriting an ever-growing delay.
+              style={{ animationDelay: `${i < 4 ? 0.25 + i * 0.06 : 0}s` }}
             />
           ))}
         </div>
+        {hasMore && <div ref={sentinelRef} className="home-cards-sentinel" aria-hidden />}
       </div>
     </div>
     <PageFooter revealClass="anim" className="footer-mobile--home" />
