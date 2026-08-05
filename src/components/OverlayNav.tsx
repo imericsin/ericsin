@@ -30,7 +30,7 @@ export default function OverlayNav({ visible, desktop = false, onLinkClick }: Pr
   const { stamp, location } = useLocalTime()
 
   return (
-    <div className={`mnav-panel${visible ? ' mnav-panel--open' : ''}`}>
+    <div className={`mnav-panel${desktop ? ' mnav-panel--desktop' : ''}${visible ? ' mnav-panel--open' : ''}`}>
       <div className="mnav-links">
         {navLinks.map(({ label, href }, i) => {
           const active = isActive(href, pathname)
