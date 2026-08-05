@@ -33,7 +33,7 @@ const companies = [
     logo: '/about/logos/you.jpg',
     name: 'You.com',
     role: 'Sr. Product Designer',
-    status: null,
+    status: `2024—2025`,
     paras: [
       'Building tools for human-AI collaboration, You.com was an AI search and answer engine that has recently pivoted into a growing B2B LLM-integration business.',
       'I designed frameworks that exposed model uncertainty to build user trust, and used rapid prototyping to de-risk product bets. I helped carve out a new B2B consulting offering, selling LLM integrations to partners like New Scientist, Nature.com, and WUBV.',
@@ -43,7 +43,7 @@ const companies = [
     logo: '/about/logos/mosaic.jpg',
     name: 'Mosaic Finance, LLC',
     role: 'Sr. Product Designer',
-    status: null,
+    status: `2023—2024`,
     paras: [
       'Mosaic builds FP&A SaaS for financial modeling, data management, and executive reporting.',
       'I led end-to-end design for the platform, translating complex financial data into clear, trustworthy experiences. Beyond execution, I partnered with product leadership on vision and roadmapping, applying systems thinking to define information architecture and taxonomies that made dense data understandable across user roles. I worked closely with engineering and data teams to design within real technical constraints.',
@@ -53,7 +53,7 @@ const companies = [
     logo: '/about/logos/optro.jpg',
     name: 'Optro',
     role: 'Sr. Product Designer / Design Manager, Brand',
-    status: null,
+    status: `2020—2023`,
     paras: [
       "Initially, I led AuditBoard's brand design team, driving design culture, craft consistency, and quality across digital product and event experiences.",
       'I pivoted to product design in 2022, leading 0-to-1 strategy for a third-party risk management platform, running JTBD research with enterprise customers to turn complex audit data into high-trust workflows—contributing to $1M ARR in year one, building 25+ direct customer/UXR partnerships, and drove cross-team efforts to close design-system gaps and contribute new patterns to the shared library.',
@@ -62,29 +62,30 @@ const companies = [
   {
     logo: '/about/logos/apmc.jpg',
     name: 'A Parent Media Co. Inc.',
-    role: 'Founding Designer',
-    status: null,
+    role: 'Director of Design',
+    status: `2018—2020`,
     paras: [
-      "As founding designer, I directed brand and product design across the portfolio, owning feature areas end-to-end. I was first designer on a 0-to-1 children's streaming platform, building brand and production-accurate design systems across mobile, web, and TV apps. I helped shape product strategy that scaled the business to nearly $10M in ARR by 2018.",
+      "I directed brand and product design across the portfolio, owning feature areas end-to-end. I pushed design & development for Kidoodle.TV (a children's streaming app), building brand and production-accurate design systems across mobile, web, and TV apps. I helped shape product strategy that scaled the business to nearly $10M in ARR by 2018.",
     ],
-  },
-  {
-    logo: '/about/logos/apmc.jpg',
-    name: 'A Parent Media Co. Inc.',
-    role: 'Creative Director',
-    status: null,
-    paras: [],
   },
   {
     logo: '/about/logos/rooster.jpg',
     name: 'Rooster Creatives',
     role: 'Sr. Designer',
-    status: null,
+    status: `2017—2018`,
     paras: [
       'I got to work on well-known businesses local to the LA/OC area—defining brands for popular businesses like OMOMO, Jin Tea, Boiling Point, and more.',
       'While the work was less global, I still look back to this day at the things we made with fondness—ultimately helping to build for my community and up-leveling perception of good brand design for retail / brick-and-mortar businesses.',
     ],
   },
+  {
+    logo: '/about/logos/apmc.jpg',
+    name: 'A Parent Media Co. Inc.',
+    role: 'Founding Designer',
+    status: `2012—2018`,
+    paras: ["As Founding Designer, I set the stage for core brand & product experiences for Kidoodle.TV, APMC's flagship product. This was my first real foray into designing for digital products, and I still look back at this work very fondly."],
+  },
+
 ]
 
 const interests = [
