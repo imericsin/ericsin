@@ -72,7 +72,7 @@ function CtaButton() {
     <a
       ref={btnRef}
       className={`home-cta-btn${hovered ? ' home-cta-btn--hover' : ''}`}
-      href="mailto:eric@2717.design"
+      href="mailto:hello@ericsin.com"
       onMouseEnter={(e) => { updateOrigin(e); setHovered(true) }}
       onMouseLeave={(e) => { updateOrigin(e); setHovered(false) }}
     >
