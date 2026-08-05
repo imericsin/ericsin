@@ -476,7 +476,7 @@ body {
   gap: 2px;
   background: var(--component-fg-1);
   color: #ffffff;
-  padding: 8px 10px 8px 14px;
+  padding: 10px 12px 10px 14px;
   border-radius: var(--radius-badge);
   white-space: nowrap;
   text-decoration: none;
@@ -975,7 +975,7 @@ body {
 }
 .block-text__inner p { margin-bottom: 1em; }
 .block-text__inner p:last-child { margin-bottom: 0; }
-.block-text__inner h2, .block-text__inner h3 { color: var(--system-body-secondary); font-size: var(--type-large-body-size); font-weight: 500; line-height: 1.4; letter-spacing: -0.01875em; margin-bottom: 1em; }
+.block-text__inner h2, .block-text__inner h3 { color: var(--system-body-primary); font-size: 0.875rem; font-weight: 700; line-height: 1.29; margin-bottom: 12px; }
 
 /* Inline links inside case study copy. Distinct from the Experience list's
    .link-dotted so the two treatments can diverge. */
@@ -1018,7 +1018,13 @@ body {
   align-items: start;
 }
 .block-comp__text { padding-top: 0; }
-.block-comp__text .block-2col__label { margin-bottom: 12px; }
+.block-comp__text .block-2col__label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.29;
+  color: var(--system-body-primary);
+  margin-bottom: 12px;
+}
 .block-comp__media {
   position: relative;
   border-radius: var(--radius-card);
@@ -1057,8 +1063,16 @@ body {
 }
 
 @media (max-width: 640px) {
-  .block-comp { grid-template-columns: 1fr; }
-  .block-comp__text { display: none; }
+  /* Stacks to a single column, media first then text below (Figma's
+     mobile COMP frame) — DOM order is text-then-media for the desktop
+     grid, so flip visual order here rather than reordering markup. */
+  .block-comp {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 16px var(--body-margin-x) 32px;
+  }
+  .block-comp__media { order: 1; }
+  .block-comp__text { order: 2; padding-top: 0; }
 }
 
 /* 2COL image-only — two images side by side, full content width */
@@ -1357,16 +1371,17 @@ body {
   position: relative; flex-shrink: 0;
   z-index: 300;
 }
-.menu-icon__line {
-  display: block; position: absolute;
-  left: 7px; width: 14px; height: 1px;
-  background: currentColor;
-  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), top 280ms cubic-bezier(0.4, 0, 0.2, 1);
+.menu-icon__svg {
+  display: block; position: absolute; inset: 0;
+  color: inherit;
 }
-.menu-icon__line--a { top: 10px; }
-.menu-icon__line--b { top: 17px; }
-.menu-icon--open .menu-icon__line--a { top: 13.5px; transform: rotate(-45deg); }
-.menu-icon--open .menu-icon__line--b { top: 13.5px; transform: rotate(45deg); }
+.menu-icon__line {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), translate 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.menu-icon--open .menu-icon__line--a { translate: 0 3.5px; transform: rotate(-45deg); }
+.menu-icon--open .menu-icon__line--b { translate: 0 -3.5px; transform: rotate(45deg); }
 .menu-icon--open { color: #ffffff; }
 
 /* Panel */
@@ -1471,7 +1486,7 @@ body {
   .nav-mobile { display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: transparent; }
   .nav-mobile-inner {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 16px 16px 20px;
+    padding: 16px var(--body-margin-x);
     position: relative; /* anchor for mnav-panel */
     transition: background 0.2s ease;
   }
@@ -1892,6 +1907,16 @@ body {
   letter-spacing: -0.01em;
   color: var(--system-hero-primary);
 }
+/* Duplicate of the Experience label, placed in the same column as the
+   logos/cards so it's visible once .about-col-label is hidden below
+   tablet width. Placed after .about-col-label's own display rules (same
+   specificity) so this media override actually wins — see the earlier
+   pattern in this file where source order, not just the media query,
+   decides the winner at equal specificity. */
+.about-section-heading--mobile-dupe { display: none; }
+@media (max-width: 860px) {
+  .about-section-heading--mobile-dupe { display: block; }
+}
 
 .about-section-sub {
   font-size: var(--type-body-med-size);
@@ -1943,7 +1968,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
   width: 100%;
   position: relative;
   border: none;
@@ -1953,10 +1977,25 @@ body {
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  transition: background-color 150ms ease;
+  transition: background-color 150ms ease, padding-bottom 400ms cubic-bezier(0.25, 1, 0.3, 1);
 }
 .exp-card:hover { background: var(--component-bg-3); }
 .exp-card--expanded { background: var(--component-bg-2); padding-top: 12px; padding-bottom: 14px; }
+/* Grid-rows collapse animates height without a fixed value — the "spring"
+   feel comes from the overshoot-then-settle easing curve, gentler than a
+   real physics spring but with the same soft, haptic-ish snap. */
+.exp-card__expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  width: 100%;
+  transition: grid-template-rows 450ms cubic-bezier(0.25, 1, 0.3, 1);
+}
+.exp-card--expanded .exp-card__expand { grid-template-rows: 1fr; }
+.exp-card__expand-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+.exp-card--expanded .exp-card__expand-inner { padding-top: 24px; }
 .exp-card__row {
   display: flex;
   align-items: flex-start;

@@ -43,7 +43,7 @@ export default function NavbarV2({
       <div className="navbar-v2__controller">
         <div className="navbar-v2__tabs">
           {variant === 'index' && tabs && (
-            <div className="tab-row">
+            <div className="tab-row anim" style={{ animationDelay: '0.2s' }}>
               <Tab
                 label="All"
                 count={totalCount}

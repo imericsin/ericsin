@@ -174,7 +174,7 @@ export default function Home({ cards: allCards, tabs, totalCount = 0, activeTab 
       {/* Right — scrollable */}
       <div className="home-right">
         {tabs && (
-          <div className="home-tabs-mobile tab-row">
+          <div className="home-tabs-mobile tab-row anim" style={{ animationDelay: '0.2s' }}>
             <Tab
               label="All"
               count={totalCount}

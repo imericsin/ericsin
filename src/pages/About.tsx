@@ -144,6 +144,7 @@ export default function About() {
         </div>
         <div className="about-col-scroll">
           <div className="about-exp__left-inner">
+            <h2 className="about-section-heading about-section-heading--mobile-dupe anim" style={{ animationDelay: delayAt(0, 0) }}>Experience</h2>
             <p className="about-section-sub anim" style={{ animationDelay: delayAt(1, 0) }}>I've worked as a key contributor in the roles listed, but have gotten to work with some other incredible brands as well.</p>
             <div className="about-logo-grid">
               {logoRows.map((row, i) => (

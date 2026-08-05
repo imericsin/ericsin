@@ -28,16 +28,18 @@ export default function ExperienceCard({ name, role, status, paras, defaultExpan
         </div>
       </div>
 
-      {expanded && (
-        <div className="exp-card__row">
-          <div className="exp-card__label-col" aria-hidden />
-          <div className="exp-card__paras">
-            {paras.map((p, i) => (
-              <p key={i} className="exp-card__para">{p}</p>
-            ))}
+      <div className="exp-card__expand">
+        <div className="exp-card__expand-inner">
+          <div className="exp-card__row">
+            <div className="exp-card__label-col" aria-hidden />
+            <div className="exp-card__paras">
+              {paras.map((p, i) => (
+                <p key={i} className="exp-card__para">{p}</p>
+              ))}
+            </div>
           </div>
         </div>
-      )}
+      </div>
 
       <span className="exp-card__toggle" aria-hidden>{expanded ? '×' : '+'}</span>
     </button>
