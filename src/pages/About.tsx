@@ -16,8 +16,6 @@ const logoRows = [
   ],
 ]
 
-const maxRowLength = Math.max(...logoRows.map(r => r.length))
-
 const companies = [
   {
     logo: '/about/logos/apmc.jpg',
@@ -157,10 +155,6 @@ export default function About() {
                       className="about-logo anim"
                       style={{ animationDelay: delayAt(2 + i, j) }}
                     />
-                  ))}
-                  {/* Pad short rows so every logo gets the same slot width */}
-                  {Array.from({ length: maxRowLength - row.length }, (_, k) => (
-                    <span key={`ghost-${k}`} className="about-logo about-logo--ghost" aria-hidden />
                   ))}
                 </div>
               ))}

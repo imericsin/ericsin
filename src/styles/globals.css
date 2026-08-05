@@ -1133,19 +1133,6 @@ body {
   /* About page gap */
   .page--about { gap: 40px; }
   .about-exp__left-inner { padding-bottom: 28px; width: 100%; min-width: 0; }
-  /* Logos scale with the column instead of fixed px, which overflowed */
-  .about-logo-grid { width: 100%; min-width: 0; }
-  .about-logo-row { width: 100%; min-width: 0; gap: 4%; }
-  .about-logo-row .about-logo {
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    height: auto;
-    max-height: 36px;
-    object-fit: contain;
-    object-position: left center;
-  }
-  .about-logo-row .about-logo--ghost { display: block; }
   /* Home — single col. .home-left carries the bio + CTA, so it stays visible
      and unsticks; only the footer details (social/time) drop out. */
   .home-layout { flex-direction: column; }
@@ -1345,19 +1332,6 @@ body {
   .about-section-sub { font-size: var(--type-micro-size); line-height: 16px; letter-spacing: 0.01em; color: var(--system-hero-secondary); }
   .exp-card { padding: 10px 12px; }
   .exp-card--expanded { padding-top: 10px; padding-bottom: 12px; }
-  /* Logos scale with the column instead of fixed px, which overflowed */
-  .about-logo-grid { display: flex; width: 100%; min-width: 0; gap: 24px; }
-  .about-logo-row { width: 100%; min-width: 0; gap: 4%; }
-  .about-logo-row .about-logo {
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    height: auto;
-    max-height: 36px;
-    object-fit: contain;
-    object-position: left center;
-  }
-  .about-logo-row .about-logo--ghost { display: block; }
 }
 
 /* ─── Mobile Nav ─────────────────────────────────── */
@@ -1926,33 +1900,26 @@ body {
   max-width: 420px;
 }
 
-/* Logo grid */
+/* Logo grid — same fixed layout at every breakpoint per spec: 24px-tall
+   logos, natural aspect-ratio widths, 24px gap within a row, 20px between
+   rows. No mobile-specific scaling. */
 .about-logo-grid {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 20px;
 }
 
 .about-logo-row {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
 }
 
 .about-logo {
-  height: 36px;
+  height: 24px;
   width: auto;
   object-fit: contain;
   display: block;
-}
-
-/* Invisible spacer that reserves a slot in short rows — desktop rows are
-   intrinsically sized, so it only needs to take up space once the mobile
-   breakpoints make each logo an equal flex child. */
-.about-logo--ghost {
-  display: none;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 /* Company rows */
