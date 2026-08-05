@@ -124,7 +124,15 @@ export default function App() {
           style={{ width: '100%', opacity: fading ? 0 : 1, transition: 'opacity 0.28s ease' }}
         >
           <Routes location={displayLocation}>
-            <Route path="/" element={<Home cards={filteredWorkCards} />} />
+            <Route path="/" element={
+              <Home
+                cards={filteredWorkCards}
+                tabs={tabs}
+                totalCount={allWorkCards.length}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
+            } />
             <Route path="/about" element={<About />} />
             <Route path="/work" element={<Navigate to="/" replace />} />
             <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} />} />

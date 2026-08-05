@@ -439,6 +439,14 @@ body {
   padding-bottom: 20px;
 }
 .home-bio-section { display: flex; flex-direction: column; gap: 36px; margin-bottom: 128px; }
+.home-tabs-mobile {
+  display: none;
+  margin-bottom: 10px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+}
+.home-tabs-mobile::-webkit-scrollbar { display: none; }
 .home-bio-text { display: flex; flex-direction: column; gap: 16px; }
 .home-bio {
   font-size: 1.25rem;        /* 20px */
@@ -505,7 +513,8 @@ body {
 .home-cta-icon > div { display: flex !important; align-items: center; }
 .home-cta-icon svg { display: block; }
 
-.home-cards { display: flex; flex-direction: column; gap: 40px; padding-bottom: 24px; }
+.home-cards { display: flex; flex-direction: column; gap: 40px; padding-bottom: 24px; transition: opacity 150ms ease; }
+.home-cards--flash { opacity: 0.3; }
 
 .home-footer-details { display: flex; flex-direction: column; gap: 20px; }
 .home-time-wrap { display: flex; flex-direction: column; gap: 2px; }
@@ -1135,6 +1144,7 @@ body {
   .home-right { padding-top: 0; padding-bottom: 0; }
   .home-bio { font-size: var(--type-large-body-size); font-weight: var(--type-large-body-weight); line-height: var(--type-large-body-lh); letter-spacing: var(--type-large-body-ls); max-width: 500px; }
   .home-bio-section { gap: 20px; margin-bottom: 48px; }
+  .home-tabs-mobile { display: flex; }
   /* Latest Work 2×2 grid */
   .home-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .home-cards .card { margin-bottom: 0; }
@@ -1766,17 +1776,9 @@ body {
   padding-top: var(--page-topspacer);
 }
 
-/* Experience section — a single rule spans both columns to separate it from
-   the About block above. The border is carried here rather than on the first
-   CompanyRow so it runs the full width. */
-.about-exp {
-  border-top: 1px solid var(--component-border-1);
-}
-/* Lead-in above Experience — desktop/tablet only. */
-@media (min-width: 641px) {
-  .about-exp .about-col-scroll { padding-top: 48px; }
-}
-/* Mobile-only lead-in above "Experience" */
+/* Mobile-only lead-in above "Experience" — the label column is hidden
+   there (Experience heading has no separate mobile placement yet), so
+   the logo column needs its own top space to read as a new section. */
 @media (max-width: 640px) {
   .about-exp .about-col-scroll { padding-top: 40px; }
 }
@@ -1919,6 +1921,7 @@ body {
 .about-exp__right {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 

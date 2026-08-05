@@ -7,6 +7,8 @@ import type { LottieRefCurrentProps } from 'lottie-react'
 const Lottie = lazy(() => import('lottie-react'))
 import Card from '../components/Card'
 import PageFooter from '../components/PageFooter'
+import Tab from '../components/Tab'
+import type { TabDef } from '../components/NavbarV2'
 import type { WorkCard } from '../hooks/useWorkIndex'
 import { useLocalTime } from '../hooks/useLocalTime'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
@@ -90,9 +92,13 @@ function CtaButton() {
 
 interface Props {
   cards: WorkCard[]
+  tabs?: TabDef[]
+  totalCount?: number
+  activeTab?: string | null
+  onTabChange?: (label: string | null) => void
 }
 
-export default function Home({ cards: allCards }: Props) {
+export default function Home({ cards: allCards, tabs, totalCount = 0, activeTab = null, onTabChange }: Props) {
   const { stamp, location } = useLocalTime()
 
   // Featured work leads the feed; the rest follows, each group newest-first.
@@ -105,6 +111,18 @@ export default function Home({ cards: allCards }: Props) {
 
   // Re-scan whenever a batch is appended so the new .reveal cards get observed.
   useReveal([workCards.length])
+
+  // Brief flash when the filtered set changes (tab click) so the swap to a
+  // different card list reads as a deliberate update, not a static jump —
+  // allCards is a new array reference each time App.tsx recomputes the filter.
+  const [flash, setFlash] = useState(false)
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) { isFirstRender.current = false; return }
+    setFlash(true)
+    const t = setTimeout(() => setFlash(false), 200)
+    return () => clearTimeout(t)
+  }, [allCards])
 
   return (
     <>
@@ -155,7 +173,28 @@ export default function Home({ cards: allCards }: Props) {
 
       {/* Right — scrollable */}
       <div className="home-right">
-        <div className="home-cards">
+        {tabs && (
+          <div className="home-tabs-mobile tab-row">
+            <Tab
+              label="All"
+              count={totalCount}
+              active={activeTab === null}
+              onClick={() => onTabChange?.(null)}
+              size="mobile"
+            />
+            {tabs.map(({ label, count }) => (
+              <Tab
+                key={label}
+                label={label}
+                count={count}
+                active={activeTab === label}
+                onClick={() => onTabChange?.(label)}
+                size="mobile"
+              />
+            ))}
+          </div>
+        )}
+        <div className={`home-cards${flash ? ' home-cards--flash' : ''}`}>
           {workCards.map((card, i) => (
             <Card
               key={card.slug}
