@@ -3,7 +3,6 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import Nav from './components/Nav'
 import NavMobile from './components/NavMobile'
-import Preloader from './components/Preloader'
 import Home from './pages/Home'
 import About from './pages/About'
 import WorkPage from './pages/WorkPage'
@@ -117,7 +116,6 @@ export default function App() {
 
   return (
     <CardTooltipContext.Provider value={{ onEnter, onLeave }}>
-      <Preloader />
       <Nav tabs={tabs} totalCount={allWorkCards.length} activeTab={activeTab} onTabChange={setActiveTab} />
       <NavMobile />
       <div className="app">
