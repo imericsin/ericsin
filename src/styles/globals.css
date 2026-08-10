@@ -318,7 +318,7 @@ body {
 .rolodex-digit__strip {
   display: flex;
   flex-direction: column;
-  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .rolodex-digit__cell {
   height: 1em;

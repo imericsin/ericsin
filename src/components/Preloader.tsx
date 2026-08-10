@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react'
 
 const SESSION_KEY = 'preloader-shown'
-const DURATION_MS = 1600
+const DURATION_MS = 2400
 const EXIT_MS = 700
 
-const DIGITS = Array.from({ length: 10 }, (_, i) => i)
+// Long enough to cover every forward wrap a digit makes while counting
+// 001->100 (the ones digit wraps ~10 times, tens ~1) without ever running
+// out of cells to scroll into.
+const CYCLES = 12
+const STRIP = Array.from({ length: CYCLES * 10 }, (_, i) => i % 10)
 
-// One rolodex digit: a 0-9 strip that slides vertically so the active
-// digit lands in view, giving the "spinning odometer" feel on change.
-function RolodexDigit({ value }: { value: number }) {
+// One rolodex digit: a repeating 0-9 strip that only ever slides one
+// direction (up). `ticks` is a monotonically increasing count of how many
+// times this slot has advanced — NOT the raw 0-9 value — so a wrap from
+// 9 back to 0 keeps scrolling forward into the strip's next "0" cell
+// instead of reversing direction to find the nearest 0 above it.
+function RolodexDigit({ ticks }: { ticks: number }) {
   return (
     <span className="rolodex-digit">
-      <span className="rolodex-digit__strip" style={{ transform: `translateY(-${value * 10}%)` }}>
-        {DIGITS.map(d => (
-          <span key={d} className="rolodex-digit__cell">{d}</span>
+      <span className="rolodex-digit__strip" style={{ transform: `translateY(-${ticks * 10}%)` }}>
+        {STRIP.map((d, i) => (
+          <span key={i} className="rolodex-digit__cell">{d}</span>
         ))}
       </span>
     </span>
@@ -59,16 +66,25 @@ export default function Preloader() {
   if (!shouldRender) return null
 
   // Always three fixed slots (hundreds/tens/ones) so a digit's position
-  // always means the same place value — keying by array index alone broke
-  // this when the digit count changed (e.g. 9 -> 10 made position 0 jump
-  // from "the only digit" to "the tens digit", animating 9->1 instead of
-  // counting up smoothly). Percent is 1-indexed (001, not 000) per spec.
-  const digits = String(percent || 1).padStart(3, '0').split('').map(Number)
+  // always means the same place value — a variable-length digit array
+  // broke this when the digit count changed. Percent is 1-indexed (001,
+  // not 000) per spec.
+  const value = percent || 1
+
+  // Cumulative tick counts per slot, not raw 0-9 digits — each slot only
+  // ever counts up, so RolodexDigit can always scroll the same direction
+  // (a raw digit that wraps 9->0 would otherwise have to reverse to find
+  // the nearest 0 above it in the strip).
+  const onesTicks = value
+  const tensTicks = Math.floor(value / 10)
+  const hundredsTicks = Math.floor(value / 100)
 
   return (
     <div className={`preloader${exiting ? ' preloader--exiting' : ''}`} aria-hidden>
       <span className="preloader__count">
-        {digits.map((d, i) => <RolodexDigit key={i} value={d} />)}
+        <RolodexDigit ticks={hundredsTicks} />
+        <RolodexDigit ticks={tensTicks} />
+        <RolodexDigit ticks={onesTicks} />
       </span>
     </div>
   )
