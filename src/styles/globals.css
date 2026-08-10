@@ -280,6 +280,58 @@ body {
   .app { transition: none !important; }
 }
 
+/* ─── Preloader ──────────────────────────────────── */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #121212;
+  transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.preloader--exiting {
+  transform: translateY(-100%);
+}
+.preloader__count {
+  display: inline-flex;
+  align-items: center;
+  font-family: "SF Pro Display", sans-serif;
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+/* Rolodex digit: a fixed-height window showing one cell of a 0-9 strip,
+   sliding vertically as the value changes. Width is clamped tight to the
+   digit glyph itself so digits sit close together instead of using the
+   font's natural (wider) advance width. */
+.rolodex-digit {
+  display: inline-block;
+  overflow: hidden;
+  width: 0.56em;
+  height: 1em;
+  line-height: 1;
+}
+.rolodex-digit__strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rolodex-digit__cell {
+  height: 1em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader { transition: none; }
+  .rolodex-digit__strip { transition: none; }
+}
+
 /* ─── Page shell ─────────────────────────────────── */
 .page {
   display: flex;
