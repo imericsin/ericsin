@@ -1,19 +1,40 @@
 import { useEffect, useState } from 'react'
 import type { WorkMeta } from '../types/work'
 
-// Minimal YAML frontmatter parser (avoids gray-matter Node.js deps in browser)
+// Minimal YAML frontmatter parser (avoids gray-matter Node.js deps in browser).
+// Only handles the block-scalar ("|") case for keys we actually read here
+// (role) — theme/links parsing lives in parseLayout.ts for the full page.
 function parseFrontmatter(raw: string): Partial<WorkMeta> {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   if (!match) return {}
   const result: Record<string, unknown> = {}
+  let blockKey: string | null = null
+  const blockLines: string[] = []
+  const flushBlock = () => {
+    if (blockKey) result[blockKey] = blockLines.join('\n').trimEnd()
+    blockKey = null
+    blockLines.length = 0
+  }
   for (const line of match[1].split('\n')) {
+    if (blockKey !== null) {
+      if (line.match(/^\s+/) || line === '') {
+        blockLines.push(line.trim())
+        continue
+      }
+      flushBlock()
+    }
     const m = line.match(/^(\w+):\s*(.*)$/)
     if (!m) continue
     const [, key, val] = m
+    if (val.trim() === '|') {
+      blockKey = key
+      continue
+    }
     if (val === 'true') result[key] = true
     else if (val === 'false') result[key] = false
     else result[key] = val.replace(/^["']|["']$/g, '')
   }
+  flushBlock()
   return result as Partial<WorkMeta>
 }
 
@@ -25,6 +46,7 @@ export interface WorkCard {
   thumb: string
   thumbType: 'image' | 'video'
   date: string
+  dateRange: string
   featured: boolean
 }
 
@@ -62,6 +84,8 @@ export function useWorkIndex({ featuredOnly = true, limit }: WorkIndexOptions = 
           const hero = resolveThumb(base, meta.thumb)
           if (!hero) return null
 
+          const roleLines = meta.role?.split('\n').filter(Boolean) ?? []
+
           return {
             slug,
             name: meta.title ?? '',
@@ -70,6 +94,7 @@ export function useWorkIndex({ featuredOnly = true, limit }: WorkIndexOptions = 
             thumb: hero.src,
             thumbType: hero.type,
             date: meta.date!,
+            dateRange: roleLines[1] ?? '',
             featured: !!meta.featured,
           } satisfies WorkCard
         })

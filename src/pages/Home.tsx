@@ -201,6 +201,7 @@ export default function Home({ cards: allCards, tabs, totalCount = 0, activeTab 
               name={card.name}
               title={card.headliner}
               tags={card.categories}
+              dateRange={card.dateRange}
               thumb={card.thumb}
               thumbType={card.thumbType}
               slug={card.slug}

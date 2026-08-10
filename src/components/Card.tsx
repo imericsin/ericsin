@@ -7,6 +7,7 @@ interface Props {
   title: string
   name?: string
   tags: string
+  dateRange?: string
   thumb: string
   type?: 'image' | 'victory-orb'
   thumbType?: 'image' | 'video'
@@ -19,12 +20,29 @@ interface Props {
   onMouseLeave?: MouseEventHandler<HTMLAnchorElement>
 }
 
-export default function Card({ title, name, tags, thumb, type = 'image', thumbType = 'image', variant = 'work', href, slug, className, style, onMouseEnter, onMouseLeave }: Props) {
+export default function Card({ title, name, tags, dateRange, thumb, type = 'image', thumbType = 'image', variant = 'work', href, slug, className, style, onMouseEnter, onMouseLeave }: Props) {
   const navigate = useNavigate()
   const { onEnter, onLeave } = useContext(CardTooltipContext)
   const thumbClass = `card-thumb thumb-${variant}`
 
   const mediaStyle = { position: 'absolute' as const, inset: 0, width: '100%', height: '100%', objectFit: 'cover' as const, display: 'block' }
+
+  const cardTags = tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : []
+
+  const chipOverlay = variant === 'work' && (cardTags.length > 0 || dateRange) ? (
+    <div className="card-chip-row">
+      <div className="card-chip-row__left">
+        {cardTags.map(t => (
+          <span key={t} className="card-chip">{t}</span>
+        ))}
+      </div>
+      {dateRange && (
+        <div className="card-chip-row__right">
+          <span className="card-chip">{dateRange}</span>
+        </div>
+      )}
+    </div>
+  ) : null
 
   const inner = type === 'victory-orb' ? (
     <div className={`${thumbClass} victory-thumb`}>
@@ -35,6 +53,7 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
           <img className="victory-logo" src={thumb} alt={title} />
         </div>
       </div>
+      {chipOverlay}
     </div>
   ) : thumbType === 'video' ? (
     <div className={thumbClass}>
@@ -43,10 +62,12 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
         poster={thumb.replace(/\.(mp4|webm|mov)$/i, '.jpg')}
         autoPlay muted loop playsInline style={mediaStyle}
       />
+      {chipOverlay}
     </div>
   ) : (
     <div className={thumbClass}>
       <img src={thumb} alt={title} style={mediaStyle} loading="lazy" decoding="async" />
+      {chipOverlay}
     </div>
   )
 
@@ -88,13 +109,6 @@ export default function Card({ title, name, tags, thumb, type = 'image', thumbTy
             </div>
             <p className="card-title">{title}</p>
           </div>
-          {tags && (
-            <div className="card-tags">
-              {tags.split(',').map(t => (
-                <span key={t.trim()} className="card-tag">{t.trim()}</span>
-              ))}
-            </div>
-          )}
         </div>
       ) : (
         <div className="card-caption">
