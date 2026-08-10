@@ -1151,9 +1151,10 @@ body {
   gap: 12px;
   align-items: start;
 }
-.block-3col__asset { width: 100%; border-radius: var(--radius-card); display: block; object-fit: cover; }
-.block-3col__asset:nth-child(1) { aspect-ratio: 566 / 640; }
-.block-3col__asset:nth-child(2) { aspect-ratio: 441 / 460; }
+/* Assets keep their own natural aspect ratio instead of being forced into
+   a fixed shape — height follows from width via aspect-ratio:auto, same
+   as the mobile treatment below. */
+.block-3col__asset { width: 100%; height: auto; aspect-ratio: auto; border-radius: var(--radius-card); display: block; object-fit: contain; }
 
 /* Mobile-only About elements — hidden on desktop, shown via media queries below */
 .about-hero-mobile { display: none; }
