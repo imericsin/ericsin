@@ -48,21 +48,19 @@ export default function OverlayNav({ visible, desktop = false, onLinkClick }: Pr
         })}
       </div>
 
-      {!desktop && (
-        <div className="mnav-footer" style={{ animationDelay: visible ? '0.3s' : '0s' }}>
-          <div className="mnav-social">
-            {socialLinks.map(({ href, icon, label }) => (
-              <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="mnav-social-link" aria-label={label}>
-                <img src={icon} alt="" width="16" height="16" style={{ filter: 'invert(1)' }} />
-              </a>
-            ))}
-          </div>
-          <div className="mnav-time">
-            <p className="mnav-time-val">{stamp}</p>
-            <p className="mnav-time-loc">{location}</p>
-          </div>
+      <div className="mnav-footer" style={{ animationDelay: visible ? '0.3s' : '0s' }}>
+        <div className="mnav-social">
+          {socialLinks.map(({ href, icon, label }) => (
+            <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="mnav-social-link" aria-label={label}>
+              <img src={icon} alt="" width="16" height="16" style={{ filter: 'invert(1)' }} />
+            </a>
+          ))}
         </div>
-      )}
+        <div className="mnav-time">
+          <p className="mnav-time-val">{stamp}</p>
+          <p className="mnav-time-loc">{location}</p>
+        </div>
+      </div>
     </div>
   )
 }

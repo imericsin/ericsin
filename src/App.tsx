@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import WorkPage from './pages/WorkPage'
 import Archives from './pages/Archives'
+import ToastDemo from './pages/ToastDemo'
 import { useWorkIndex } from './hooks/useWorkIndex'
 
 // WorksPage (the old /work index) is kept in the codebase for possible
@@ -137,6 +138,7 @@ export default function App() {
             <Route path="/work" element={<Navigate to="/" replace />} />
             <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} />} />
             <Route path="/archives" element={<Archives />} />
+            <Route path="/toast-demo" element={<ToastDemo />} />
           </Routes>
         </div>
       </div>

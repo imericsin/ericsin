@@ -515,7 +515,7 @@ body {
 .home-cards { display: flex; flex-direction: column; gap: 40px; padding-bottom: 24px; transition: opacity 150ms ease; }
 .home-cards--flash { opacity: 0.3; }
 
-.home-footer-details { display: flex; flex-direction: column; gap: 20px; }
+.home-footer-details { display: flex; flex-direction: column; gap: 20px; transform: translateY(-8px); }
 .home-time-wrap { display: flex; flex-direction: column; gap: 2px; }
 .home-time-row { display: flex; align-items: center; gap: 4px; }
 .home-time     { font-size: var(--type-micro-size); font-weight: var(--type-micro-weight); line-height: var(--type-micro-lh); letter-spacing: 0.01em; color: var(--system-hero-primary); }
@@ -1492,6 +1492,175 @@ body {
   font-size: 0.625rem; font-weight: 500; line-height: 11px; letter-spacing: 0.01em;
   color: var(--component-fg-2);
   white-space: nowrap;
+}
+
+/* ─── IconButton ──────────────────────────────────── */
+/* 20px hit target around a 16px glyph (2px pad on every side). Default and
+   hover glyphs are separate pre-baked SVGs (own bg-circle + stroke color)
+   cross-faded on hover, rather than recoloring one asset at runtime. */
+.icon-btn {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.icon-btn:disabled {
+  cursor: default;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.icon-btn__glyph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: opacity 150ms ease;
+}
+.icon-btn__glyph--hover { opacity: 0; }
+.icon-btn:hover .icon-btn__glyph--default { opacity: 0; }
+.icon-btn:hover .icon-btn__glyph--hover { opacity: 1; }
+
+/* ─── CycleController ─────────────────────────────── */
+.cycle-controller {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ─── NotificationToast ───────────────────────────── */
+.toast {
+  position: relative;
+  width: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: var(--system-background-1);
+  box-shadow: 0 66px 9.5px rgba(0,0,0,0), 0 42px 8.5px rgba(0,0,0,0.005), 0 24px 7px rgba(0,0,0,0.015), 0 11px 5.5px rgba(0,0,0,0.02), 0 3px 3px rgba(0,0,0,0.025);
+  font-family: inherit;
+  transition: background-color 200ms ease-out, box-shadow 200ms ease-out, transform 200ms ease-out, border-color 200ms ease-out;
+}
+.toast:hover {
+  background: #f7f7f7;
+  box-shadow: 0 27px 4px rgba(0,0,0,0), 0 17px 3.5px rgba(0,0,0,0.01), 0 10px 3px rgba(0,0,0,0.04), 0 4px 2px rgba(0,0,0,0.065), 0 1px 1px rgba(0,0,0,0.075);
+}
+.toast__link {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 12px 28px 12px 12px;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+div.toast__link { cursor: default; }
+.toast__asset {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid var(--component-bg-2);
+  overflow: hidden;
+  transition: border-color 200ms ease;
+}
+.toast:hover .toast__asset { border-color: var(--component-bg-3); }
+.toast__asset img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.toast__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 0 0;
+  min-width: 0;
+}
+.toast__copy {
+  height: 36px; /* exactly two lines at 14px/18px */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  color: var(--component-fg-1);
+}
+.toast__copy-title { font-weight: 600; }
+/* Rolodex swap: a 20px-tall clipped window holding two 20px rows stacked
+   in a column. Default state shows row 1 (no translate); hover slides the
+   column up by one row height to reveal row 2. */
+.toast__meta {
+  height: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.toast__meta-text {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--component-fg-2);
+  white-space: nowrap;
+}
+.toast__cycle {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  padding: 2px;
+}
+
+/* ─── ToastFeed ──────────────────────── */
+.toast-stack {
+  position: relative;
+  width: 300px;
+}
+.toast-stack__front {
+  position: relative;
+  z-index: 2;
+}
+/* Faux cards peeking out above the front card — each one further back
+   sits higher and slightly narrower, same trick as a physical stack of
+   index cards fanned toward the viewer. Layers sit almost collapsed behind
+   the front card at rest and slide/fan out into their offset position on
+   stack hover, so the depth reads as a reveal rather than a static prop. */
+.toast-stack__peek {
+  position: absolute;
+  left: calc(var(--peek-i) * 8px);
+  right: calc(var(--peek-i) * 8px);
+  top: calc(var(--peek-i) * -8px);
+  height: 84px;
+  border: 1px solid var(--component-border-1);
+  border-radius: 8px;
+  background: var(--system-background-1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+  z-index: calc(2 - var(--peek-i));
+}
+
+/* Cycle animation: the front card's content swaps immediately, then the
+   card itself settles in with a short slide+fade — one element, one
+   transition, no crossfading pairs to keep in sync. */
+@keyframes toast-front-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.toast-stack__front--enter {
+  animation: toast-front-enter 250ms ease-out;
+}
+/* The peek layer behind settles at the same time as the front card swaps,
+   so the stack reads as one system moving together rather than a static
+   backdrop with a single animating card on top — nudges up from slightly
+   lower/smaller into its resting fanned position. */
+@keyframes toast-peek-enter {
+  from { transform: translateY(4px) scale(0.98); }
+  to { transform: translateY(0) scale(1); }
+}
+.toast-stack__peek--enter {
+  animation: toast-peek-enter 250ms ease-out;
 }
 
 @media (max-width: 640px) {
