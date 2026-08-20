@@ -2917,6 +2917,53 @@ div.toast__link { cursor: default; }
 .contact-form__submit:disabled { opacity: 0.35; cursor: default; }
 .contact-form__submit:not(:disabled):hover { opacity: 0.85; }
 
+/* Honeypot — visually gone but still focusable by bots that ignore CSS. */
+.contact-form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-form__error {
+  font-size: 12px;
+  line-height: 16px;
+  color: #d64545;
+}
+
+.contact-form__done {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+}
+.contact-form__done-title {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--component-fg-1);
+}
+.contact-form__done-sub {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--component-fg-3);
+}
+.contact-form__again {
+  margin-top: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--component-fg-1);
+  cursor: pointer;
+  border-bottom: 1px solid var(--component-border-1);
+}
+
 .prompt__messages-wrap {
   position: relative;
   flex: 1 0 0;
