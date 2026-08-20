@@ -52,7 +52,9 @@ I always used our vision / validation stages to test out new components—collab
 ::07_TEXT
 
 ## Redesigning the Product
-We built the product's key workflows customer-informed from the start, using vision design to align stakeholders and validate directly in UXR sessions—a discipline the org barely practiced before. Our team took the lead in scaling that practice, taking UXR from zero to twenty-four sessions a month. We also built shared design system components with cross-product reuse in mind from day one, so work built for TPRM could serve ITRM, risk oversight, and compliance rather than duplicating what those older, inconsistently-built products already needed but lacked.
+We built the product's key workflows customer-informed from the start, using vision design to align stakeholders and validate directly in UXR sessions—a discipline the org barely practiced before. Our team took the lead in scaling that practice, taking UXR from zero to twenty-four sessions a month. 
+
+We also built shared design system components with cross-product reuse in mind from day one, so work built for TPRM could serve ITRM, risk oversight, and compliance rather than duplicating what those older, inconsistently-built products already needed but lacked.
 
 ::08_FULL
 
@@ -66,7 +68,9 @@ We built the product's key workflows customer-informed from the start, using vis
 
 ## What We Shipped
 
-Ultimately, we validated key job stories with our vision work and utilized some of the design component updates to create an MVP of our proposed Third Party Risk creation and management workflow. With our understanding of the problems clarified, we set out to define what the "better" state of this experience could be, intending to utilize other teams' overlapping use cases and future projects TPRM had on its roadmap to achieve that end goal we imagined in the vision testing phases.
+Ultimately, we validated key job stories with our vision work and utilized some of the design component updates to create an MVP of our proposed Third Party Risk creation and management workflow. 
+
+With our understanding of the problems clarified, we set out to define what the "better" state of this experience could be, intending to utilize other teams' overlapping use cases and future projects TPRM had on its roadmap to achieve that end goal we imagined in the vision testing phases.
 
 ::13_FULL
 
@@ -74,6 +78,7 @@ Ultimately, we validated key job stories with our vision work and utilized some 
 
 ::15_FULL
 
+::16_TEXT
 ## Conclusions / Learnings
 
 TPRM launched and hit $1M in ARR in its first year. The core lesson: at scale, a hugely undernoticed type of risk isn't found in just technical debt, it's teams quietly rebuilding the same thing in isolation. Socializing a shared system and getting teams talking to each other early is a cultural choice, and it only gets harder to make as the org grows.

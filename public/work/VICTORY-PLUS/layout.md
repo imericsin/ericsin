@@ -2,7 +2,7 @@
 thumb: assets/thumbnail.jpg
 title: VICTORY+
 headliner: Influencing Leadership, Culture, and Product through Design
-categories: Brand, Product, Design Systems, Web
+categories: Brand, Product, Design Systems
 featured: true
 date: 2026-07
 role: |
