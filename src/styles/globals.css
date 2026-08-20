@@ -55,6 +55,11 @@ a { color: inherit; text-decoration: none; }
   --system-body-secondary:    #999999;   /* System/Body/Secondary */
   --system-hero-primary:      #121212;   /* System/Hero/Primary */
   --system-hero-secondary:    #999999;   /* System/Hero/Secondary */
+  /* Width reserved on the right for the docked chat panel. Every
+     viewport-fixed element insets by this so the docked panel behaves like
+     a split browser pane rather than an overlay. */
+  --dock-inset: 0px;
+
   --system-background-1:      #ffffff;   /* System/Background/1 */
 
   /* ── Component tokens ── */
@@ -265,6 +270,16 @@ body {
 }
 
 /* ─── App shell ──────────────────────────────────── */
+/* The app shell — everything that isn't the docked chat panel. Shrinks
+   from the right so the panel opens beside the page, not over it. */
+.shell {
+  /* width, not margin — margin alone lets a 100%-width child overflow past
+     the reserved gutter instead of actually reflowing into it. */
+  width: calc(100% - var(--dock-inset));
+  min-height: 100vh;
+  transition: width 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .app {
   display: flex;
   flex-direction: column;
@@ -298,9 +313,10 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  right: var(--dock-inset);
   z-index: 100;
   background: transparent;
+  transition: right 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Nav fader — progressive blur, scroll-triggered */
@@ -308,7 +324,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  right: var(--dock-inset);
   height: 160px;
   z-index: 98;
   pointer-events: none;
@@ -473,10 +489,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 4px;
+  height: 36px;
   background: var(--component-fg-1);
   color: #ffffff;
-  padding: 10px 12px 10px 14px;
+  padding: 8px 10px 8px 12px;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
   border-radius: var(--radius-badge);
   white-space: nowrap;
   text-decoration: none;
@@ -508,9 +528,25 @@ body {
   position: relative;
   z-index: 1;
 }
-.home-cta-icon { display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; flex-shrink: 0; position: relative; z-index: 1; }
-.home-cta-icon > div { display: flex !important; align-items: center; }
-.home-cta-icon svg { display: block; }
+/* ─── Icon-CMDK badge ────────────────── */
+.icon-cmdk {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  padding: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+.icon-cmdk img {
+  display: block;
+  width: 17.19px;
+  height: 8.64px;
+}
 
 .home-cards { display: flex; flex-direction: column; gap: 40px; padding-bottom: 24px; transition: opacity 150ms ease; }
 .home-cards--flash { opacity: 0.3; }
@@ -1454,6 +1490,19 @@ body {
      animation never fires (seen on iOS Safari). */
   opacity: 1; filter: none;
   animation: none;
+}
+/* Chat opens the prompt rather than navigating, so it's a button styled to
+   sit in the same rhythm as the links, with the shortcut badge trailing. */
+.mnav-link--chat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 .mnav-panel--open .mnav-link {
   animation: blurIn 350ms ease-out backwards;
@@ -2441,7 +2490,7 @@ div.toast__link { cursor: default; }
 /* Overlay wrapper — handles blur transition */
 .archive-overlay-wrap {
   position: fixed;
-  inset: 0;
+  inset: 0 var(--dock-inset) 0 0;
   z-index: 200;
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
@@ -2566,3 +2615,438 @@ div.toast__link { cursor: default; }
     letter-spacing: var(--type-large-body-ls);
   }
 }
+
+/* ─── LLMStates ──────────────────────── */
+.llm-states {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.llm-states__avatar,
+.message__avatar {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: 100px;
+  border: 1px solid var(--component-border-1);
+  overflow: hidden;
+}
+.llm-states__avatar img,
+.message__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.llm-states__label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--component-fg-2);
+  white-space: nowrap;
+}
+
+/* ─── Message ────────────────────────── */
+.message {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  width: 100%;
+  max-width: 100%;
+}
+.message--user { justify-content: flex-end; }
+.message--system { justify-content: flex-start; }
+.message--loading { justify-content: flex-start; }
+
+/* Reserves the avatar column so stacked system bubbles stay aligned even
+   when only the last one in the run shows a picture. */
+.message__avatar--hidden { visibility: hidden; }
+
+.message__bubble {
+  max-width: 240px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.message--user .message__bubble {
+  background: #1f8cff;
+  color: var(--system-background-1);
+}
+.message--system .message__bubble {
+  background: color-mix(in srgb, var(--component-fg-1) var(--prompt-fill-mix, 4%), var(--system-background-1));
+  color: var(--component-fg-1);
+}
+
+/* Messages ease in rather than popping — the resting styling is plain, so
+   the motion is what makes the exchange feel alive. */
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.message { animation: message-in 200ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .message { animation: none; }
+}
+
+/* ─── PromptComponent ────────────────── */
+.prompt {
+  position: fixed;
+  /* Mirrors the ToastFeed's resting position on the opposite corner: the
+     same --body-margin-x gutter, nudged up by the same 8px. */
+  left: auto;
+  right: var(--body-margin-x);
+  bottom: calc(var(--body-margin-x) + 8px);
+  transform: none;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 360px;
+  background: var(--system-background-1);
+  /* Same token as the header divider and the docked left stroke, so every
+     edge of the panel reads as one hairline. */
+  border: 1px solid var(--component-border-1);
+  border-radius: 12px;
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.1);
+  overflow: hidden;
+  /* Larger layout shifts (expand, dock/undock) use smooth duration-based
+     easing; the pill/icon micro-interactions below stay quicker. */
+  transition:
+    height 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms ease-out;
+}
+.prompt--expanded {
+  height: 360px;
+  box-shadow: 0px 9px 9px 0px rgba(0,0,0,0.09), 0px 2px 5px 0px rgba(0,0,0,0.1);
+}
+.prompt--resizing { transition: none; }
+
+@keyframes prompt-float-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes prompt-dock-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.prompt--expanded { animation: prompt-float-in 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+.prompt--docked { animation: prompt-dock-in 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt,
+  .prompt--expanded,
+  .prompt--docked { animation: none; transition: none; }
+}
+
+/* Docked: pinned full-height along the browser's right edge instead of a
+   floating bottom-center box — flush edges, square outer corners, no
+   bottom gap or resize handle (height is dictated by the viewport). */
+.prompt--docked {
+  position: fixed;
+  left: auto;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transform: none;
+  width: 360px;
+  height: 100vh;
+  border-radius: 0;
+  /* Structural container pinned to the viewport edge — a single hairline
+     left stroke, no shadow (shadow is reserved for the floating state,
+     which is genuinely elevated above the page). */
+  border-width: 0 0 0 1px;
+  box-shadow: none;
+}
+
+.prompt__resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: ns-resize;
+  z-index: 1;
+  touch-action: none;
+}
+.prompt__resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  border-radius: 100px;
+  background: var(--component-bg-3);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.prompt__resize-handle:hover::after,
+.prompt--resizing .prompt__resize-handle::after {
+  opacity: 1;
+}
+
+.prompt__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 8px 8px 8px 12px;
+  border-bottom: 1px solid var(--component-border-1);
+}
+.prompt--docked .prompt__header { padding: 12px 12px 12px 16px; }
+
+.prompt__tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.prompt__tab {
+  padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--component-fg-4);
+  transition: color 150ms ease;
+}
+.prompt__tab--active { color: var(--component-fg-1); }
+
+.prompt__controls { display: flex; align-items: center; gap: 4px; }
+.prompt__ctrl {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 150ms ease;
+}
+.prompt__ctrl:hover { background: color-mix(in srgb, var(--component-fg-1) 6%, transparent); }
+.prompt__ctrl--active { background: color-mix(in srgb, var(--component-fg-1) 12%, transparent); }
+.prompt__ctrl img { width: 24px; height: 24px; display: block; }
+
+.prompt__contact {
+  flex: 1 0 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 16px;
+}
+
+/* ─── ContactForm ────────────────────── */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+}
+.contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+/* The message field takes whatever height is left so the submit button
+   stays pinned to the bottom of the panel at any panel size. */
+.contact-form__field--grow { flex: 1 0 0; min-height: 0; }
+
+.contact-form__label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--component-fg-2);
+}
+/* Same fill treatment as the chat input — inner controls get a fill, not a
+   border, so the panel's own hairline stays the only stroke in play. */
+.contact-form__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--component-fg-1) var(--prompt-fill-mix, 4%), var(--system-background-1));
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  color: var(--component-fg-1);
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+}
+.contact-form__input::placeholder { color: var(--component-fg-3); }
+.contact-form__input:focus {
+  background: color-mix(in srgb, var(--component-fg-1) var(--prompt-fill-mix-focus, 6%), var(--system-background-1));
+  box-shadow: inset 0 0 0 1px var(--component-border-1);
+}
+.contact-form__input--area {
+  height: 100%;
+  min-height: 72px;
+  resize: none;
+}
+
+.contact-form__submit {
+  flex-shrink: 0;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-badge);
+  background: var(--component-fg-1);
+  color: var(--system-background-1);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+.contact-form__submit:disabled { opacity: 0.35; cursor: default; }
+.contact-form__submit:not(:disabled):hover { opacity: 0.85; }
+
+.prompt__messages-wrap {
+  position: relative;
+  flex: 1 0 0;
+  min-height: 0;
+}
+/* White (system/background/1) fade at the top, only shown once the list
+   has scrolled — signals there's more content above without a hard edge.
+   Uses the same background token as the panel so it works in both themes. */
+.prompt__messages-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--system-background-1), transparent);
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.prompt__messages-wrap--scrolled::before { opacity: 1; }
+
+.prompt__messages {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  background: var(--system-background-1);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--component-fg-1) 20%, transparent) transparent;
+}
+/* WebKit scrollbar: 6px wide, sitting ~8px in from the edge via extra
+   track padding. Color is derived from --component-fg-1 (not a fixed
+   dark rgba) so it stays visible against dark case-study themes too —
+   fg-1 is guaranteed to contrast against system-background-1 per theme. */
+.prompt__messages::-webkit-scrollbar { width: 6px; }
+.prompt__messages::-webkit-scrollbar-track { background: transparent; margin-right: 8px; }
+.prompt__messages::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--component-fg-1) 20%, transparent);
+  border-radius: 100px;
+}
+.prompt__messages::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--component-fg-1) 32%, transparent);
+}
+
+.prompt__link-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.prompt__link-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--component-bg-2);
+  border-radius: 100px;
+  font-size: 12px;
+  color: var(--component-fg-1);
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+.prompt__link-card:hover { background: var(--component-bg-2); }
+.prompt__link-favicon { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+.prompt__input-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+  padding: 8px;
+}
+
+/* The input pill is identical in every state — floating, expanded, and
+   docked all share this treatment; docking only changes the outer frame. */
+.prompt__input-fill {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  /* Figma spec is component/background/2 (rgba(18,18,18,0.04)). Derived
+     from fg-1 so it inverts on dark case-study themes; --prompt-fill-mix
+     is bumped there because a light tint over a dark ground needs more
+     weight than a dark tint over white to read as the same step. */
+  background: color-mix(in srgb, var(--component-fg-1) var(--prompt-fill-mix, 4%), var(--system-background-1));
+  border-radius: 10px;
+  padding: 4px 4px 4px 10px;
+  transition: background-color 150ms ease;
+}
+.prompt__input-fill:focus-within {
+  background: color-mix(in srgb, var(--component-fg-1) var(--prompt-fill-mix-focus, 6%), var(--system-background-1));
+}
+
+.prompt__input {
+  flex: 1 0 0;
+  min-width: 0;
+  min-height: 28px;
+  max-height: 120px;
+  resize: none;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  color: var(--component-fg-1);
+  padding: 4px 0;
+}
+.prompt__input::placeholder { color: var(--component-fg-3); }
+.prompt__input:disabled { opacity: 0.6; }
+
+.prompt__send {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 120ms ease;
+}
+.prompt__send:disabled { cursor: default; }
+.prompt__send:not(:disabled):hover { transform: scale(1.05); }
+.prompt__send img { width: 28px; height: 28px; display: block; }

@@ -8,13 +8,18 @@ import About from './pages/About'
 import WorkPage from './pages/WorkPage'
 import Archives from './pages/Archives'
 import ToastDemo from './pages/ToastDemo'
+import PromptDemo from './pages/PromptDemo'
+import PromptComponent, { loadDockedPreference } from './components/PromptComponent'
 import { useWorkIndex } from './hooks/useWorkIndex'
+import { usePageContext } from './hooks/usePageContext'
+import { PromptContext } from './lib/promptContext'
 
 // WorksPage (the old /work index) is kept in the codebase for possible
 // future reuse but is intentionally unmounted — Home is now the Work index.
 // import WorksPage from './pages/WorksPage'
 
 const LERP = 0.1
+const DOCK_WIDTH = 360
 
 function useMouseTrail(enabled: boolean) {
   const target = useRef({ x: -200, y: -200 })
@@ -49,6 +54,18 @@ function useMouseTrail(enabled: boolean) {
 interface TooltipCtx { onEnter: () => void; onLeave: () => void }
 export const CardTooltipContext = createContext<TooltipCtx>({ onEnter: () => {}, onLeave: () => {} })
 
+// Relative luminance of a #rrggbb string, 0 (black) – 1 (white).
+function luminance(hex: string): number | null {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim())
+  if (!m) return null
+  const n = parseInt(m[1], 16)
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => {
+    const c = v / 255
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
 function applyTheme(theme: Record<string, string> | null) {
   const root = document.documentElement
   const known = ['--system-background-1','--system-hero-primary','--system-hero-secondary',
@@ -56,7 +73,19 @@ function applyTheme(theme: Record<string, string> | null) {
     '--component-fg-3','--component-fg-4','--component-border-1','--component-border-2',
     '--component-border-3','--component-border-4']
   known.forEach(k => root.style.removeProperty(k))
+  root.style.removeProperty('--prompt-fill-mix')
+  root.style.removeProperty('--prompt-fill-mix-focus')
   if (theme) Object.entries(theme).forEach(([k, v]) => root.style.setProperty(k, v))
+
+  // A light tint over a dark ground needs more weight than a dark tint over
+  // white to read as the same visual step, so bump the chat input's fill mix
+  // on dark case-study themes.
+  const bg = theme?.['--system-background-1']
+  const lum = bg ? luminance(bg) : null
+  if (lum !== null && lum < 0.4) {
+    root.style.setProperty('--prompt-fill-mix', '12%')
+    root.style.setProperty('--prompt-fill-mix-focus', '18%')
+  }
 }
 
 export default function App() {
@@ -69,6 +98,24 @@ export default function App() {
   const tooltipRef = useMouseTrail(tooltipVisible)
   const onEnter = useCallback(() => setTooltipVisible(true), [])
   const onLeave = useCallback(() => setTooltipVisible(false), [])
+
+  const [promptOpen, setPromptOpen] = useState(false)
+  const [promptDocked, setPromptDocked] = useState(loadDockedPreference)
+
+  // The docked panel is a sibling of the app shell, not an overlay — this
+  // inset is what every viewport-fixed element (nav, faders, lightboxes)
+  // shrinks by, so the page reads as a split browser pane.
+  // The gutter is reserved only while the docked pane is actually on screen.
+  // Dock preference is remembered independently, so CMD+K collapses the whole
+  // pane (not just its contents) and reopens straight back into docked.
+  const openPrompt = useCallback(() => setPromptOpen(true), [])
+  const togglePrompt = useCallback(() => setPromptOpen(o => !o), [])
+  const promptControls = useMemo(() => ({ open: openPrompt, toggle: togglePrompt }), [openPrompt, togglePrompt])
+
+  const dockPaneVisible = promptDocked && promptOpen
+  useEffect(() => {
+    document.documentElement.style.setProperty('--dock-inset', dockPaneVisible ? `${DOCK_WIDTH}px` : '0px')
+  }, [dockPaneVisible])
 
   const allWorkCards = useWorkIndex({ featuredOnly: false })
   const [activeTab, setActiveTab] = useState<string | null>(null)
@@ -90,6 +137,9 @@ export default function App() {
       : allWorkCards,
     [allWorkCards, activeTab]
   )
+
+  // What the chat can "see" — the route plus whatever work is on screen.
+  const pageContext = usePageContext(filteredWorkCards, activeTab)
 
   useEffect(() => {
     document.body.dataset.page = location.pathname === '/about' ? 'about' : ''
@@ -116,7 +166,9 @@ export default function App() {
   }
 
   return (
+    <PromptContext.Provider value={promptControls}>
     <CardTooltipContext.Provider value={{ onEnter, onLeave }}>
+      <div className="shell">
       <Nav tabs={tabs} totalCount={allWorkCards.length} activeTab={activeTab} onTabChange={setActiveTab} />
       <NavMobile />
       <div className="app">
@@ -139,9 +191,17 @@ export default function App() {
             <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} />} />
             <Route path="/archives" element={<Archives />} />
             <Route path="/toast-demo" element={<ToastDemo />} />
+            <Route path="/prompt-demo" element={<PromptDemo />} />
           </Routes>
         </div>
       </div>
+      </div>
+      <PromptComponent
+        open={promptOpen}
+        onOpenChange={setPromptOpen}
+        onDockChange={setPromptDocked}
+        pageContext={pageContext}
+      />
       {createPortal(
         <div
           ref={tooltipRef}
@@ -153,5 +213,6 @@ export default function App() {
         document.body
       )}
     </CardTooltipContext.Provider>
+    </PromptContext.Provider>
   )
 }

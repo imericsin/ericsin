@@ -1,10 +1,4 @@
-import { useEffect, useRef, useState, useMemo, lazy, Suspense } from 'react'
-import type { LottieRefCurrentProps } from 'lottie-react'
-
-// lottie-web is ~25MB unpacked and drives one 14x14 hover arrow. Splitting it
-// out keeps it off the main bundle; the icon already renders only once its
-// JSON has been fetched, so nothing appears differently.
-const Lottie = lazy(() => import('lottie-react'))
+import { useEffect, useRef, useState, useMemo } from 'react'
 import Card from '../components/Card'
 import PageFooter from '../components/PageFooter'
 import Tab from '../components/Tab'
@@ -14,6 +8,8 @@ import type { TabDef } from '../components/NavbarV2'
 import type { WorkCard } from '../hooks/useWorkIndex'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 import { useReveal } from '../hooks/useReveal'
+import IconCmdk from '../components/IconCmdk'
+import { usePrompt } from '../lib/promptContext'
 
 const HOME_TOAST_ITEMS: ToastItem[] = [
   {
@@ -38,50 +34,30 @@ const HOME_TOAST_ITEMS: ToastItem[] = [
 ]
 
 function CtaButton() {
+  const { open } = usePrompt()
   const [hovered, setHovered] = useState(false)
-  const [animData, setAnimData] = useState<object | null>(null)
-  const lottieRef = useRef<LottieRefCurrentProps>(null)
-  const btnRef = useRef<HTMLAnchorElement>(null)
+  const btnRef = useRef<HTMLButtonElement>(null)
   const fillRef = useRef<HTMLSpanElement>(null)
 
-  useEffect(() => {
-    fetch('/assets/arrow-lottie.json').then(r => r.json()).then(setAnimData)
-  }, [])
-
-  useEffect(() => {
-    if (!lottieRef.current) return
-    if (hovered) {
-      lottieRef.current.setSpeed(0.5)
-      lottieRef.current.goToAndPlay(0)
-    } else {
-      lottieRef.current.goToAndStop(0)
-    }
-  }, [hovered])
-
-  function updateOrigin(e: React.MouseEvent<HTMLAnchorElement>) {
+  function updateOrigin(e: React.MouseEvent<HTMLButtonElement>) {
     const rect = btnRef.current!.getBoundingClientRect()
     fillRef.current!.style.left = `${e.clientX - rect.left}px`
     fillRef.current!.style.top = `${e.clientY - rect.top}px`
   }
 
   return (
-    <a
+    <button
       ref={btnRef}
+      type="button"
       className={`home-cta-btn${hovered ? ' home-cta-btn--hover' : ''}`}
-      href="mailto:hello@ericsin.com"
+      onClick={open}
       onMouseEnter={(e) => { updateOrigin(e); setHovered(true) }}
       onMouseLeave={(e) => { updateOrigin(e); setHovered(false) }}
     >
       <span ref={fillRef} className="home-cta-fill" />
       <span className="home-cta-label">Let's Chat</span>
-      <span className="home-cta-icon">
-        {animData && (
-          <Suspense fallback={null}>
-            <Lottie lottieRef={lottieRef} animationData={animData} loop={false} autoplay={false} style={{ width: 14, height: 14 }} />
-          </Suspense>
-        )}
-      </span>
-    </a>
+      <IconCmdk />
+    </button>
   )
 }
 

@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useLocalTime } from '../hooks/useLocalTime'
+import IconCmdk from './IconCmdk'
+import { usePrompt } from '../lib/promptContext'
 
 const navLinks = [
   { label: 'Work',     href: '/' },
@@ -28,6 +30,7 @@ interface Props {
 export default function OverlayNav({ visible, desktop = false, onLinkClick }: Props) {
   const { pathname } = useLocation()
   const { stamp, location } = useLocalTime()
+  const { open: openPrompt } = usePrompt()
 
   return (
     <div className={`mnav-panel${desktop ? ' mnav-panel--desktop' : ''}${visible ? ' mnav-panel--open' : ''}`}>
@@ -46,6 +49,16 @@ export default function OverlayNav({ visible, desktop = false, onLinkClick }: Pr
             </Link>
           )
         })}
+        {/* Chat isn't a route — it opens the prompt panel in place. */}
+        <button
+          type="button"
+          className="mnav-link mnav-link--chat"
+          style={{ animationDelay: visible ? `${navLinks.length * 0.06}s` : '0s' }}
+          onClick={() => { onLinkClick(); openPrompt() }}
+        >
+          <span>Chat</span>
+          <IconCmdk />
+        </button>
       </div>
 
       <div className="mnav-footer" style={{ animationDelay: visible ? '0.3s' : '0s' }}>
