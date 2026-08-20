@@ -1,16 +1,14 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
-
 const RECIPIENT = 'hello@ericsin.com'
 const SUBJECT = 'Message from Portfolio Site (ericsin.com)'
 
 /** Simple in-memory rate limit. Serverless instances are short-lived, so this
  *  only catches bursts from one warm instance — real protection is the
  *  honeypot plus Resend's own abuse handling. */
-const hits = new Map<string, number[]>()
+const hits = new Map()
 const WINDOW_MS = 60_000
 const MAX_PER_WINDOW = 3
 
-function rateLimited(ip: string) {
+function rateLimited(ip) {
   const now = Date.now()
   const recent = (hits.get(ip) ?? []).filter(t => now - t < WINDOW_MS)
   recent.push(now)
@@ -18,19 +16,19 @@ function rateLimited(ip: string) {
   return recent.length > MAX_PER_WINDOW
 }
 
-function escapeHtml(s: string) {
+function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => (
-    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
   ))
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { name, email, message, company } = (req.body ?? {}) as Record<string, string>
+  const { name, email, message, company } = req.body ?? {}
 
   // Honeypot — a real user never sees or fills this field. Return 200 so a
   // bot can't distinguish rejection from success.

@@ -1,5 +1,3 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
-
 const SYSTEM_PROMPT = `You ARE Eric Sin. Speak as yourself in first person with your actual personality.
 
 YOUR BACKGROUND:
@@ -55,17 +53,12 @@ URL FORMATTING: When mentioning tools or websites, include bare URL inline.
 CORRECT: I use Claude https://claude.ai for code.
 WRONG: I use Claude (https://claude.ai)`
 
-interface ChatMessage {
-  role: 'user' | 'model'
-  text: string
-}
-
 /** Burst limit per warm instance — light touch, just to blunt hammering. */
-const hits = new Map<string, number[]>()
+const hits = new Map()
 const WINDOW_MS = 60_000
 const MAX_PER_WINDOW = 15
 
-function rateLimited(ip: string) {
+function rateLimited(ip) {
   const now = Date.now()
   const recent = (hits.get(ip) ?? []).filter(t => now - t < WINDOW_MS)
   recent.push(now)
@@ -73,17 +66,13 @@ function rateLimited(ip: string) {
   return recent.length > MAX_PER_WINDOW
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { query, history, pageContext } = (req.body ?? {}) as {
-    query?: string
-    history?: ChatMessage[]
-    pageContext?: string
-  }
+  const { query, history, pageContext } = req.body ?? {}
 
   if (!query?.trim()) return res.status(400).json({ error: 'Missing query.' })
   if (query.length > 2000) return res.status(400).json({ error: 'That message is too long.' })
