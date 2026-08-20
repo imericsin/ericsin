@@ -123,10 +123,6 @@ export default async function handler(req, res) {
     if (!r.ok) {
       const detail = await r.text()
       console.error('[chat] gemini failed:', r.status, detail)
-      // TEMP diagnostic — remove once verified in production.
-      if (process.env.DEBUG_ERRORS === '1') {
-        return res.status(502).json({ error: "Sorry, I'm having trouble connecting right now.", debug: { status: r.status, detail: detail.slice(0, 500) } })
-      }
       return res.status(502).json({ error: "Sorry, I'm having trouble connecting right now." })
     }
 

@@ -50,9 +50,29 @@ export interface WorkCard {
   featured: boolean
 }
 
-function resolveThumb(base: string, thumbFile: string | undefined): { src: string; type: 'image' | 'video' } | null {
+/** Case studies that ship a hand-made thumbnail.webp alongside the jpg. The
+ *  webp is dramatically smaller at card size (VICTORY+ is 2063KB → 59KB) and
+ *  only ever used for the card grid — case-study heroes come from FULLHERO
+ *  layout blocks and are untouched by this. */
+const WEBP_THUMBS = new Set([
+  'LilyLink',
+  'ProducerAI',
+  'REVOPS',
+  'Teladerma',
+  'VICTORY-PLUS',
+  'You',
+])
+
+function resolveThumb(
+  base: string,
+  thumbFile: string | undefined,
+  slug: string
+): { src: string; type: 'image' | 'video' } | null {
   if (!thumbFile) return null
   const isVideo = /\.(mp4|webm|mov)$/i.test(thumbFile)
+  if (!isVideo && WEBP_THUMBS.has(slug)) {
+    return { src: `${base}/${thumbFile.replace(/\.(jpe?g|png)$/i, '.webp')}`, type: 'image' }
+  }
   return { src: `${base}/${thumbFile}`, type: isVideo ? 'video' : 'image' }
 }
 
@@ -81,7 +101,7 @@ export function useWorkIndex({ featuredOnly = true, limit }: WorkIndexOptions = 
           if (featuredOnly && !meta.featured) return null
           if (!meta.date) return null
 
-          const hero = resolveThumb(base, meta.thumb)
+          const hero = resolveThumb(base, meta.thumb, slug)
           if (!hero) return null
 
           const roleLines = meta.role?.split('\n').filter(Boolean) ?? []

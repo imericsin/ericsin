@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /toast-demo
+Disallow: /prompt-demo
+Disallow: /api/
+
+Sitemap: https://ericsin.com/sitemap.xml

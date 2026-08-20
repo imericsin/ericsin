@@ -192,6 +192,8 @@ export default function App() {
             <Route path="/archives" element={<Archives />} />
             <Route path="/toast-demo" element={<ToastDemo />} />
             <Route path="/prompt-demo" element={<PromptDemo />} />
+            {/* Unknown URLs fall back to the work index rather than a blank page. */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </div>

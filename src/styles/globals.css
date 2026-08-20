@@ -1766,221 +1766,6 @@ div.toast__link { cursor: default; }
   .card-grid, .card-grid-2 { display: flex; flex-direction: column; gap: 40px; }
 }
 
-/* ─── Command Palette ────────────────────────────── */
-.cmdk-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 20vh;
-  backdrop-filter: blur(4px);
-}
-.cmdk-dialog {
-  width: 100%;
-  max-width: 560px;
-  background: var(--system-background-1);
-  border: 1px solid var(--component-border-1);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
-}
-[cmdk-input] {
-  width: 100%;
-  padding: 18px 20px;
-  font-family: "Geist Mono", ui-monospace, monospace;
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.015em;
-  color: var(--component-fg-1);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--component-border-1);
-  outline: none;
-}
-[cmdk-input]::placeholder { color: var(--component-fg-3); }
-[cmdk-list] { padding: 8px; }
-[cmdk-group-heading] {
-  font-family: "Geist Mono", ui-monospace, monospace;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--component-fg-3);
-  padding: 16px 12px 4px;
-}
-[cmdk-group]:first-child [cmdk-group-heading] { padding-top: 8px; }
-[cmdk-item] {
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  margin-bottom: 2px;
-  border-radius: 6px;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--component-fg-2);
-  cursor: pointer;
-  transition: background 150ms ease, color 150ms ease;
-}
-[cmdk-item][aria-selected='true'] {
-  background: var(--component-border-1);
-  color: var(--component-fg-1);
-}
-[cmdk-empty] {
-  padding: 20px;
-  text-align: center;
-  font-size: 0.875rem;
-  color: var(--component-fg-3);
-}
-.cmdk-ask-item { justify-content: space-between; }
-.cmdk-ask-badge {
-  font-family: "Geist Mono", ui-monospace, monospace;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--component-fg-3);
-  border: 1px solid var(--component-border-1);
-  border-radius: 4px;
-  padding: 2px 6px;
-  flex-shrink: 0;
-}
-[cmdk-item][aria-selected='true'] .cmdk-ask-badge {
-  color: var(--component-fg-1);
-  border-color: var(--component-fg-2);
-}
-
-/* Chat mode */
-.cmdk-chat {
-  display: flex;
-  flex-direction: column;
-  height: 440px;
-}
-.cmdk-chat-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--component-border-1);
-  font-family: "Geist Mono", ui-monospace, monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--component-fg-3);
-}
-.cmdk-back {
-  background: none;
-  border: none;
-  color: var(--component-fg-2);
-  font-family: "Geist Mono", ui-monospace, monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  padding: 0;
-  transition: color 150ms ease;
-}
-.cmdk-back:hover { color: var(--component-fg-1); }
-.cmdk-chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.cmdk-msg {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  max-width: 90%;
-}
-.cmdk-msg--user {
-  align-self: flex-end;
-  color: var(--component-fg-1);
-  font-weight: 500;
-}
-.cmdk-msg--model {
-  align-self: flex-start;
-  color: var(--component-fg-2);
-  padding-left: 12px;
-  border-left: 2px solid var(--component-border-1);
-}
-.cmdk-chat-text { display: flex; flex-direction: column; gap: 8px; }
-.cmdk-link-card {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border: 1px solid var(--component-border-1);
-  border-radius: 6px;
-  text-decoration: none;
-  color: var(--component-fg-2);
-  font-size: 0.8125rem;
-  transition: background 150ms ease;
-}
-.cmdk-link-card:hover { background: var(--component-border-1); color: var(--component-fg-1); }
-.cmdk-link-favicon { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
-.cmdk-link-domain { font-family: "Geist Mono", ui-monospace, monospace; font-size: 0.75rem; }
-.cmdk-typing {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  padding: 4px 0;
-}
-.cmdk-typing span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--component-fg-3);
-  animation: cmdkBounce 1.4s infinite ease-in-out both;
-}
-.cmdk-typing span:nth-child(2) { animation-delay: 0.2s; }
-.cmdk-typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes cmdkBounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-5px); }
-}
-.cmdk-chat-input-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--component-border-1);
-}
-.cmdk-chat-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-family: "Geist Mono", ui-monospace, monospace;
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.015em;
-  color: var(--component-fg-1);
-}
-.cmdk-chat-input::placeholder { color: var(--component-fg-3); }
-.cmdk-send {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1px solid var(--component-border-1);
-  background: transparent;
-  color: var(--component-fg-2);
-  cursor: pointer;
-  transition: background 150ms ease, color 150ms ease;
-  flex-shrink: 0;
-}
-.cmdk-send:hover:not(:disabled) { background: var(--component-border-1); color: var(--component-fg-1); }
-.cmdk-send:disabled { opacity: 0.3; cursor: not-allowed; }
-
 /* ─── About page ─────────────────────────────────── */
 /* Page wrapper owns only top padding + gap between sections — no L/R
    padding here, each section below owns its own global inset instead
@@ -2728,6 +2513,25 @@ div.toast__link { cursor: default; }
   box-shadow: 0px 9px 9px 0px rgba(0,0,0,0.09), 0px 2px 5px 0px rgba(0,0,0,0.1);
 }
 .prompt--resizing { transition: none; }
+
+/* Mobile: the fixed 360px panel plus its gutter exceeds a 375px viewport,
+   so it clipped off the left edge. Below the docking breakpoint it spans
+   the viewport with an even 16px inset instead. */
+@media (max-width: 767px) {
+  .prompt {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+    max-width: none;
+  }
+  .prompt--expanded {
+    max-height: calc(100vh - 32px);
+  }
+  /* Resize-by-drag is a pointer affordance; on touch the panel just fills
+     the available height. */
+  .prompt__resize-handle { display: none; }
+}
 
 @keyframes prompt-float-in {
   from { opacity: 0; transform: translateY(8px) scale(0.98); }

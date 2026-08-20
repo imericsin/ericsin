@@ -42,6 +42,8 @@ export function loadDockedPreference(): boolean {
 }
 const DEFAULT_HEIGHT = 360
 const MIN_HEIGHT = 240
+/** Below this the docked pane leaves no usable page, so docking is disabled. */
+const DOCK_MIN_WIDTH = 768
 const MAX_HEIGHT = 640
 
 type StoredState = { tab: Tab; messages: ChatMessage[]; height?: number; docked?: boolean }
@@ -104,6 +106,7 @@ export default function PromptComponent({ open, onOpenChange, pageContext, onDoc
   const [height, setHeight] = useState(() => loadStored().height ?? DEFAULT_HEIGHT)
   const [resizing, setResizing] = useState(false)
   const [docked, setDocked] = useState(() => loadStored().docked ?? false)
+  const [canDock, setCanDock] = useState(() => typeof window === 'undefined' || window.innerWidth >= DOCK_MIN_WIDTH)
   const messagesRef = useRef<HTMLDivElement>(null)
   const [scrolled, setScrolled] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -159,6 +162,20 @@ export default function PromptComponent({ open, onOpenChange, pageContext, onDoc
   useEffect(() => {
     onDockChange?.(docked)
   }, [docked, onDockChange])
+
+  // Docking needs room for a 360px pane beside the page. Below that the shell
+  // collapses to a few pixels, so the control is hidden and any docked state
+  // (which persists across loads) is released rather than stranding the user.
+  useEffect(() => {
+    function onResize() {
+      const wide = window.innerWidth >= DOCK_MIN_WIDTH
+      setCanDock(wide)
+      if (!wide) setDocked(false)
+    }
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   // Top scroll-shadow only shows once the messages list has actually
   // scrolled away from the top — otherwise it'd fade content that isn't
@@ -315,7 +332,7 @@ export default function PromptComponent({ open, onOpenChange, pageContext, onDoc
         className,
       ].filter(Boolean).join(' ')}
       ref={dialogRef}
-      style={!docked ? { height } : undefined}
+      style={!docked && canDock ? { height } : undefined}
     >
       {!docked && (
         <div className="prompt__resize-handle" onPointerDown={startResize} aria-hidden />
@@ -338,15 +355,17 @@ export default function PromptComponent({ open, onOpenChange, pageContext, onDoc
           </button>
         </div>
         <div className="prompt__controls">
-          <button
-            type="button"
-            className={`prompt__ctrl${docked ? ' prompt__ctrl--active' : ''}`}
-            aria-label={docked ? 'Undock' : 'Dock to side panel'}
-            aria-pressed={docked}
-            onClick={() => setDocked(d => !d)}
-          >
-            <img src={dockIcon} alt="" aria-hidden />
-          </button>
+          {canDock && (
+            <button
+              type="button"
+              className={`prompt__ctrl${docked ? ' prompt__ctrl--active' : ''}`}
+              aria-label={docked ? 'Undock' : 'Dock to side panel'}
+              aria-pressed={docked}
+              onClick={() => setDocked(d => !d)}
+            >
+              <img src={dockIcon} alt="" aria-hidden />
+            </button>
+          )}
           <button
             type="button"
             className="prompt__ctrl"

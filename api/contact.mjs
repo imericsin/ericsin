@@ -79,10 +79,6 @@ export default async function handler(req, res) {
     if (!r.ok) {
       const detail = await r.text()
       console.error('[contact] resend failed:', r.status, detail)
-      // TEMP diagnostic — remove once verified in production.
-      if (process.env.DEBUG_ERRORS === '1') {
-        return res.status(502).json({ error: 'Could not send right now — try again shortly.', debug: { status: r.status, detail: detail.slice(0, 500) } })
-      }
       return res.status(502).json({ error: 'Could not send right now — try again shortly.' })
     }
 

@@ -5,17 +5,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "node scripts/sync-archive-dates.mjs && tsc && vite build",
+    "build": "node scripts/sync-archive-dates.mjs && node scripts/generate-seo.mjs && tsc && vite build",
     "preview": "vite preview",
-    "sync:archives": "node scripts/sync-archive-dates.mjs"
+    "sync:archives": "node scripts/sync-archive-dates.mjs",
+    "generate:seo": "node scripts/generate-seo.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "cmdk": "^1.1.1",
-    "lottie-react": "^2.4.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
