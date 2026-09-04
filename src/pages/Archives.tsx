@@ -19,10 +19,11 @@ const VIDEO_RE = /\.mp4$/i
 // static first frame and only play once opened in the overlay.
 const INLINE_VIDEO_MAX_BYTES = 2 * 1024 * 1024
 
-// Mirrors .archives-grid in globals.css
+// Mirrors the project's 3-tier breakpoint system (desktop 1200px+, tablet
+// 1199–720px, mobile below 720px — see .archives-grid in v65.css).
 const ARCHIVES_BREAKPOINTS = [
-  { maxWidth: 640, columns: 2 },
-  { maxWidth: 1280, columns: 3 },
+  { maxWidth: 719, columns: 2 },
+  { maxWidth: 1199, columns: 3 },
 ]
 
 function isVideo(filename: string) {
@@ -226,7 +227,7 @@ export default function Archives() {
 
   return (
     <>
-      <div className="page archives-page">
+      <div className="page page--archives archives-page">
         <div className="archives-header">
           <h1 className="archives-title anim" style={{ animationDelay: '0.1s' }}>Archives</h1>
           <p className="archives-sub anim" style={{ animationDelay: '0.2s' }}>20 years of ideas, snippets, and small projects that left a trail of my work</p>

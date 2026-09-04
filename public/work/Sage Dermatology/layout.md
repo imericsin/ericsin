@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.mp4
 title: Sage Dermatology
 headliner: Redefining Dermatology Branding in Toronto
-categories: Brand, Web
+workScope: Brand, Web
+type: Brand
 featured: false
 date: 2023-06
 role: |

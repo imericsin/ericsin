@@ -2,7 +2,14 @@
 export interface WorkMeta {
   title: string
   headliner?: string
-  categories?: string
+  // Single-value index tag — replaces the old multi-value `categories`.
+  // Only 'Brand' or 'Product' for now (drives the index's tab filter).
+  type?: string
+  // Type of work performed on the project, e.g. "Visual Design, Illustration"
+  // — shown on the card meta line. Replaces categories' old free-text role;
+  // named workScope (not `scope`) since that key is already taken below by
+  // the Role/Scope/Industry overview trio.
+  workScope?: string
   featured?: boolean
   date?: string        // YYYY-MM format
   thumb?: string       // thumbnail filename, e.g. thumbnail.webp
@@ -27,7 +34,7 @@ export type LayoutType =
   | 'FULLHERO'
   | 'FULL'
   | '2COL'
-  | '3COL'
+  | '2COLTEXT'
   | 'TEXT'
   | 'OVERVIEW'
   | 'COMP'

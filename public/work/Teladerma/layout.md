@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: Teladerma
 headliner: Branding the Accessibility Gap in Dermatology
-categories: Brand, Web
+workScope: Brand, Web
+type: Brand
 featured: false
 date: 2023-10
 role: |

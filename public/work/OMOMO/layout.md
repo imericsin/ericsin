@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: OMOMO Tea Shoppe
 headliner: Giving Boba Drinks a Brand Worth Remembering
-categories: Brand
+workScope: Brand
+type: Brand
 featured: true
 date: 2018-10
 role: |

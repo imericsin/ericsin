@@ -103,6 +103,67 @@ export default function About() {
 
     <div className="page page--about">
 
+      {/* ── v6.5 layout: two 12-col sections (3COL / spacer / 5COL) — see
+          Figma "V6.5 / About" (node 3542:41331). Rendered unconditionally
+          alongside the pre-reskin markup below; v65.css hides whichever
+          set doesn't match the active build via .v65-only / .v65-hide
+          selectors, so main's DOM and behavior are untouched. */}
+      <div className="v65-about">
+        <section className="v65-about__section">
+          <div className="v65-about__col-3col">
+            <div className="v65-about__photo-wrap anim" style={{ animationDelay: '0.1s' }}>
+              <img src="/about/photo.jpg" alt="Eric Sin" className="v65-about__photo" />
+            </div>
+          </div>
+          <div className="v65-about__spacer" />
+          <div className="v65-about__col-5col">
+            <p className="v65-about__eyebrow anim" style={{ animationDelay: '0.05s' }}>About</p>
+            <div className="v65-about__body">
+              <p className="anim" style={{ animationDelay: '0.1s' }}>I'm a multidisciplinary designer that's been working to help businesses scale and build brand and product systems since 2006.</p>
+              <p className="anim" style={{ animationDelay: '0.15s' }}>I've been extremely lucky to be able to work across all sorts of verticals in a close manner—often working directly with founders, directors, and CEOs.</p>
+              <p className="anim" style={{ animationDelay: '0.2s' }}>My philosophy for design has always the same no matter the medium or discipline—problem solving at its core with uncompromising craft. This is the way I've been able to adapt across all teams and shifts in the industry and contribute at a high level everywhere I've gone.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="v65-about__section">
+          <div className="v65-about__col-3col v65-about__meta">
+            <div className="v65-about__meta-row anim" style={{ animationDelay: '0.05s' }}>
+              <p className="v65-about__meta-label">Education</p>
+              <p className="v65-about__meta-value">Bachelor of Fine Arts, Graphic Design</p>
+            </div>
+            <div className="v65-about__meta-row anim" style={{ animationDelay: '0.1s' }}>
+              <p className="v65-about__meta-label">Years Active</p>
+              <p className="v65-about__meta-value">2006—2026</p>
+            </div>
+            <div className="v65-about__meta-row anim" style={{ animationDelay: '0.15s' }}>
+              <p className="v65-about__meta-label">Skills &amp; Specializations</p>
+              <p className="v65-about__meta-value">
+                Brand Design<br />
+                Product Design<br />
+                Brand Strategy<br />
+                Marketing<br />
+                Web Design<br />
+                Front End Development<br />
+                Design Systems
+              </p>
+            </div>
+          </div>
+          <div className="v65-about__spacer" />
+          <div className="v65-about__col-5col v65-about__timeline">
+            {companies.map((co, i) => (
+              <p key={i} className="v65-about__timeline-row anim" style={{ animationDelay: delayAt(i, 0) }}>
+                <span className="v65-about__timeline-status">{co.status}</span>
+                <br />
+                <span className="v65-about__timeline-name">{co.name}</span>
+                <br />
+                {co.role}
+              </p>
+            ))}
+          </div>
+        </section>
+      </div>
+
       {/* ── Mobile-only: bio text section ── */}
       <div className="about-bio-mobile">
         <h1 className="about-heading-mobile">About</h1>

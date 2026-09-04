@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: LilyLink
 headliner: Legitimizing a Vision for Maternal Health
-categories: Brand, Product, Web
+workScope: Brand, Product, Web
+type: Brand
 featured: false
 date: 2024-12
 role: |

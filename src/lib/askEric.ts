@@ -1,6 +1,11 @@
 export interface ChatMessage {
   role: 'user' | 'model'
   text: string
+  /** Epoch ms when the bubble was committed — drives the "You · 1:02 PM"/
+   *  "Eric · 1:02 PM" timestamp per message (node 3632:108465). Optional
+   *  since history loaded from an older sessionStorage payload (before
+   *  this field existed) won't have it. */
+  time?: number
 }
 
 /**

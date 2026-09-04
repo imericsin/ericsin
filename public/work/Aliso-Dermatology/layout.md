@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: Aliso Dermatology
 headliner: Clinical Expertise, Branded To Match
-categories: Brand, Web
+workScope: Brand, Web
+type: Brand
 featured: true
 date: 2026-03
 theme:
@@ -33,7 +34,7 @@ Supporting copy that goes alongside an image or visual.
 
 ::05_FULL
 
-::06_3COL
+::06_2COLTEXT
 
 ::07_TEXT
 Closing thoughts or reflection.

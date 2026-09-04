@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: You.com
 headliner: Overhauling Search to Unlock New Revenue
-categories: Brand, Product
+workScope: Brand, Product
+type: Product
 featured: false
 date: 2024-05
 role: |
@@ -34,9 +35,7 @@ You.com started as a B2C search engine, complete with a dated, rainbow-hued logo
 I worked alongside product, marketing, and engineering to ensure there was a clear throughline across orgs through design, ultimately aligning the business from a visual design and user experience perspective.
 
 ::03_COMP
-## A Complete Experience Overhaul
-
-From looking like a Google-clone to experience parity with common LLM-focused products—my work was critical in achieving a successful reposition.
+Fig.1: From looking like a Google-clone to experience parity with common LLM-focused products—my work was critical in achieving a successful reposition.
 
 ::04_FULL
 

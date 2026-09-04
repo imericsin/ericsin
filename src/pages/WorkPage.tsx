@@ -5,7 +5,15 @@ import PageFooter from '../components/PageFooter'
 import { parseLayout, resolveAssets } from '../lib/parseLayout'
 import type { WorkMeta, LayoutBlock } from '../types/work'
 
-export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string, string> | null) => void }) {
+interface Props {
+  onTheme?: (theme: Record<string, string> | null) => void
+  // v6.5's nav shows "Work / {title}" in place of the site identity while
+  // on a case study — set once meta loads, cleared by App.tsx on route
+  // change so the previous title never flashes on the next page.
+  onTitle?: (title: string | null) => void
+}
+
+export default function WorkPage({ onTheme, onTitle }: Props) {
   const { slug } = useParams<{ slug: string }>()
   const [meta, setMeta] = useState<WorkMeta | null>(null)
   const [blocks, setBlocks] = useState<LayoutBlock[]>([])
@@ -31,6 +39,7 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
 
   useEffect(() => {
     onTheme?.(meta?.theme ?? null)
+    onTitle?.(meta?.title ?? null)
   }, [meta])
 
   const contentRef = useRef<HTMLDivElement>(null)
@@ -54,40 +63,80 @@ export default function WorkPage({ onTheme }: { onTheme?: (theme: Record<string,
   const heroBlock = blocks.find(b => b.type === 'FULLHERO')
   const contentBlocks = blocks.filter(b => b.type !== 'FULLHERO')
 
+  // v6.5 moves Role/Scope/Industry out of the inline OVERVIEW block and into
+  // the sticky left rail. Derived independently here (same fields
+  // LayoutBlock's OVERVIEW case already reads from `meta`) rather than
+  // changing LayoutBlock itself — that component's block-type contract is
+  // explicitly out of scope for the reskin. On main/pre-reskin, the rail
+  // markup below is simply unused (LayoutBlock still renders its own inline
+  // meta unchanged); v65.css hides the inline copy so it isn't duplicated.
+  const scopeLines = meta.workScope ? meta.workScope.split(',').map(s => s.trim()).filter(Boolean) : []
+  const railMetaRows = [
+    meta.role ? { label: 'Role', lines: meta.role.split('\n').filter(Boolean) } : null,
+    scopeLines.length ? { label: 'Scope', lines: scopeLines } : null,
+    meta.industry ? { label: 'Industry', lines: meta.industry.split('\n').filter(Boolean) } : null,
+  ].filter(Boolean) as { label: string; lines: string[] }[]
+
   return (
     <>
-      <div className="page page--work">
-        <section className="work-header">
-          <div className="work-header__top">
-            <div className="work-header__title-group">
+      <div className="page page--work work-layout">
+        {/* Single-column-only: a second copy of the hero, sibling to
+            .page-content itself (not nested inside .page-content__main
+            like the desktop copy below) so it can bleed full-bleed to the
+            page's own edges — .page-content carries the horizontal inset
+            at this breakpoint instead of .page, so anything outside it
+            escapes that padding entirely. CSS toggles which of the two
+            copies is visible per breakpoint; both always render. */}
+        {heroBlock && (
+          <div className="work-hero work-hero--mobile">
+            <LayoutBlockComponent block={heroBlock} />
+          </div>
+        )}
+        <div className="page-content style-sidebar">
+          <div className="work-left page-content__sidebar">
+            <div className="work-left__top">
+              <div className="work-rail-meta anim" style={{ animationDelay: '0.1s' }}>
+                {railMetaRows.map(row => (
+                  <div key={row.label} className="work-rail-meta__row">
+                    <p className="work-rail-meta__label">{row.label}</p>
+                    {row.lines.map(l => <p key={l} className="work-rail-meta__value">{l}</p>)}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Reserved for future rail-bottom controls (mirrors the old
+                ToastFeed slot in .home-left) — intentionally empty for now. */}
+          </div>
+
+          <div className="work-right page-content__main">
+            <section className="work-header">
               <div className="work-breadcrumb anim" style={{ animationDelay: '0.1s' }}>
                 <Link to="/" className="work-breadcrumb__link">Work</Link>
                 <span className="work-breadcrumb__sep">/</span>
                 <span>{meta.title}</span>
               </div>
+              {/* Pre-reskin position — v65.css hides this and shows the
+                  in-content copy below instead; unscoped builds keep this
+                  exactly where it's always been. */}
               <h1 className="work-headliner anim" style={{ animationDelay: '0.2s' }}>{meta.headliner}</h1>
+            </section>
+
+            {heroBlock && (
+              <div className="work-hero work-hero--desktop">
+                <LayoutBlockComponent block={heroBlock} />
+              </div>
+            )}
+
+            <div className="work-content" ref={contentRef}>
+              {contentBlocks.map(block => (
+                <LayoutBlockComponent
+                  key={`${block.order}_${block.type}`}
+                  block={block}
+                  meta={meta}
+                />
+              ))}
             </div>
           </div>
-        </section>
-      </div>
-
-      {heroBlock && (
-        <div className="work-hero">
-          <LayoutBlockComponent block={heroBlock} />
-        </div>
-      )}
-
-
-      <div className="page page--work">
-        <div className="work-content" ref={contentRef}>
-          {contentBlocks.map(block => (
-            <LayoutBlockComponent
-              key={`${block.order}_${block.type}`}
-              block={block}
-              categories={block.type === 'OVERVIEW' ? meta.categories : undefined}
-              meta={block.type === 'OVERVIEW' ? meta : undefined}
-            />
-          ))}
         </div>
       </div>
 

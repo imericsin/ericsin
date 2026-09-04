@@ -1,0 +1,2066 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   V6.5 Reskin — override layer
+   Scoped entirely under html.v65 so it can never leak into a build that
+   drops the class, and so this file is the single diff to review/revert.
+   Imported after globals.css in main.tsx — wins the cascade by load order,
+   not specificity, so selectors here stay as simple as their globals.css
+   counterparts.
+   ───────────────────────────────────────────────────────────────────────── */
+
+html.v65 {
+  /* Layout tokens that differ from the base scale. Type tokens
+     (--type-body-*, --type-micro-*) already match the new design and are
+     reused as-is. New type rule from Figma (node 3583:39446): LabelMono —
+     Geist Mono Medium, small uppercase labels (nav's "INDEX • SELECTED
+     WORK", the home footer's row labels, etc.) — same family/weight as
+     the existing hardcoded Geist Mono spots (.nav-label, footer rows) had
+     ad-hoc already, now named as a real token so future uses reference it
+     instead of repeating the raw values. */
+  --type-label-mono-font: 'Geist Mono', ui-monospace, monospace;
+  --type-label-mono-size: 11px;
+  --type-label-mono-lh: 12px;
+  --type-label-mono-weight: 500;
+  --type-label-mono-ls: 0.01em;
+  --content-mw: 1440px;
+  --page-topspacer: 0px;
+  --v65-grid-gap: 24px;
+  /* Flat top inset for .page-content (Home and case studies alike) at
+     every breakpoint — single source of truth so it's never split across
+     .page + .page-content again (see .page-content.style-sidebar and
+     .page--work.page below for where this is consumed). Was 64px
+     (--v65-nav-height's old 60px + 4px slack) — shrunk by the same 8px
+     the nav itself lost when --v65-header-py tightened from 14px to
+     12px, keeping the same 4px slack past the nav's new 52px height. */
+  --v65-content-top: 56px;
+  /* Rail/nav-logo width, as a percentage of the page's inner content width
+     (the row's own box, after .page-content's side padding) — single
+     source of truth for the percentage itself, since it's now shared by
+     three usage sites (.navbar-v2__left's max-width, .page-content__sidebar's
+     flex-basis, and --v65-rail-width below) that all need to move together. */
+  --v65-rail-pct: 25%;
+  /* Floored at 280px so the rail never gets too narrow to read. `flex: 0 0
+     var(--v65-rail-pct)` at the two row-based usage sites (.navbar-v2__left,
+     .page-content__sidebar) handles the percentage directly against their
+     own row — this token exists only so the nav-fader/chat-panel inset math
+     (which can't rely on flex-basis; it's positioning a sibling fixed
+     element, not a row member) can compute the rail's real pixel width
+     without duplicating the formula. Mirrors the same min(100vw,
+     content-mw) - 2*margin base every inset calc here already uses for the
+     page's own content width. */
+  --v65-rail-width: max(280px, (min(100vw, var(--content-mw)) - var(--body-margin-x) * 2) * var(--v65-rail-pct));
+  /* Tightened per node 3625:108109's latest pass — was 14px (60px total
+     nav height); every page's top inset (--v65-content-top below) has to
+     shrink by the same amount or content sits too far from a now-shorter
+     nav. */
+  --v65-header-py: 12px;
+  /* .nav's own rendered height — the sticky rail must clear this, not
+     just the body margin, or it overlaps the fixed nav once stuck at the
+     top of the viewport. */
+  --v65-nav-height: 52px; /* actual rendered height: 12px header-py * 2 + 28px controller row (Menu button) */
+  --v65-chat-x: 14px;
+  --v65-chat-bottom: 16px;
+  --v65-chat-width: 320px;
+
+  /* Explicit stacking order, top to bottom: true modals (CommandPalette's
+     [cmdk-overlay]/[cmdk-dialog] at 1000/1001, and the Archives lightbox
+     .archive-overlay-wrap — main's own unscoped z-index: 200 predates the
+     nav's bump below, so it rendered UNDER the nav once nav was raised)
+     > nav (desktop .nav and mobile .nav-mobile, same layer — one replaces
+     the other per breakpoint, they're never both on screen) > the sticky
+     rail/index text (.page-content__sidebar) > the bottom blur fader
+     (.nav-fader). Named here as tokens so nav and rail can't drift out of
+     order again the way .nav (unscoped 100) and the rail (998) had
+     before — the rail was accidentally ABOVE the nav despite the comment
+     beside its z-index claiming otherwise. */
+  --v65-z-modal: 1000;
+  --v65-z-nav: 999;
+  --v65-z-rail: 500;
+  --v65-z-fader: 98;
+
+  /* Updated border scale from the design system — one notch lighter than
+     main's, with a new heaviest step. Scoped here rather than edited in
+     globals.css since border color ripples across every bordered component
+     site-wide; this keeps main's scale untouched. */
+  --component-border-1: #f3f3f3;
+  --component-border-2: #dddddd;
+  --component-border-3: #999999;
+  --component-border-4: #666666;
+
+  /* Opacity scale — pair with any color token via color-mix(), e.g.
+     color-mix(in srgb, var(--v65-chat-fg) var(--opacity-10), transparent)
+     for a 10%-opacity tint of that color over whatever's behind it. One
+     shared scale so opacity steps stay consistent everywhere they're used,
+     instead of each spot inventing its own rgba() value. */
+  --opacity-5: 5%;
+  --opacity-10: 10%;
+  --opacity-15: 15%;
+  --opacity-20: 20%;
+  --opacity-40: 40%;
+  --opacity-60: 60%;
+
+  /* Fixed chat-module palette — deliberately NOT one of the --component-*/
+  /* --system-* tokens above, because those get overwritten on document
+     Element itself by each case study's `theme:` frontmatter (see
+     applyTheme in App.tsx). The chat launcher/panel should look the same
+     everywhere regardless of page theme, so it reads off these instead. */
+  --v65-chat-bg: #121212;
+  --v65-chat-fg: #ffffff;
+  --v65-chat-surface: #ffffff;
+  --v65-chat-border: #f3f3f3;
+}
+
+/* ─── Page frame ─────────────────────────────────── */
+/* Every v6.5 page sits inside a hairline-bordered frame at the new max
+   width, replacing the implicit unbordered container. .app is a flex
+   child of .shell (width:100%) with no width constraint of its own, so
+   without an explicit max-width + auto margins it stretches full-bleed
+   and everything inside reads as edge-to-edge rather than centered. */
+html.v65 .app {
+  /* Left/right only — a full border on all sides reads as a floating card
+     once the page is taller than the viewport and you scroll past its
+     top/bottom edges. The frame should read as two vertical rules
+     bracketing the content, not a box around it. Uses the theme's own
+     border token (not a hardcoded light value) so it darkens correctly on
+     dark case-study themes instead of staying a bright #f3f3f3 hairline
+     against a near-black page. */
+  border-left: 1px dashed var(--component-border-1);
+  border-right: 1px dashed var(--component-border-1);
+  max-width: var(--content-mw);
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  /* .app's own top padding (--app-px, 20px) stacks above whatever each
+     .page sets, so top spacing was actually --app-px + .page's own value
+     rather than just .page's — every v6.5 page owns its top offset
+     entirely through .page's padding-top, so this is zeroed here. */
+  padding-top: 0;
+}
+
+/* ─── Nav stacking ───────────────────────────────── */
+/* main's unscoped .nav is z-index: 100 (globals.css) — far below the rail
+   (998 before this fix) despite a comment on the rail's own rule claiming
+   .nav sat at 999 above it. .nav-mobile (main's @media 640px block) was
+   never bumped at all, so on mobile the nav could end up rendering under
+   page content (e.g. a case study's full-bleed hero) instead of pinned on
+   top of it. Both raised to --v65-z-nav here so nav genuinely wins over
+   the rail and the fader everywhere, on every breakpoint — see
+   --v65-z-nav's definition above for the full intended order. */
+html.v65 .nav,
+html.v65 .nav-mobile {
+  z-index: var(--v65-z-nav);
+}
+html.v65 .nav-fader {
+  z-index: var(--v65-z-fader);
+}
+/* Archives' lightbox (.archive-overlay-wrap, globals.css) is a true modal
+   — it needs to sit above the nav, not under it like ordinary in-page
+   content. Its unscoped z-index: 200 predates the nav's bump to
+   --v65-z-nav (999) above, so without this it silently ended up behind
+   the nav once that landed. */
+html.v65 .archive-overlay-wrap {
+  z-index: var(--v65-z-modal);
+}
+
+/* ─── Header row ─────────────────────────────────── */
+/* Logo is a small square (was a plain dot) shown alongside the "Eric Sin"
+   name, per node 3583:39446's updated header — previously the name was
+   hidden entirely in favor of just the mark; now both render together,
+   matching the design's "■ Eric Sin" lockup. .nav-identity__title
+   ("Brand & Product") still isn't part of that lockup, so it stays
+   hidden. Mark still uses --system-hero-primary via currentColor so it
+   tracks whatever theme a case study sets. */
+html.v65 .nav-identity {
+  display: flex;
+  /* main's own unscoped .nav-identity (globals.css) sets flex-direction:
+     column, for its own stacked "Eric Sin / Brand & Product" wordmark —
+     left unset here, that leaked through and stacked the square and name
+     vertically instead of the intended horizontal row. */
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+html.v65 .nav-identity__title { display: none; }
+html.v65 .nav-identity__mark {
+  display: block;
+  width: 10px;
+  height: 10px;
+  color: var(--system-hero-primary);
+}
+html.v65 .nav-identity__name {
+  /* Switched to Geist Mono Medium per node 3625:108109's latest pass —
+     was SF Pro Display Semibold 14px, matching every other LabelMono nav
+     element's family/weight now (tabs, breadcrumbs) instead of standing
+     out as the one nav text still in the site's body font at a heavier
+     weight. */
+  font-family: var(--type-label-mono-font);
+  font-size: 12px;
+  font-weight: var(--type-label-mono-weight);
+  line-height: 16px;
+  letter-spacing: var(--type-label-mono-ls);
+  text-transform: uppercase;
+  color: var(--system-hero-primary);
+}
+/* Same "■ Eric Sin" lockup as desktop's .nav-identity — separate
+   component from NavbarV2, so it needs its own copy of the layout fix.
+   .nav-mobile-title ("Brand & Product") still isn't part of that lockup,
+   so it stays hidden. */
+html.v65 .nav-mobile-identity {
+  display: flex;
+  /* main's own unscoped .nav-mobile-identity (globals.css) sets
+     flex-direction: column for its own stacked wordmark — left unset
+     here, that leaked through and stacked the square above the name
+     instead of the intended horizontal row (same bug as desktop's
+     .nav-identity, see above). */
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+html.v65 .nav-mobile-title {
+  display: none;
+}
+html.v65 .nav-mobile-name {
+  /* Same Geist Mono Medium switch as desktop's .nav-identity__name — see
+     there for why. */
+  font-family: var(--type-label-mono-font);
+  font-size: 12px;
+  font-weight: var(--type-label-mono-weight);
+  line-height: 16px;
+  letter-spacing: var(--type-label-mono-ls);
+  text-transform: uppercase;
+  color: var(--system-hero-primary);
+}
+html.v65 .nav-mobile-identity__mark {
+  display: block;
+  width: 10px;
+  height: 10px;
+  color: var(--system-hero-primary);
+}
+/* .nav-mobile-inner now always carries the identity mark (see
+   NavMobile.tsx) plus, on case-study/Archives pages, a breadcrumb/label
+   beside it — three children instead of main's two, so main's unscoped
+   justify-content: space-between (globals.css) would push the label away
+   from the mark toward the far-right Menu button instead of keeping them
+   grouped on the left. gap replaces that spacing model; the Menu button's
+   own margin-left: auto (below) takes over pinning it to the right edge. */
+html.v65 .nav-mobile-inner {
+  justify-content: flex-start;
+  gap: 12px;
+}
+html.v65 .nav-mobile-inner .nav-menu-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+/* A long work title (e.g. "APMC (A Parent Media Co. Inc.)") wrapped to a
+   second line at mobile widths, crowding the Menu button above/beside
+   it — min-width: 0 lets the flex item actually shrink below its content
+   size so text-overflow can kick in, truncating to one line instead. */
+html.v65 .nav-mobile-inner .nav-label--mobile {
+  min-width: 0;
+  overflow: hidden;
+}
+html.v65 .nav-mobile-inner .nav-label--mobile .nav-label__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html.v65 .navbar-v2 {
+  padding: var(--v65-header-py) var(--body-margin-x);
+  gap: var(--v65-grid-gap);
+  align-items: center;
+}
+/* Matches the rail's own sizing exactly (--v65-rail-pct with a 280px
+   floor) so the logo column and the sticky rail below it line up at every
+   width — a flex-grow-then-cap model (flex:1 0 0 + max-width:320px, taken
+   literally from node 3606:36229) drifts out of alignment with the rail's
+   percent-with-floor model as soon as the viewport isn't exactly the
+   frame's own width. */
+html.v65 .navbar-v2__left {
+  flex: 1 0 0;
+  min-width: 280px;
+  max-width: var(--v65-rail-pct);
+}
+
+/* Static (non-case-study) nav metadata — e.g. Archives' "Archived Work •
+   2012—2026" (see NavbarV2.tsx's navLabel prop, node 3619:37080). Same
+   slot/structure as case studies' .nav-label--mono-crumb below, but plain
+   text (no link) with a "•" separator, and --component-fg-* tokens —
+   this label doesn't sit on a themeable case-study hero, it's always on
+   the flat site background. */
+html.v65 .nav-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 12px;
+}
+html.v65 .nav-label__title {
+  font-weight: 600;
+  color: var(--component-fg-1);
+}
+html.v65 .nav-label__sep {
+  font-weight: 500;
+  opacity: 0.4;
+  color: var(--component-fg-1);
+}
+html.v65 .nav-label__meta {
+  font-weight: 500;
+  color: var(--component-fg-2);
+}
+
+/* Archives' static nav label ("ARCHIVED WORK • 2013—2026", node
+   3625:108152) — same structure as .nav-label above, but LabelMono
+   (Geist Mono, uppercase) instead of SF Pro Display, and the separator
+   dims the SECOND segment (opacity 40% on .nav-label__sep + __meta)
+   rather than the dot itself, matching the Figma layer structure. */
+html.v65 .nav-label--mono {
+  font-family: var(--type-label-mono-font);
+  font-size: var(--type-label-mono-size);
+  font-weight: var(--type-label-mono-weight);
+  line-height: var(--type-label-mono-lh);
+  letter-spacing: var(--type-label-mono-ls);
+  text-transform: uppercase;
+}
+html.v65 .nav-label--mono .nav-label__title {
+  font-weight: var(--type-label-mono-weight);
+  color: var(--component-fg-1);
+}
+html.v65 .nav-label--mono .nav-label__sep {
+  color: var(--component-fg-3);
+  opacity: 0.4;
+}
+html.v65 .nav-label--mono .nav-label__meta {
+  color: var(--component-fg-1);
+  opacity: 0.4;
+}
+
+/* Case-study nav's breadcrumb ("INDEX / {work title}", node 3630:108190)
+   — same LabelMono typography as .nav-label--mono above, but emphasis is
+   REVERSED: "index" and "/" are dimmed (opacity 40%), the work title is
+   full opacity. Replaces the old .nav-breadcrumb ("Work / {title}", SF
+   Pro Display) for case studies. "index" is a real link back home, so it
+   gets its own hover state — full opacity on hover, matching the site's
+   other back-to-home nav links. */
+html.v65 .nav-label--mono-crumb {
+  font-family: var(--type-label-mono-font);
+  font-size: var(--type-label-mono-size);
+  font-weight: var(--type-label-mono-weight);
+  line-height: var(--type-label-mono-lh);
+  letter-spacing: var(--type-label-mono-ls);
+  text-transform: uppercase;
+}
+html.v65 .nav-label--mono-crumb .nav-label__title--link {
+  font-weight: var(--type-label-mono-weight);
+  color: var(--component-fg-1);
+  opacity: 0.4;
+  text-decoration: none;
+  transition: opacity 150ms ease;
+}
+html.v65 .nav-label--mono-crumb .nav-label__title--link:hover {
+  opacity: 1;
+}
+html.v65 .nav-label--mono-crumb .nav-label__sep {
+  color: var(--component-fg-3);
+  opacity: 0.4;
+}
+html.v65 .nav-label--mono-crumb .nav-label__meta {
+  color: var(--component-fg-1);
+  opacity: 1;
+}
+
+/* Index's tab row, restyled as LabelMono text per node 3625:108171 —
+   "ALL" full opacity, "BRAND"/"PRODUCT" dimmed 40%, no pill/background,
+   just plain buttons so it reads as a label rather than a control. */
+html.v65 .nav-tabs-mono {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--type-label-mono-font);
+  font-size: var(--type-label-mono-size);
+  font-weight: var(--type-label-mono-weight);
+  line-height: var(--type-label-mono-lh);
+  letter-spacing: var(--type-label-mono-ls);
+  text-transform: uppercase;
+}
+html.v65 .nav-tabs-mono__item {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--component-fg-1);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+html.v65 .nav-tabs-mono__item:hover {
+  opacity: 0.7;
+}
+html.v65 .nav-tabs-mono__item--active {
+  opacity: 1;
+}
+html.v65 .nav-tabs-mono__item--active:hover {
+  opacity: 1;
+}
+
+/* New nav "Menu" button (node 3583:39446) — replaces the hamburger
+   MenuIcon + OverlayNav on the index page; opens CommandPalette instead
+   of an in-page overlay. Same dark-pill treatment as the chat launcher's
+   fixed --v65-chat-* tokens, so it visually matches that surface. */
+html.v65 .nav-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 6px 8px 6px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background: var(--v65-chat-bg);
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+html.v65 .nav-menu-btn:hover {
+  opacity: 0.85;
+}
+html.v65 .nav-menu-btn__label {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: var(--v65-chat-fg);
+}
+html.v65 .nav-menu-btn__icon {
+  height: 16px;
+  width: 25.188px;
+}
+/* Mobile's Menu button drops the ⌘K badge (a touch device has no
+   keyboard shortcut to advertise) — the base rule's padding is
+   asymmetric (12px left / 8px right) to balance against that icon, so
+   without it here the label alone would sit off-center in the pill. */
+html.v65 .nav-menu-btn--mobile {
+  padding: 6px 12px;
+}
+
+/* ─── Two-column page shell ──────────────────────── */
+/* .page-content is the shared name for the first div under .app on every
+   v6.5 page (added alongside each page's existing root class — e.g.
+   .home-layout, .work-layout — so main's CSS, which still targets those
+   old names directly, is untouched). .style-sidebar is the sticky-
+   rail/scroll-content variant Home and WorkPage both use; a page that
+   needs a different shape gets its own modifier instead of overloading
+   this one — page-specific rules key off `.page-content .some-modifier`,
+   not off the page's own root class, so any future page can opt into the
+   same shell by combo-classing it in. About still uses its own
+   .about-layout/.about-left/.about-right names below (different shape —
+   no sticky rail), left as-is until it needs this pattern too. */
+/* WorkPage's outer element carries both .page (globals.css's unscoped
+   48px top padding) and .page-content — zeroed here at every breakpoint
+   so --v65-content-top on .page-content below is the only source of top
+   spacing, not 48px+that stacked. Home has no .page wrapper at all, so
+   this is a no-op for it. */
+html.v65 .page--work.page {
+  padding-top: 0;
+}
+html.v65 .page-content.style-sidebar {
+  display: flex;
+  flex-direction: row;
+  gap: var(--v65-grid-gap);
+  /* Flat top inset everywhere (desktop through mobile), single source of
+     truth via --v65-content-top — WorkPage also zeroes .page's own 48px
+     top padding (globals.css, unscoped) so this is the only place that
+     offset comes from; Home has no .page wrapper at all, so this was
+     already its sole source. */
+  padding: var(--v65-content-top) var(--body-margin-x) 0;
+  align-items: flex-start;
+}
+/* Sticky rail: pinned to the viewport, capped so its own content never
+   scrolls independently — only .page-content__main scrolls past it.
+   --v65-rail-pct with a 280px floor — mirrors .navbar-v2__left above, so
+   nav and rail stay aligned as both scale together, down to the point
+   where the floor kicks in. flex column + space-between leaves a bottom
+   slot free for future controls (mirrors the old ToastFeed placement in
+   .home-left). Top padding lives on .page-content itself now (see above),
+   not per-column, so sidebar and main start flush at the same baseline. */
+html.v65 .page-content.style-sidebar .page-content__sidebar {
+  flex: 0 0 var(--v65-rail-pct);
+  min-width: 280px;
+  /* Height is measured from the sticky trigger point (top, below), not
+     from the box's pre-scroll position (--v65-content-top, from
+     .page-content's padding) — once stuck, the box sits at
+     --v65-content-top from the viewport top regardless of where it
+     started, so that's the offset that matters for how much vertical
+     room it has before hitting the bottom margin. */
+  height: calc(100vh - var(--v65-content-top) - var(--body-margin-x));
+  position: sticky;
+  /* Must equal --v65-content-top (the sidebar's natural resting offset)
+     exactly — sticky's `top` is the offset the box locks to once stuck,
+     so if it doesn't match the offset it started at, the box visibly
+     snaps by the difference the instant any scrolling happens (this was
+     previously set to --v65-nav-height directly, a harmless-looking
+     "still clears the nav" relationship on paper, but a real few-px jump
+     on first scroll in practice since the two never quite matched). Nav
+     height no longer factors in here at all, since content-top already
+     covers it (with a few px of slack, see its own definition) — keep
+     the two in sync if either changes. */
+  top: var(--v65-content-top);
+  /* Highest in-page stacking context on the page — above the scrolling
+     card grid (.page-content__main) and anything within it (card hover
+     states, etc.) as the page scrolls underneath. Below the nav (desktop
+     .nav / mobile .nav-mobile, --v65-z-nav) and the true modal layer
+     (CommandPalette's overlay/dialog, 1000/1001) — see --v65-z-rail's
+     definition above for the full stacking order. */
+  z-index: var(--v65-z-rail);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+/* Rail's top content group — mirrors .home-left__top so space-between has
+   exactly one flexible top block plus room for a later bottom-anchored
+   block, rather than distributing gap across arbitrary siblings.
+   padding-right (32px, was 40px) moved here from the sidebar itself
+   (.page-content__sidebar above) per node 3583:39450 — it's specific to
+   the hero-copy/rail-meta area, not the footer below it, which now fills
+   the sidebar's full width instead of matching this inset. */
+html.v65 .home-left__top,
+html.v65 .work-left__top {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-right: 32px;
+}
+html.v65 .page-content.style-sidebar .page-content__main {
+  flex: 1 0 0;
+  min-width: 0;
+}
+
+/* ─── Rail copy (bio / meta / experience) ────────── */
+/* v6.5's rail text is uniformly 13px regular, label rows dimmed to
+   --component-fg-3 — used by Home's bio, WorkPage's Role/Scope/Industry,
+   and About's experience timeline. */
+html.v65 .home-bio,
+html.v65 .home-bio-sub {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  max-width: 360px;
+  color: var(--component-fg-1);
+}
+/* Balanced line lengths for both the hero copy paragraph and the links
+   line below it — well within the ~6-line cap text-wrap: balance
+   imposes before falling back to normal wrapping. */
+html.v65 .home-bio,
+html.v65 .home-bio-sub {
+  text-wrap: balance;
+}
+html.v65 .home-bio-section { gap: 28px; margin-bottom: 0; }
+html.v65 .home-bio-text { gap: 16px; }
+/* "Learn more about me, scroll through my archives..." — inline links
+   in the second bio paragraph (node 3583:39453) route to /about and
+   /archives. globals.css's unscoped `a { text-decoration: none }` would
+   otherwise leave them looking like plain text against the identical
+   surrounding copy color. */
+html.v65 .home-bio-sub a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Per node 3583:39446 — the old CTA button + "Current Role" status line
+   is gone; the CTA's job (opening chat) moved to the nav's own Menu
+   button. Social links take that section's old spot instead. */
+html.v65 .home-social-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+html.v65 .home-social-link {
+  display: block;
+  width: 16px;
+  height: 16px;
+  color: var(--component-fg-1);
+}
+html.v65 .home-social-link img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── Footer (local time / area / version) ───────────
+   Replaces ToastFeed in the rail's bottom slot — .home-footer-details
+   itself already sits at the bottom via .home-left's space-between (see
+   .work-left__top above), so only its contents change here. */
+html.v65 .home-footer-details {
+  width: 100%;
+  /* main's own unscoped rule (globals.css) sets transform: translateY(-8px)
+     — a nudge that made sense for its own footer layout but not this one,
+     leaking through here since this rule never restated `transform`
+     itself (cascade wins per-property, not per-rule). */
+  transform: none;
+  /* Same leak, different property: main's unscoped @media (max-width:
+     860px) sets display: none on this same class (globals.css) — a rule
+     written for ITS OWN mobile-hero layout, at a breakpoint well above
+     v6.5's actual rail-stacking point (719px, see .page-content.style-
+     sidebar's own 719px rule). Left unset here, that 860px rule made the
+     footer vanish 141px earlier than it should for this layout. Restated
+     explicitly (matching the flex value further down) so it stays visible
+     the whole way down to 719px, where the rail genuinely does stack. */
+  display: flex;
+}
+html.v65 .home-footer-rows {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+html.v65 .home-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid var(--component-border-1);
+}
+html.v65 .home-footer-row__label {
+  margin: 0;
+  font-family: var(--type-label-mono-font);
+  font-size: var(--type-label-mono-size);
+  font-weight: var(--type-label-mono-weight);
+  line-height: var(--type-label-mono-lh);
+  letter-spacing: var(--type-label-mono-ls);
+  text-transform: uppercase;
+  color: var(--component-fg-3);
+}
+html.v65 .home-footer-row__value {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  color: var(--component-fg-1);
+}
+html.v65 .home-footer-spacer {
+  height: 16px;
+  border-top: 1px solid var(--component-border-1);
+}
+html.v65 .home-footer-copyright {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+html.v65 .home-footer-copyright p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 12px;
+  color: var(--component-fg-3);
+}
+
+/* ─── Work index cards ───────────────────────────── */
+/* Two real column wrappers (.home-cards__col, see Home.tsx) instead of a
+   single flat list. Cards are pre-split round-robin (index 0,2,4... then
+   1,3,5...) into these wrappers once, on mount, so column A always gets
+   1,3,5,7... and column B gets 2,4,6,8... (newest→oldest), deterministically
+   by DOM order — never by measured height.
+   CSS multi-column (column-count) was tried first but balances columns by
+   content height, not DOM order — with variable-height cards (natural
+   aspect ratio thumbnails) that let the browser push more cards into
+   column B than the split intended. CSS grid (grid-auto-flow: column) was
+   tried next, but a shared row-track forces every row's height to the
+   taller of the two columns' cards at that index — a "gridded" look, not
+   masonry, where the columns don't stack independently. Two flex columns,
+   each free to stack its own cards at their own natural heights, is the
+   only one of the three that's both deterministic AND true masonry.
+   Capped at 2 columns, only above the tablet breakpoint — at/below it,
+   single column, see the media query below (the wrappers become
+   `display: contents`, unwrapping so `order` on each card takes over and
+   the list reads sequentially 1→13 instead of column-major). */
+html.v65 .home-cards {
+  /* globals.css's base rule sets flex-direction:column (for its own
+     single-column mobile-first layout) — restated to row here, or that
+     property falls through unset and the two columns stack instead of
+     sitting side by side. */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 0;
+}
+/* Both .home-cards__col--left/right render the SAME full card list (see
+   Home.tsx) — nth-child alone decides which half of each column is
+   visible, so there's no JS/breakpoint coordination needed to keep left
+   and right in sync. Desktop: left shows its odd children (1st, 3rd...),
+   right shows its even children (2nd, 4th...) — together that's every
+   card once, split round-robin. */
+html.v65 .home-cards__col {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+html.v65 .home-cards__col--left .card:nth-child(even),
+html.v65 .home-cards__col--right .card:nth-child(odd) {
+  display: none;
+}
+html.v65 .home-cards .card {
+  margin-bottom: 24px;
+}
+html.v65 .card-chip-row { display: none; }
+/* Thumbnails render at their own natural aspect ratio (fill the card's
+   width, height follows) instead of main's fixed 430:240 crop — the img/
+   video drops out of absolute-fill positioning and object-fit:cover so
+   nothing gets cropped to force a shape. */
+html.v65 .card-thumb {
+  aspect-ratio: auto;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+html.v65 .card-thumb img,
+html.v65 .card-thumb video {
+  position: static;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+html.v65 .card { gap: 10px; }
+html.v65 .card-meta { gap: 2px; }
+/* Row 1: the project name, bold/primary. Row 2 (.card-title, now carrying
+   "Type, dateRange" instead of the old headliner — see Card.tsx) is
+   medium-weight/secondary. Swapped from the pre-redesign weights/colors,
+   which had this backwards for the new WorkCard's two-line meta. */
+html.v65 .card-name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: var(--component-fg-1);
+}
+html.v65 .card-meta .card-title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-2);
+}
+
+/* Tablet + mobile (1199px and below): single-column list. The right
+   column (which holds the exact same full card list as the left, see
+   Home.tsx) is hidden outright, and the left column's nth-child(even)
+   filter from the desktop rule above is undone so all of its cards show,
+   reading 1→N in full date order. */
+@media (max-width: 1199px) {
+  html.v65 .home-cards {
+    display: flex;
+    flex-direction: column;
+  }
+  html.v65 .home-cards__col--right {
+    display: none;
+  }
+  html.v65 .home-cards__col--left .card:nth-child(even) {
+    /* .card's own base rule (globals.css) is display:flex, not block —
+       "block" here broke .card's flex gap between thumbnail and meta,
+       collapsing them together with no spacing. */
+    display: flex;
+  }
+  html.v65 .home-cards .card {
+    margin-bottom: 24px;
+  }
+}
+/* Mobile frame's card gap (image-to-metadata) is 12px vs. desktop's 8px. */
+@media (max-width: 719px) {
+  html.v65 .card { gap: 12px; }
+}
+
+/* COMP's "Fig. N:" caption reads as centered only when it sits under a
+   comparably-wide comparison image (desktop) — at tablet/mobile widths it
+   left-aligns instead, matching how every other case-study caption/label
+   in the redesign anchors to the left edge. */
+@media (max-width: 1199px) {
+  html.v65 .block-comp__caption { text-align: left; }
+}
+
+/* Nav fader moved from the top of the viewport to the bottom — a fixed
+   vignette that's always visible (not tied to scroll position, see
+   Nav.tsx), rather than fading in under the nav on scroll. Edge-to-edge,
+   capped to a flat 80px so it doesn't reach far up into the page content.
+   main's base rule (globals.css) anchors this to top:0 — reset here since
+   `top`/`bottom` on a fixed element are independent properties, not one
+   the other implicitly clears. */
+html.v65 .nav-fader {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: var(--dock-inset);
+  height: 80px;
+}
+
+/* ─── Chat launcher (v6.5's ChatButton) ─────────────
+   Opens CommandPalette directly into chat mode (see App.tsx) — sits at a
+   fixed bottom-left spot, same inset math as .nav-fader's left offset, so
+   it lines up with the bordered .app frame at any viewport width. Hidden
+   entirely outside .v65: the button is only ever mounted for the launcher
+   slot in App.tsx, so on main this class simply doesn't exist and nothing
+   changes. */
+.chat-btn--launcher {
+  display: none;
+}
+html.v65 .chat-btn--launcher {
+  display: flex;
+  position: fixed;
+  left: max(var(--v65-chat-x), calc((100vw - var(--content-mw)) / 2 + var(--v65-chat-x)));
+  bottom: var(--v65-chat-bottom);
+  z-index: 999;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 4px 14px 4px 8px;
+  border: none;
+  border-radius: 20px;
+  /* Rests black, not white — the hover fill sweeps to white, the same
+     color the chat panel opens into, so clicking mid-hover reads as the
+     button continuing into the panel rather than one color swapping for
+     another. Fixed --v65-chat-* tokens, not --component-fg-1 — the chat
+     module stays visually identical across every case study regardless of
+     that page's theme override (see --v65-chat-bg's definition above). */
+  background: var(--v65-chat-bg);
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+/* Layer 1 (back): a dedicated clipping box holding only the fill circle.
+   Its own border-radius + overflow:hidden keeps the circle's antialiased
+   edge entirely inside the button's shape — the button itself has no
+   border to blend against here, which is what caused the seam before. */
+html.v65 .chat-btn__clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+html.v65 .chat-btn__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 225%;
+  min-height: 225%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--v65-chat-surface);
+  /* left/top are set inline (see ChatButton.tsx's updateOrigin) to the
+     cursor's enter/exit point, so the fill expands from whichever edge the
+     mouse actually came in from instead of always blooming from center. */
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.v65 .chat-btn--launcher:hover .chat-btn__fill {
+  transform: translate(-50%, -50%) scale(1);
+}
+/* Layer 2: the stroke, painted as its own inset:0 box strictly on top of
+   the clip layer rather than as a border coexisting with it. Because
+   nothing else shares this paint, the stroke is always crisp regardless
+   of what the fill circle underneath is doing — there's no shared edge
+   pixel left for the two antialiased boundaries to blend into a seam.
+   Visible at rest (matches the button's original resting border) and
+   stays visible through hover — it's the fill/label doing the work of
+   reading as "filled," not the stroke appearing/disappearing. */
+html.v65 .chat-btn__border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* The launcher always rests on its own black background, so its stroke
+     needs to read against black — the panel's flat #f3f3f3 (--v65-chat-
+     border) was far too bright there, even though that same value works
+     fine as a hairline on the panel's white surface. A low-opacity tint of
+     --v65-chat-fg (white) instead: visible but subtle against black. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--v65-chat-fg) var(--opacity-10), transparent);
+  pointer-events: none;
+}
+html.v65 .chat-btn__avatar {
+  position: relative;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+html.v65 .chat-btn__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Layer 3 (front): the label. Carries mix-blend-mode itself, so it
+   inverts automatically wherever the fill passes underneath — difference
+   against the button's own black background is a no-op (difference with
+   black = no change), and against the white fill it flips to black, with
+   zero extra timing to keep in sync. */
+html.v65 .chat-btn__label {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+  color: #fff;
+  mix-blend-mode: difference;
+  white-space: nowrap;
+}
+/* ─── Command palette (cmdk) ─────────────────────────
+   CMD+K opens this dialog, which owns both search and chat (Tab switches
+   modes) — see CommandPalette.tsx/App.tsx. Rendered as a centered overlay
+   dialog (Radix's own [cmdk-overlay]/[cmdk-dialog], via Command.Dialog)
+   with its own fixed --v65-chat-* colors — no shared-element animation,
+   just a plain fade with a blurred backdrop. */
+html.v65 [cmdk-overlay] {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: cmdk-fade-in 180ms ease;
+}
+html.v65 [cmdk-dialog] {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 1001;
+  width: 100%;
+  max-width: 480px;
+  animation: cmdk-fade-in 180ms ease;
+}
+@keyframes cmdk-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+html.v65 .cmdk {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* Fixed, not max — the same box height whether it's showing the zero
+     state, a long results list, or a chat conversation, so switching
+     mode/typing/searching never resizes the dialog around the cursor. */
+  height: min(420px, 60vh);
+  background: var(--v65-chat-surface);
+  color: var(--v65-chat-bg);
+  border: 1px solid var(--v65-chat-border);
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+}
+html.v65 .cmdk__input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--v65-chat-border);
+  flex-shrink: 0;
+}
+html.v65 .cmdk__input {
+  flex: 1 0 0;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--v65-chat-bg);
+}
+html.v65 .cmdk__input::placeholder {
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+}
+/* "Ask Eric · Tab" — sits inline at the right of the search field itself
+   (matches Raycast's "Ask AI · Tab" in the same spot), not in the footer,
+   since it's specifically about what the input does, not a general
+   keyboard hint. */
+html.v65 .cmdk__ask-hint {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+  white-space: nowrap;
+}
+html.v65 .cmdk__kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-10), transparent);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--v65-chat-bg);
+}
+html.v65 .cmdk__list {
+  flex: 1 0 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px;
+}
+html.v65 .cmdk__empty {
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 13px;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+}
+html.v65 .cmdk__group + .cmdk__group {
+  margin-top: 4px;
+}
+html.v65 [cmdk-group-heading] {
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+}
+html.v65 .cmdk__item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--v65-chat-bg);
+  cursor: pointer;
+}
+html.v65 .cmdk__item[data-selected='true'] {
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-5), transparent);
+}
+html.v65 .cmdk__item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html.v65 .cmdk__item-meta {
+  flex-shrink: 0;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+  font-weight: 400;
+}
+/* ─── Command palette: chat mode ─────────────────────
+   Swaps in for .cmdk__input-row/.cmdk__list once the dialog is in chat
+   mode (see CommandPalette.tsx) — same outer .cmdk box (fixed height,
+   see html.v65 .cmdk above), same fixed --v65-chat-* palette, so it reads
+   as one continuous surface rather than a different panel taking over.
+   Header + input are merged into one row (back arrow beside the actual
+   field, no separate title bar), matching Raycast's own AI follow-up
+   view. Message bubbles reuse .message/.message__* as-is (globals.css) —
+   only the tokens they read (--component-fg-1, --component-border-1,
+   --system-background-1, --prompt-fill-mix) are re-pointed here at the
+   dialog's own fixed colors, the same interception trick the old .prompt
+   used, so bubbles render correctly regardless of the current
+   case-study theme. */
+html.v65 .cmdk-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  --system-background-1: var(--v65-chat-surface);
+  --component-fg-1: var(--v65-chat-bg);
+  --component-fg-2: #757575;
+  --component-fg-3: #999999;
+  --component-border-1: var(--v65-chat-border);
+  --prompt-fill-mix: 4%;
+}
+html.v65 .cmdk-chat__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--v65-chat-border);
+  flex-shrink: 0;
+}
+html.v65 .cmdk-chat__back {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-60), transparent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html.v65 .cmdk-chat__back:hover {
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-5), transparent);
+  color: var(--v65-chat-bg);
+}
+/* Same field, same role as the search input above — the header row IS
+   the input row in chat mode, not a separate control below it. */
+html.v65 .cmdk-chat__header .cmdk-chat__input {
+  flex: 1 0 0;
+  min-width: 0;
+  max-height: 60px;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--v65-chat-bg);
+  padding: 4px 0;
+}
+html.v65 .cmdk-chat__input::placeholder {
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+}
+html.v65 .cmdk-chat__input:disabled { opacity: 0.6; }
+html.v65 .cmdk-chat__send {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: var(--v65-chat-bg);
+  color: var(--v65-chat-fg);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html.v65 .cmdk-chat__send:disabled {
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-10), transparent);
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+  cursor: default;
+}
+/* A native scrollbar's THUMB always runs the full height of its
+   scrolling element's own border-box — padding on the scrolling element
+   itself only insets the CONTENT, not the track/thumb, so it can't be
+   used to keep the thumb off the dialog's top/bottom edges. This
+   non-scrolling wrapper exists solely to hold that 4px top/bottom
+   clearance; the actual overflow:auto element is nested one level in
+   (below), sized to fill whatever's left inside it. */
+html.v65 .cmdk-chat__messages-wrap {
+  flex: 1 0 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+}
+html.v65 .cmdk-chat__messages {
+  flex: 1 0 0;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  /* Right/bottom padding gives the scrollbar clearance from the dialog's
+     own edge (8px right, 6px bottom) instead of the thumb running flush
+     against it — the scrollable area itself shrinks by that much, which
+     is the only way to inset a native scrollbar without JS. Top/bottom
+     clearance for the thumb itself comes from the wrapper's own padding
+     above, not from here (see that rule's comment for why). */
+  padding: 10px 8px 2px 16px;
+  /* Scrollbar is back to a normal, permanently-visible thin bar — was
+     hidden by default and only faded in during active scroll (via
+     .cmdk-chat__messages--scrolling, still toggled in CommandPalette.tsx
+     but no longer consumed here); this reads more like an ordinary
+     scrollable panel again. */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-20), transparent) transparent;
+}
+html.v65 .cmdk-chat__messages::-webkit-scrollbar { width: 6px; }
+html.v65 .cmdk-chat__messages::-webkit-scrollbar-track { background: transparent; }
+html.v65 .cmdk-chat__messages::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-20), transparent);
+  border-radius: 100px;
+}
+/* ─── Zero-state header (node 3632:108334) ───────────
+   Persists at the top of the scrollable history for the entire session —
+   scrolling up always reveals it, per the designer, even with messages
+   below. Not sticky: it scrolls with the list like any other item, it's
+   just always the FIRST item. */
+html.v65 .cmdk-chat__zero-header {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-shrink: 0;
+}
+html.v65 .cmdk-chat__zero-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  border: 1px solid color-mix(in srgb, var(--v65-chat-bg) var(--opacity-10), transparent);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+html.v65 .cmdk-chat__zero-textstack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+html.v65 .cmdk-chat__zero-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: var(--v65-chat-bg);
+}
+html.v65 .cmdk-chat__zero-label {
+  margin: 0;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-60), transparent);
+}
+/* Same text, now a real button — replaces the static "Conversation
+   Starters" label once there's history to clear (see CommandPalette.tsx).
+   Underline on hover is the only affordance it needs; it's already
+   grouped with the header, not styled as its own separate control. */
+html.v65 .cmdk-chat__zero-label--clear {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+html.v65 .cmdk-chat__zero-label--clear:hover {
+  color: var(--v65-chat-bg);
+  text-decoration: underline;
+}
+
+/* ─── Suggested prompts (nodes 3632:108334, 3632:108442) ─────
+   Only rendered in true zero state (no messages yet) — gone for good
+   once the first message sends, even scrolling back up to the header. */
+html.v65 .cmdk-chat__suggested-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  flex-shrink: 0;
+  padding-bottom: 20px;
+}
+html.v65 .cmdk-chat__suggested {
+  flex: 1 0 0;
+  min-width: 0;
+  height: 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 1px solid var(--v65-chat-border);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 150ms ease;
+}
+html.v65 .cmdk-chat__suggested:hover {
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-5), transparent);
+}
+html.v65 .cmdk-chat__suggested-text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-60), transparent);
+}
+html.v65 .cmdk-chat__suggested-tag {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+}
+
+/* Matches Figma node 3623:108011 ("Chat") exactly: 28px between turns,
+   14px between a turn's query pill and its system answer. */
+html.v65 .cmdk-chat__turn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+}
+/* The one turn currently at the "front" of the conversation — always at
+   least as tall as the scroll container itself, so scrollIntoView can
+   bring it flush with the top at any time (even a one-line exchange),
+   the same way Raycast's active answer always fills the visible window.
+   Plain CSS percentage sizing against the flex container, recalculated
+   automatically by the browser on every layout — no JS measurement, no
+   spacer element, nothing that can drift out of sync with real content. */
+html.v65 .cmdk-chat__turn--active {
+  min-height: 100%;
+  justify-content: flex-start;
+}
+/* Reverted message styling (node 3632:108465) — no more filled query
+   pill; both the query and the reply now share this same plain block:
+   a "You"/"Eric" + timestamp meta line, then the text below at normal
+   weight, no background. Eric's reply is ALWAYS full opacity, active
+   turn or settled history alike — the user asked explicitly not to dim
+   it, since only the user's own message needs the hover-to-reveal
+   treatment (see .cmdk-chat__message--user below); the system's answer
+   should stay legible without hovering, regardless of how far back in
+   the conversation it sits. */
+html.v65 .cmdk-chat__message {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+html.v65 .cmdk-chat__message-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  line-height: 16px;
+}
+html.v65 .cmdk-chat__message-name {
+  font-weight: 500;
+  color: var(--v65-chat-bg);
+}
+html.v65 .cmdk-chat__message-time {
+  font-weight: 400;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-60), transparent);
+}
+html.v65 .cmdk-chat__message-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  color: var(--v65-chat-bg);
+}
+/* The user's own submitted message deemphasizes as a whole block (name,
+   time, and text together) — 40% opacity at rest, brightening to 80% on
+   hover, so it reads as secondary to Eric's reply beneath it without
+   disappearing outright. Applied to the block itself, not to individual
+   child colors, so hover affects everything in it uniformly. */
+html.v65 .cmdk-chat__message--user {
+  opacity: 0.4;
+  transition: opacity 150ms ease;
+}
+html.v65 .cmdk-chat__message--user:hover {
+  opacity: 0.8;
+}
+html.v65 .cmdk-chat__answer-loading {
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-40), transparent);
+}
+
+html.v65 .cmdk-chat__link-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+html.v65 .cmdk-chat__link-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--v65-chat-border);
+  border-radius: 100px;
+  font-size: 12px;
+  color: var(--v65-chat-bg);
+  text-decoration: none;
+}
+html.v65 .cmdk-chat__link-card:hover {
+  background: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-5), transparent);
+}
+html.v65 .cmdk-chat__link-favicon { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+/* ─── Footer strip (search mode only) ────────────────
+   Matches Raycast's palette footer: a left-aligned hint group, a
+   right-aligned primary action (kbd pill trailing its label, mirroring
+   Raycast's "Open Walkthrough ↵" / "Retry ↵"). */
+html.v65 .cmdk__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-top: 1px solid var(--v65-chat-border);
+}
+html.v65 .cmdk__footer-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--v65-chat-bg) var(--opacity-60), transparent);
+}
+html.v65 .cmdk__footer-hint--primary {
+  color: var(--v65-chat-bg);
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 719px) {
+  html.v65 [cmdk-dialog] {
+    top: auto;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    translate: none;
+    max-width: none;
+    width: auto;
+  }
+}
+
+/* ─── Case study ──────────────────────────────────── */
+html.v65 .work-rail-meta { display: flex; flex-direction: column; gap: 24px; }
+html.v65 .work-rail-meta__row { display: flex; flex-direction: column; }
+html.v65 .work-rail-meta__label {
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-3);
+}
+html.v65 .work-rail-meta__value {
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-1);
+}
+
+/* The "Work / {title}" breadcrumb now lives in the site nav itself (see
+   NavbarV2.tsx/NavMobile.tsx's workTitle prop) instead of this in-page
+   position — hidden entirely rather than removed from markup, so main's
+   layout (which still renders it here) is unaffected. The old page-level
+   <h1> position is likewise hidden in favor of the in-content copy paired
+   with the OVERVIEW block (see .block-overview__headline). */
+html.v65 .work-header { display: none; }
+
+html.v65 .block-fullhero__media { border-radius: 8px; }
+
+/* OVERVIEW's headline+body layout lives entirely in LayoutBlock.tsx's
+   .block-overview markup (see globals.css) — but its own padding
+   (64px 0 80px) was written before v6.5's hero sat directly above it;
+   with the hero now providing its own visual break, that top padding
+   read as a large dead gap between hero and headline. Trimmed here
+   rather than in globals.css, which main still uses unchanged. */
+html.v65 .block-overview {
+  padding: 40px 0 64px;
+}
+
+/* main reserves 120px/240px here (.home-left, its own 860px/640px
+   breakpoints) for its own mobile hero image — v6.5 has none, and those
+   rules fire independently of ours below, so they need an explicit zero
+   at a width wide enough to cover both (1199px, our tablet threshold,
+   comfortably exceeds main's 860px) rather than relying on our own
+   719px block to have already overridden it. */
+@media (max-width: 1199px) {
+  html.v65 .home-left {
+    padding-top: 0;
+  }
+}
+
+/* Rail's min-width floor drops from 280px to 240px through the tablet
+   tier (1199px down to 719px, where it stacks to single-column and the
+   floor stops mattering) — a tighter floor buys .page-content__main more
+   room in that narrower zone. */
+@media (max-width: 1199px) {
+  html.v65 .navbar-v2__left,
+  html.v65 .page-content.style-sidebar .page-content__sidebar {
+    min-width: 240px;
+  }
+}
+
+/* ─── Mobile: stack the rail, drop sticky ───────────
+   Per the actual mobile Figma frame (node 3567:10780): page-content is a
+   plain flex column at this size — the rail isn't a side column at all,
+   just the first block, full width, not sticky, with a 24px bottom gap
+   before the cards/content start. No extra top padding beyond
+   .page-content's own flat --v65-content-top (same as every other
+   breakpoint) — there's no mobile hero reserving space. */
+@media (max-width: 719px) {
+  html.v65 .page-content.style-sidebar {
+    flex-direction: column;
+  }
+  html.v65 .page-content.style-sidebar .page-content__sidebar {
+    /* flex: 0 0 320px (base rule) is a row-axis fixed width — once the
+       parent switches to flex-direction: column here, that same 320px
+       becomes a fixed *height* instead, forcing 184px of empty space
+       below the bio's real ~136px of content. flex: none lets height:
+       auto below actually govern the box's size. */
+    flex: none;
+    width: 100%;
+    max-width: none;
+    position: static;
+    height: auto;
+    padding: 0 0 24px;
+  }
+  html.v65 .page-content.style-sidebar .page-content__main {
+    /* flex: 1 0 0 / min-width: 0 (base rule) are row-axis sizing — once
+       the parent switches to flex-direction: column here, those stop
+       controlling width at all, so the box shrinks to its content's
+       natural width instead of filling the row. width: 100% pins it back
+       to the full column width explicitly. */
+    width: 100%;
+    flex: none;
+    padding-top: 0;
+  }
+  /* Copyright line reads as redundant once the rail is just the first
+     stacked block on the page instead of a persistent sidebar — the real
+     page footer (.footer-mobile--home, PageFooter.tsx) already carries
+     this same "© 2026 Eric Sin" copy further down the stacked page. */
+  html.v65 .home-footer-copyright { display: none; }
+  /* Social links sat flush against the footer stack immediately below
+     them once stacked to single column — there's no sticky rail height
+     forcing space between the two anymore, so it needs an explicit gap. */
+  html.v65 .home-social-links { margin-bottom: 24px; }
+}
+
+/* ─── Case study, single-column BLOCK layout ────────
+   Per node 3603:35987. The content column at 1199px-and-below is narrow
+   enough that every block should already read as the single-column
+   design — stacked, tightened padding — even though the rail is still a
+   visible sticky sidebar at 1199px down to 720px (it only stacks/
+   disappears at the narrower 719px tier below). So this is keyed off
+   1199px, not 719px: it's "does the block read as single-column," which
+   is a function of content width, not of what the rail is doing. Values
+   quoted in comments are the Figma spacing-token name that maps to each
+   pixel value, for cross-reference back to the design file. */
+@media (max-width: 1199px) {
+  /* Every padding/flex/max-width value below is set explicitly, on all
+     four sides where relevant, even when a value matches desktop's own —
+     main's own unscoped @media (max-width: 1024px) block (globals.css)
+     targets these same class names with shorthand `padding` and
+     conflicting flex-direction/max-width rules, and CSS cascades per
+     property, not per rule: a more-specific selector here only wins on
+     the exact properties it declares, so any property left un-set falls
+     through to main's 1024px block once the viewport crosses it. Fully
+     restating every value (not just the ones that differ from desktop)
+     closes that gap entirely instead of relying on partial overrides. */
+  html.v65 .block-overview {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px; /* spacing/6 */
+    /* Top padding matches the unscoped desktop tier's own trimmed value
+       (see above) all the way down to 719px, where a distinct mobile-only
+       value (spacing/10, 40px) takes over. */
+    padding-top: 40px;
+    padding-bottom: 48px; /* spacing/12 */
+  }
+  /* TEXT: label above body instead of beside it — the desktop layout is a
+     row (label flex:0 0 405px, body flex:1), which needs an explicit
+     column switch, not just retuned padding. */
+  html.v65 .block-text {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    /* Top padding stays desktop's 64px through this tier too — the 719px
+       rule below has its own distinct mobile value (spacing/5). */
+    padding-top: 64px;
+    padding-bottom: 64px; /* spacing/16 */
+  }
+  /* The 1/9 spacer columns only make sense in the desktop row layout —
+     stacked single-column here too, they'd just show up as unwanted empty
+     gaps between label/headline and body. */
+  html.v65 .block-overview__spacer,
+  html.v65 .block-text__spacer {
+    display: none;
+  }
+  html.v65 .block-text__label {
+    flex: none;
+  }
+  html.v65 .block-text__inner {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    padding-right: 0;
+  }
+  /* 2COLTEXT: main image above the aside (secondary image + text), and
+     the aside itself stacks image-above-text instead of the desktop's
+     side-by-side flex row. */
+  html.v65 .block-2coltext {
+    flex-direction: column;
+    align-items: stretch;
+    /* Top padding stays desktop's 64px through this tier — the 719px rule
+       below drops it to 0 (spacing/0), its own distinct mobile value. */
+    padding-top: 64px;
+    padding-bottom: 16px; /* spacing/4 */
+  }
+  html.v65 .block-2coltext > .clip-reveal {
+    flex: none;
+  }
+  html.v65 .block-2coltext__aside {
+    flex-direction: column;
+    flex: none;
+    padding-bottom: 28px; /* spacing/7 */
+  }
+  html.v65 .block-2coltext__text {
+    display: block;
+  }
+  /* 2COL image pair: side-by-side grid → stacked. */
+  html.v65 .block-2col-images {
+    grid-template-columns: 1fr;
+    gap: 16px; /* spacing/4 */
+    padding: 0 0 16px;
+  }
+  /* 2COL (labeled text+media variant, distinct from 2COL-images above) —
+     no Figma single-column spec exists for this block, so it follows the
+     same label-above-media pattern and padding conventions already
+     established for TEXT/2COLTEXT rather than inventing new values. */
+  html.v65 .block-2col {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-top: 64px;
+    padding-bottom: 48px;
+  }
+  html.v65 .block-2col__text {
+    display: block;
+    padding-top: 0;
+  }
+  html.v65 .block-2col__media {
+    flex-direction: column;
+  }
+  html.v65 .block-comp {
+    gap: 8px; /* spacing/2 */
+    /* Top padding stays desktop's 64px through this tier — the 719px rule
+       below drops it to 0 (spacing/0), its own distinct mobile value. */
+    padding-top: 64px;
+    padding-bottom: 44px; /* spacing/11 */
+  }
+  /* main's 1024px block adds calc(100vw/12) horizontal padding to
+     .work-content and various block text columns — not part of the v6.5
+     single-column spec, which gets its horizontal inset from
+     .page-content alone (see .page-content.style-sidebar). Explicitly
+     zeroed so it can't reappear at this tier. */
+  html.v65 .work-content,
+  html.v65 .work-content .block-2col__text,
+  html.v65 .work-content .block-2coltext__text,
+  html.v65 .work-content .block-text,
+  html.v65 .work-content .block-overview {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Three breakpoints total: 1200px+ (desktop), 1199–720px (tablet), below
+   720px (mobile). This rule is tablet-only — text content across every
+   stacked block caps at 480px and centers within its now-full-width
+   column, instead of stretching edge to edge. Full-width paragraphs read
+   poorly at this width but not yet phone-narrow; at mobile the column
+   itself is already narrow enough that the cap isn't needed, so it's
+   explicitly NOT carried down to that tier (each of these elements
+   already spans 100% of its parent — see the stacking rules above — so a
+   max-width + auto margins is enough to center without fighting flex
+   sizing). */
+@media (min-width: 720px) and (max-width: 1199px) {
+  html.v65 .block-overview__headline,
+  html.v65 .block-overview__body,
+  html.v65 .block-text__label,
+  html.v65 .block-text__inner,
+  html.v65 .block-2coltext__text,
+  html.v65 .block-comp__caption {
+    max-width: 480px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ─── Case study, single-column PAGE shell ──────────
+   Unlike the block layout above, these actually depend on the rail's own
+   state, so they stay gated to 719px — the one width where the rail
+   itself stacks full-width instead of remaining a sticky sidebar (see
+   .page-content.style-sidebar's own 719px rule). The case study page
+   moves its horizontal inset from .page to .page-content here, and the
+   hero renders as an actual sibling of .page-content (see WorkPage.tsx's
+   --mobile/--desktop duplicate) so it sits outside that inset and can
+   bleed edge-to-edge with square corners — the desktop copy (nested
+   inside .page-content__main, still inset, still rounded) hides in
+   exchange. .work-header (the old breadcrumb position) is already hidden
+   site-wide — see above. */
+@media (max-width: 719px) {
+  html.v65 .page--work.page {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* Scoped to .page--work specifically — .page-content.style-sidebar
+     alone also matches Home (.home-layout page-content style-sidebar,
+     no .page--work ancestor needed since this used to be a flat class
+     match), which zeroed Home's mobile top padding along with case
+     studies' and left .nav-mobile floating over the bio text with no
+     reserved space beneath it. */
+  html.v65 .page--work .page-content.style-sidebar {
+    padding-left: var(--body-margin-x);
+    padding-right: var(--body-margin-x);
+    padding-top: 0;
+  }
+  /* Mobile's own top-padding values — distinct from the 1199px tier above
+     (which keeps desktop's 64px)  per the Figma single-column frame.
+     Every property fully restated (not just what differs from the 1199px
+     tier) for the same reason as that tier's own comment: main's unscoped
+     @media (max-width: 640px) block (globals.css) targets these same
+     class names with shorthand padding and its own parallel single-column
+     implementation, at a breakpoint that falls *inside* our 719px tier
+     (640 < 719) — so both are simultaneously active from 719px down to
+     641px, and CSS resolves per property, not per rule. Any property left
+     un-set here falls through to main's conflicting 640px value the
+     moment the viewport crosses 640px. */
+  html.v65 .work-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  html.v65 .block-overview {
+    /* The requested ~40px gap is from the hero to the headline text, not
+       an additional 40px on top of whatever whitespace the hero already
+       leaves — with the empty sidebar box now hidden (see .work-left
+       above) the hero already sits 0 away from this block's own edge, so
+       this padding-top IS the entire visible gap. Was 40px, reading as a
+       much larger gap than intended once stacked with normal line-height
+       above the headline. */
+    padding-top: 16px; /* spacing/4 */
+    padding-bottom: 48px; /* spacing/12, unchanged from the 1199px tier */
+  }
+  html.v65 .block-text {
+    padding-top: 20px; /* spacing/5 */
+    padding-bottom: 64px; /* spacing/16, unchanged from the 1199px tier */
+  }
+  /* The 1/9 spacer columns only make sense in the desktop row layout —
+     stacked single-column, they'd just show up as unwanted empty gaps
+     between label/headline and body. */
+  html.v65 .block-overview__spacer,
+  html.v65 .block-text__spacer {
+    display: none;
+  }
+  html.v65 .block-2coltext {
+    padding: 0 0 16px; /* spacing/0, spacing/4 — unchanged bottom */
+  }
+  html.v65 .block-2coltext__aside {
+    flex-direction: column;
+  }
+  html.v65 .block-comp {
+    padding-top: 0; /* spacing/0 */
+    padding-bottom: 44px; /* spacing/11, unchanged from the 1199px tier */
+  }
+  html.v65 .block-2col-images,
+  html.v65 .block-full {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  html.v65 .block-2col {
+    padding-top: 40px; /* matches OVERVIEW's mobile top value */
+    padding-bottom: 48px; /* unchanged from the 1199px tier */
+  }
+  /* Media above the label — only at this single-column tier, not the
+     1199px tablet tier above. DOM order stays label-first (reading/tab
+     order unaffected), `order` just flips the visual stacking. */
+  html.v65 .block-2col__text {
+    display: block;
+    order: 2;
+  }
+  html.v65 .block-2col__media {
+    flex-direction: column;
+    order: 1;
+  }
+  /* main scales these same elements up at its own 640px breakpoint
+     (globals.css) for mobile legibility — that rule is unscoped but keyed
+     to a breakpoint outside our 3-tier system, so it never actually fires
+     between 719px and 640px. Reproduced here at our own mobile tier
+     instead of relying on main's mismatched one. Only the headline/label
+     scale up (per Figma node 3603:36014) — body copy stays at its desktop
+     14px/20px size, so it's deliberately left out of this rule. */
+  html.v65 .block-overview__headline,
+  html.v65 .block-text__label {
+    font-size: var(--type-large-body-size);
+    line-height: var(--type-large-body-lh);
+  }
+  html.v65 .block-overview__body,
+  html.v65 .block-text__inner {
+    font-size: 0.875rem;
+    line-height: 20px;
+  }
+  /* The rail's Role/Scope/Type/Industry meta and the OVERVIEW block's own
+     meta grid (.block-overview__meta, below) show the exact same fields —
+     toggles of each other, rail taking priority whenever it's actually
+     visible. Above this breakpoint the rail is still a real sticky
+     sidebar (1199px down to 720px), so its meta stays the priority copy
+     there and .block-overview__meta stays off. Only here, where the rail
+     stacks full-width instead of disappearing (see
+     .page-content.style-sidebar above), does its meta need to be
+     explicitly hidden in favor of the OVERVIEW copy — otherwise both
+     would render at once. With .work-rail-meta hidden (and the old
+     back-link removed from WorkPage.tsx), .work-left/.page-content__sidebar
+     is now entirely empty at this breakpoint, but it still occupied real
+     space: its own 24px bottom padding plus the 24px column gap
+     .page-content.style-sidebar puts between every child — 48px of dead
+     air between the hero and the OVERVIEW block for a box with nothing
+     visible in it. Hiding the whole box removes that gap instead of just
+     the text inside it. */
+  html.v65 .page-content.style-sidebar .work-left.page-content__sidebar { display: none; }
+  html.v65 .work-rail-meta { display: none; }
+  html.v65 .block-overview__meta {
+    display: flex;
+    gap: 36px; /* spacing/9 */
+    /* No max-width here — this is the single-column mobile tier
+       (.work-rail-meta is hidden in favor of this copy at this
+       breakpoint, see above), so the row and its border-top should fill
+       the full content column like everything else on the page, not cap
+       at an arbitrary 360px and leave the border visibly cut short. */
+    width: 100%;
+    padding-top: 12px; /* spacing/3 */
+    border-top: 1px solid var(--component-border-1);
+  }
+  html.v65 .block-overview__meta-col {
+    flex: 1 0 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  html.v65 .block-overview__meta-row {
+    display: flex;
+    flex-direction: column;
+  }
+  html.v65 .block-overview__meta-label {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--component-fg-3, #999);
+  }
+  html.v65 .block-overview__meta-value {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--system-body-primary);
+    margin: 0;
+  }
+  html.v65 .work-hero--desktop { display: none; }
+  html.v65 .work-hero--mobile {
+    display: block;
+    width: 100%;
+    /* .page--work.page has zero top padding everywhere (single source of
+       top spacing is --v65-content-top on .page-content, see above) and
+       .nav-mobile is position: fixed, so without this the hero (the
+       first child, sibling to .page-content, deliberately outside its
+       horizontal inset so it can bleed edge-to-edge) rendered at the very
+       top of the viewport, underneath the fixed nav instead of below it.
+       --v65-nav-height matches .nav-mobile-inner's real rendered height
+       (16px padding * 2 + 28px icon = 60px, globals.css). */
+    margin-top: var(--v65-nav-height);
+  }
+  html.v65 .work-hero--mobile .block-fullhero__media {
+    border-radius: 0;
+  }
+}
+@media (min-width: 720px) {
+  html.v65 .work-hero--mobile { display: none; }
+}
+
+/* ─── About ──────────────────────────────────────────
+   New markup (.v65-about, added in About.tsx) renders alongside the
+   pre-reskin sections (.about-hero-mobile / .about-bio-mobile /
+   .about-cols) rather than replacing them — the old set is hidden here
+   under .v65, and the new set is display:none by default so it's inert
+   outside .v65. Two stacked 12-col sections (3COL / spacer / 5COL), no
+   sticky/scroll split — About's content is short enough not to need one,
+   per the Figma frame (node 3542:41331). */
+html.v65 .about-hero-mobile,
+html.v65 .about-bio-mobile,
+html.v65 .about-cols {
+  display: none !important;
+}
+/* .page's own top padding (48px, see globals.css) is replaced with
+   --v65-content-top — the nav is `position: fixed` and floats above this
+   space rather than pushing it down, so this is clearance *below* the
+   nav, not stacked on top of it, and must track the nav's own height
+   (see --v65-content-top's definition) rather than a value hardcoded
+   here separately. The first section then adds its own 64px *bottom*
+   padding (per Figma's pb-[64px] on that section, an independent design
+   value, not nav clearance) before the second section starts, with no
+   extra top offset of its own. */
+html.v65 .page--about {
+  padding-top: var(--v65-content-top);
+}
+html.v65 .v65-about {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 var(--body-margin-x);
+  box-sizing: border-box;
+}
+html.v65 .v65-about__section {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--v65-grid-gap);
+  width: 100%;
+  padding: 0 0 64px;
+}
+html.v65 .v65-about__section + .v65-about__section {
+  align-items: flex-start;
+}
+html.v65 .v65-about__col-3col {
+  flex: 0 0 25%;
+  min-width: 0;
+}
+html.v65 .v65-about__spacer {
+  flex: 0 0 calc((100% - var(--v65-grid-gap) * 3) * 2 / 12);
+}
+html.v65 .v65-about__col-5col {
+  flex: 1 0 0;
+  min-width: 0;
+  max-width: 520px;
+}
+/* First section's 5COL is a space-between column matching the photo's
+   height — "About" pins to the top, body copy sits at the bottom — per
+   Figma's `justify-between` on this block. Needs align-self: stretch
+   since the section itself is align-items: flex-end (bottom-aligns the
+   image against the shorter text column), which wouldn't otherwise give
+   this column the photo's full height to space itself across. */
+html.v65 .v65-about__section:first-child .v65-about__col-5col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: stretch;
+}
+html.v65 .v65-about__photo-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+html.v65 .v65-about__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+html.v65 .v65-about__eyebrow {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-3);
+  margin: 0;
+}
+html.v65 .v65-about__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-1);
+}
+html.v65 .v65-about__body p { margin: 0; }
+
+html.v65 .v65-about__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+}
+html.v65 .v65-about__meta-row { display: flex; flex-direction: column; }
+html.v65 .v65-about__meta-label { color: var(--component-fg-3); margin: 0; }
+html.v65 .v65-about__meta-value { color: var(--component-fg-1); font-weight: 500; margin: 0; }
+
+html.v65 .v65-about__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+  color: var(--component-fg-1);
+  margin: 0;
+}
+html.v65 .v65-about__timeline-row { margin: 0; }
+html.v65 .v65-about__timeline-status { color: var(--component-fg-3); }
+html.v65 .v65-about__timeline-name { font-weight: 600; }
+
+/* ─── Archives ───────────────────────────────────────
+   Per Figma node 3619:36624 ("V6.5 / Archives") — the "Archives" heading
+   and subhead move entirely into the nav as a static label (see
+   NavbarV2.tsx's navLabel prop, "Archived Work • 2012—2026"), so the page
+   itself is just the grid, flush under the nav with no in-page header.
+   The existing masonry grid (Archives.tsx's column-split + ArchiveCard,
+   unchanged) is reused as-is — only the shell's padding/gap change here to
+   match the new spec. */
+html.v65 .archives-header {
+  display: none;
+}
+html.v65 .page--archives.page {
+  padding-top: var(--v65-content-top);
+}
+/* Figma's Grid frame pads 20px left only (px-[20px] on page-content, plus
+   the Grid itself sits flush at the frame's own right edge) — restated as
+   both sides via --body-margin-x so the grid doesn't run flush to .app's
+   right-hand border. */
+html.v65 .archives-grid {
+  display: flex;
+  gap: var(--v65-grid-gap);
+  padding: 0 var(--body-margin-x) 64px;
+  width: 100%;
+  box-sizing: border-box;
+}
+html.v65 .archives-col {
+  flex: 1 0 0;
+  min-width: 0;
+  gap: 40px;
+  padding: 0;
+}
+/* Figma's Metadata frame sits 8px below the asset (181.97 − 173.97), not
+   .archive-card's base 12px (globals.css) — restated per-card since the
+   base rule already sets flex/direction and only the gap needs to change. */
+html.v65 .archive-card {
+  gap: 8px;
+}
+/* No tablet/mobile Archives frame was supplied — column count still drops
+   for legibility (see ARCHIVES_BREAKPOINTS in Archives.tsx: 3 cols here,
+   2 below 719px), but gap/padding stay the same flat values as desktop
+   rather than introducing breakpoint-specific spacing with no design spec
+   behind it. */
+@media (max-width: 1199px) {
+  html.v65 .page--archives.page {
+    padding-top: var(--v65-content-top);
+  }
+}
+@media (max-width: 719px) {
+  html.v65 .archives-grid {
+    gap: 16px;
+  }
+  html.v65 .archives-col {
+    /* main's own 640px rule (globals.css) sets a stray horizontal padding
+       here — restated to 0 so it doesn't leak in below that breakpoint. */
+    padding: 0;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 719px) {
+  html.v65 .v65-about__section {
+    flex-wrap: wrap;
+  }
+  html.v65 .v65-about__spacer { display: none; }
+  html.v65 .v65-about__col-3col,
+  html.v65 .v65-about__col-5col {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+  /* Trying a half-width photo on mobile instead of full-bleed — easy to
+     revert to 100% if it doesn't read well at this size. */
+  html.v65 .v65-about__photo-wrap {
+    width: 50%;
+  }
+}

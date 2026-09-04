@@ -14,11 +14,7 @@ const CARD_GRID_BREAKPOINTS = [
 ]
 
 // Display order for the filter tabs; anything not listed is appended.
-const FILTER_ORDER = ['Brand', 'Product', 'Design Systems', 'Web']
-
-function toTags(categories: string): string[] {
-  return categories.split(',').map(c => c.trim()).filter(Boolean)
-}
+const FILTER_ORDER = ['Brand', 'Product']
 
 export default function WorksPage() {
   const cards = useWorkIndex({ featuredOnly: false })
@@ -27,14 +23,14 @@ export default function WorksPage() {
 
   // Only offer filters that at least one case study actually carries.
   const options = useMemo(() => {
-    const present = new Set(cards.flatMap(c => toTags(c.categories)))
+    const present = new Set(cards.map(c => c.type).filter(Boolean))
     const ordered = FILTER_ORDER.filter(f => present.has(f))
     const extra = [...present].filter(f => !FILTER_ORDER.includes(f)).sort()
     return [...ordered, ...extra]
   }, [cards])
 
   const visible = useMemo(
-    () => (filter === null ? cards : cards.filter(c => toTags(c.categories).includes(filter))),
+    () => (filter === null ? cards : cards.filter(c => c.type === filter)),
     [cards, filter]
   )
 
@@ -70,8 +66,8 @@ export default function WorksPage() {
               // animation — Card strips .anim from the DOM on animation end.
               key={`${filter ?? 'all'}-${card.slug}`}
               name={card.name}
-              title={card.headliner}
-              tags={card.categories}
+              title={card.name}
+              type={card.type}
               thumb={card.thumb}
               thumbType={card.thumbType}
               slug={card.slug}

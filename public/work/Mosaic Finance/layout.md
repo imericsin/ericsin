@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: Mosaic Finance
 headliner: From Unblocking Engineering to De-risking Roadmaps
-categories: Product, Design Systems
+workScope: Product, Design Systems
+type: Product
 featured: false
 date: 2023-07
 role: |
@@ -44,7 +45,7 @@ Design had been a recurring blocker for engineering; within six months, that sto
 
 I also brought prototyping skills the team lacked, running usability tests—like a hotkey study benchmarking FP&A workflows against Excel—to validate ideas ahead of deep domain expertise. The C-suite noticed the team moving faster.
 
-::05_3COL
+::05_2COLTEXT
 
 ## Visioncrafting with Design Systems
 

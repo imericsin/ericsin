@@ -6,7 +6,6 @@ import type { LayoutBlock as LayoutBlockType } from '../types/work'
 
 interface Props {
   block: LayoutBlockType
-  categories?: string
   heroVtName?: string
   meta?: import('../types/work').WorkMeta
 }
@@ -44,7 +43,7 @@ function parseBlockText(text: string | undefined) {
   return { subhead, body }
 }
 
-export default function LayoutBlock({ block, categories, heroVtName, meta }: Props) {
+export default function LayoutBlock({ block, heroVtName, meta }: Props) {
   const { type, text, assets } = block
 
   switch (type) {
@@ -63,87 +62,68 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
       )
 
     case 'TEXT': {
+      const { subhead, body } = parseBlockText(text)
       return (
         <section className="block block-text">
+          {subhead && <p className="block-text__label">{subhead}</p>}
+          <div className="block-text__spacer" aria-hidden />
           <div className="block-text__inner">
-            {text && <ReactMarkdown components={MD_COMPONENTS}>{text}</ReactMarkdown>}
+            {body && <ReactMarkdown components={MD_COMPONENTS}>{body}</ReactMarkdown>}
           </div>
+          <div className="block-text__spacer" aria-hidden />
         </section>
       )
     }
 
     case 'OVERVIEW': {
+      // Body content follows a leading "---" and an optional "## Heading"
+      // (kept in layout.md for authoring structure, but the new design has
+      // no visible label here — only the paragraphs after it render).
       const [, introRaw = ''] = (text ?? '').split(/\n?---\n/)
+      const introBody = introRaw.trim().replace(/^##[^\n]*\n+/, '').trim()
 
-      const scopeLines = meta?.categories ? meta.categories.split(',').map(s => s.trim()).filter(Boolean) : []
-      const metaRows = [
-        meta?.role   ? { label: 'Role',     lines: meta.role.split('\n').filter(Boolean) }   : null,
-        scopeLines.length ? { label: 'Scope', lines: scopeLines } : null,
-        meta?.industry ? { label: 'Industry', lines: meta.industry.split('\n').filter(Boolean) } : null,
-      ].filter(Boolean) as { label: string; lines: string[] }[]
-
-      const hasLinks = !!(meta?.links?.length)
-
-      const overviewCol = (
-        <div className="block-credits__overview">
-          <div className="block-credits__overview-body">
-            <ReactMarkdown components={MD_COMPONENTS}>{introRaw.trim()}</ReactMarkdown>
-          </div>
-        </div>
-      )
-
-      const renderLinkCard = (link: { label: string; url: string; date?: string }, mobile = false) => (
-        <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer"
-          className={mobile ? 'link-card link-card--mobile' : 'link-card'}>
-          <div className="link-card__label">
-            {link.date && <p className="link-card__date">{link.date}</p>}
-            <p className="link-card__title">{link.label}</p>
-          </div>
-          <p className="link-card__cta">Read Article ↗</p>
-        </a>
-      )
-
-      const linkStack = hasLinks ? (
-        <div className="link-card-stack">
-          {meta!.links!.map(l => renderLinkCard(l))}
-        </div>
-      ) : null
-
-      const mobileLinkStack = hasLinks ? (
-        <div className="link-card-stack">
-          {meta!.links!.map(l => renderLinkCard(l, true))}
-        </div>
-      ) : null
-
-      // Mobile splits meta into left col (Role+Scope) and right col (Industry)
-      const mobileMetaLeft = metaRows.filter(r => r.label === 'Role' || r.label === 'Scope')
-      const mobileMetaRight = metaRows.filter(r => r.label === 'Industry')
-
-      const renderMetaGroup = (rows: typeof metaRows) => rows.map(row => (
-        <div key={row.label} className="block-credits__meta-row">
-          <p className="block-credits__meta-label">{row.label}</p>
-          <div className="block-credits__meta-values">
-            {row.lines.map(l => <p key={l}>{l}</p>)}
-          </div>
-        </div>
-      ))
+      // Desktop shows Role/Scope/Type/Industry in the sticky left rail
+      // (see WorkPage.tsx's railMetaRows) — there's no rail at single
+      // column, so this same data reappears here instead, below the intro
+      // copy, as a 2-col grid under a divider. CSS-only visibility (see
+      // .block-overview__meta in v65.css): this markup always renders,
+      // the desktop breakpoint just hides it since the rail already shows
+      // the same fields.
+      const workScopeLines = meta?.workScope ? meta.workScope.split(',').map(s => s.trim()).filter(Boolean) : []
+      const metaCols: { label: string; lines: string[] }[][] = [
+        [
+          meta?.role ? { label: 'Role', lines: meta.role.split('\n').filter(Boolean) } : null,
+          meta?.type ? { label: 'Type', lines: [meta.type] } : null,
+        ].filter(Boolean) as { label: string; lines: string[] }[],
+        [
+          workScopeLines.length ? { label: 'Scope', lines: workScopeLines } : null,
+          meta?.industry ? { label: 'Industry', lines: meta.industry.split('\n').filter(Boolean) } : null,
+        ].filter(Boolean) as { label: string; lines: string[] }[],
+      ]
+      const hasMeta = metaCols.some(col => col.length > 0)
 
       return (
-        <section className="block block-credits">
-          {/* Desktop: left meta col, center overview, spacer, right link card */}
-          <div className="block-credits__meta">{renderMetaGroup(metaRows)}</div>
-          <div className="block-credits__spacer" />
-          <div className="block-credits__center">{overviewCol}</div>
-          <div className="block-credits__spacer-right" />
-          <div className="block-credits__link-desktop">{linkStack}</div>
-
-          {/* Mobile: overview first, then 2-col meta row, then link stack */}
-          <div className="block-credits__mobile-overview">{overviewCol}</div>
-          <div className="block-credits__mobile-meta">
-            <div className="block-credits__mobile-col">{renderMetaGroup(mobileMetaLeft)}</div>
-            <div className="block-credits__mobile-col">{renderMetaGroup(mobileMetaRight)}</div>
+        <section className="block block-overview">
+          <p className="block-overview__headline">{meta?.headliner}</p>
+          <div className="block-overview__spacer" aria-hidden />
+          <div className="block-overview__body">
+            <ReactMarkdown components={MD_COMPONENTS}>{introBody}</ReactMarkdown>
           </div>
-          {hasLinks && mobileLinkStack}
+          <div className="block-overview__spacer" aria-hidden />
+          {hasMeta && (
+            <div className="block-overview__meta">
+              {metaCols.map((col, i) => (
+                <div key={i} className="block-overview__meta-col">
+                  {col.map(row => (
+                    <div key={row.label} className="block-overview__meta-row">
+                      <p className="block-overview__meta-label">{row.label}</p>
+                      {row.lines.map(l => <p key={l} className="block-overview__meta-value">{l}</p>)}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       )
     }
@@ -177,30 +157,32 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
       )
     }
 
-    case '3COL': {
+    case '2COLTEXT': {
       const { subhead, body } = parseBlockText(text)
+      // Slot 01 is the large left-column image; slot 02 is the smaller
+      // image stacked above the text in the right column (resolveAssets
+      // in parseLayout.ts already sorts assets by slot).
+      const [primary, secondary] = assets
       return (
-        <section className="block block-3col">
-          <div className="block-3col__text">
-            {subhead && <p className="block-3col__label">{subhead}</p>}
-            {body && (
-              <div className="block-3col__body">
-                <ReactMarkdown components={MD_COMPONENTS}>{body}</ReactMarkdown>
-              </div>
-            )}
-          </div>
-          <div className="block-3col__media">
-            {assets.map(asset => (
-              <MediaAsset key={asset.src} asset={asset} className="block-3col__asset" />
-            ))}
+        <section className="block block-2coltext">
+          {primary && <MediaAsset asset={primary} className="block-2coltext__primary" />}
+          <div className="block-2coltext__aside">
+            {secondary && <MediaAsset asset={secondary} className="block-2coltext__secondary" />}
+            <div className="block-2coltext__text">
+              {subhead && <p className="block-2coltext__label">{subhead}</p>}
+              {body && (
+                <div className="block-2coltext__body">
+                  <ReactMarkdown components={MD_COMPONENTS}>{body}</ReactMarkdown>
+                </div>
+              )}
+            </div>
           </div>
         </section>
       )
     }
 
     case 'COMP': {
-      const { subhead, body } = parseBlockText(text)
-      const hasText = !!(subhead || body)
+      const caption = (text ?? '').trim()
 
       const before = assets.find(a => a.slot === '1' || a.slot === '01')
       const after = assets.find(a => a.slot === '2' || a.slot === '02')
@@ -209,23 +191,22 @@ export default function LayoutBlock({ block, categories, heroVtName, meta }: Pro
 
       return (
         <section className="block block-comp">
-          {hasText && (
-            <div className="block-comp__text">
-              {subhead && <p className="block-2col__label">{subhead}</p>}
-              {body && <ReactMarkdown components={MD_COMPONENTS}>{body}</ReactMarkdown>}
-            </div>
-          )}
           <div className="block-comp__media">
             <BeforeAfter
               beforeImage={before.src}
               afterImage={after.src}
-              style={{ width: '100%', borderRadius: 'var(--radius-card)' }}
+              style={{ width: '100%' }}
               buttonStyle={{ background: 'var(--system-background-1)', border: '1px solid var(--component-border-1)', width: 36, height: 36, borderRadius: '50%' }}
               buttonClassName="block-comp__handle"
             />
             <span className="card-tag block-comp__tag block-comp__tag--before">Before</span>
             <span className="card-tag block-comp__tag block-comp__tag--after">After</span>
           </div>
+          {caption && (
+            <div className="block-comp__caption">
+              <ReactMarkdown components={MD_COMPONENTS}>{caption}</ReactMarkdown>
+            </div>
+          )}
         </section>
       )
     }

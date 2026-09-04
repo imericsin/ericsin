@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: Producer.AI
 headliner: Enabling Imagination in Music Production
-categories: Brand, Product, Design Systems
+workScope: Brand, Product, Design Systems
+type: Product
 featured: true
 date: 2025-07
 role: |
@@ -60,7 +61,7 @@ We leaned heavily into the origin of music—drawing on artifacts and visual lan
 
 ::06_FULL
 
-::07_3COL
+::07_2COLTEXT
 Designing a product brand built to scale
 
 Expression points across marketing and in-app, without compromising the clear, simple UX the product depended on.

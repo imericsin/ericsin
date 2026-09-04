@@ -1,8 +1,9 @@
 ---
-thumb: assets/thumbnail.jpg
+thumb: assets/thumbnail.webp
 title: REVOPS
 headliner: Streamlined Equipment Financing, Branded
-categories: Brand, Web
+workScope: Brand, Web
+type: Brand
 featured: false
 date: 2024-07
 role: |

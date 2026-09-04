@@ -133,4 +133,12 @@ export default defineConfig({
   server: {
     port: process.env.PORT ? parseInt(process.env.PORT) : 3457,
   },
+  define: {
+    // Vercel sets VERCEL_GIT_COMMIT_SHA automatically during build — not
+    // VITE_-prefixed, so Vite wouldn't expose it to client code on its
+    // own; baked in at build time via `define` instead. Short (7-char)
+    // form, matching how the design shows it ("6.91e7bfb"). Empty string
+    // locally (no Vercel env), which the home footer falls back from.
+    __GIT_COMMIT_SHA__: JSON.stringify((process.env.VERCEL_GIT_COMMIT_SHA ?? '').slice(0, 7)),
+  },
 })

@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.mp4
 title: APMC (A Parent Media Co. Inc.)
 headliner: A Decade of Growth, One Story
-categories: Brand, Web
+workScope: Brand, Web
+type: Brand
 featured: true
 date: 2024-11
 role: |

@@ -1,0 +1,333 @@
+/* ─── PromptComponent (archived) ──────────────────────
+   Retired from the live site when CMD+K moved to CommandPalette (a cmdk
+   command-palette dialog with a built-in chat mode) — kept here, fully
+   self-contained, for a future visual component repo. Depends on the
+   same design tokens as the live site (--component-fg-*, --component-
+   border-*, --system-background-1, --radius-badge, .message/.message__*
+   from globals.css, LLMStates) but none of its own selectors collide with
+   anything still in use, so it's safe to load standalone. */
+
+.prompt {
+  position: fixed;
+  left: auto;
+  right: var(--body-margin-x, 20px);
+  bottom: calc(var(--body-margin-x, 20px) + 8px);
+  transform: none;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 360px;
+  background: var(--system-background-1);
+  border: 1px solid var(--component-border-1);
+  border-radius: 20px;
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition:
+    height 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms ease-out;
+}
+.prompt--morphing {
+  transition:
+    left 240ms cubic-bezier(0.32, 0.72, 0, 1),
+    top 240ms cubic-bezier(0.32, 0.72, 0, 1),
+    height 240ms cubic-bezier(0.32, 0.72, 0, 1),
+    width 240ms cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 240ms ease-out,
+    opacity 240ms cubic-bezier(0.32, 0.72, 0, 1);
+  animation: none !important;
+}
+.prompt--closing {
+  transition:
+    left 275ms cubic-bezier(0.32, 0.72, 0, 1),
+    top 275ms cubic-bezier(0.32, 0.72, 0, 1),
+    height 275ms cubic-bezier(0.32, 0.72, 0, 1),
+    width 275ms cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 275ms ease-out,
+    opacity 225ms ease-in 50ms;
+}
+.prompt--morphing .prompt__header,
+.prompt--morphing .prompt__messages-wrap,
+.prompt--morphing .prompt__input-row,
+.prompt--morphing .prompt__contact {
+  opacity: 0;
+  filter: blur(4px);
+}
+.prompt--morphing.prompt--morph-open .prompt__header,
+.prompt--morphing.prompt--morph-open .prompt__messages-wrap,
+.prompt--morphing.prompt--morph-open .prompt__input-row,
+.prompt--morphing.prompt--morph-open .prompt__contact {
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity 200ms ease-out 80ms, filter 200ms ease-out 80ms;
+}
+.prompt--expanded {
+  height: 360px;
+  box-shadow: 0px 9px 9px 0px rgba(0,0,0,0.09), 0px 2px 5px 0px rgba(0,0,0,0.1);
+}
+.prompt--resizing { transition: none; }
+
+@media (max-width: 767px) {
+  .prompt {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+    max-width: none;
+  }
+  .prompt--expanded {
+    max-height: calc(100vh - 32px);
+  }
+  .prompt__resize-handle { display: none; }
+}
+
+@keyframes prompt-float-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes prompt-dock-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.prompt--expanded { animation: prompt-float-in 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+.prompt--no-float-in { animation: none !important; }
+.prompt--docked { animation: prompt-dock-in 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt,
+  .prompt--expanded,
+  .prompt--docked { animation: none; transition: none; }
+}
+
+.prompt--docked {
+  position: fixed;
+  left: auto;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transform: none;
+  width: 360px;
+  height: 100vh;
+  border-radius: 0;
+  border-width: 0 0 0 1px;
+  box-shadow: none;
+}
+
+.prompt__resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: ns-resize;
+  z-index: 1;
+  touch-action: none;
+}
+.prompt__resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  border-radius: 100px;
+  background: var(--component-bg-3);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.prompt__resize-handle:hover::after,
+.prompt--resizing .prompt__resize-handle::after {
+  opacity: 1;
+}
+
+.prompt__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 8px 8px 8px 12px;
+  border-bottom: 1px solid var(--component-border-1);
+}
+.prompt--docked .prompt__header { padding: 12px 12px 12px 16px; }
+
+.prompt__tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.prompt__tab {
+  padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--component-fg-4);
+  transition: color 150ms ease;
+}
+.prompt__tab--active { color: var(--component-fg-1); }
+
+.prompt__controls { display: flex; align-items: center; gap: 4px; }
+.prompt__ctrl {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 150ms ease;
+}
+.prompt__ctrl:hover { background: color-mix(in srgb, var(--component-fg-1) 6%, transparent); }
+.prompt__ctrl--active { background: color-mix(in srgb, var(--component-fg-1) 12%, transparent); }
+.prompt__ctrl img { width: 24px; height: 24px; display: block; }
+
+.prompt__contact {
+  flex: 1 0 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 16px;
+}
+
+.prompt__messages-wrap {
+  position: relative;
+  flex: 1 0 0;
+  min-height: 0;
+}
+.prompt__messages-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--system-background-1), transparent);
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.prompt__messages-wrap--scrolled::before { opacity: 1; }
+
+.prompt__messages {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  background: var(--system-background-1);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--component-fg-1) 20%, transparent) transparent;
+}
+.prompt__messages::-webkit-scrollbar { width: 6px; }
+.prompt__messages::-webkit-scrollbar-track { background: transparent; margin-right: 8px; }
+.prompt__messages::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--component-fg-1) 20%, transparent);
+  border-radius: 100px;
+}
+.prompt__messages::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--component-fg-1) 32%, transparent);
+}
+
+.prompt__link-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.prompt__link-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--component-bg-2);
+  border-radius: 100px;
+  font-size: 12px;
+  color: var(--component-fg-1);
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+.prompt__link-card:hover { background: var(--component-bg-2); }
+.prompt__link-favicon { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+.prompt__input-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+  padding: 8px;
+}
+
+.prompt__input-fill {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  background: color-mix(in srgb, var(--component-fg-1) var(--prompt-fill-mix, 4%), var(--system-background-1));
+  border-radius: 12px;
+  padding: 4px 4px 4px 10px;
+  transition: background-color 150ms ease;
+}
+.prompt__input-fill:focus-within {
+  background: color-mix(in srgb, var(--component-fg-1) var(--prompt-fill-mix-focus, 6%), var(--system-background-1));
+}
+
+.prompt__input {
+  flex: 1 0 0;
+  min-width: 0;
+  min-height: 28px;
+  max-height: 120px;
+  resize: none;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  color: var(--component-fg-1);
+  padding: 4px 0;
+}
+.prompt__input::placeholder { color: var(--component-fg-3); }
+.prompt__input:disabled { opacity: 0.6; }
+
+.prompt__send {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 120ms ease;
+}
+.prompt__send:disabled { cursor: default; }
+.prompt__send:not(:disabled):hover { transform: scale(1.05); }
+.prompt__send img { width: 28px; height: 28px; display: block; }
+
+/* v6.5 chat-panel token overrides (from v65.css) — fixed light-mode colors
+   regardless of the current case-study theme, plus the bottom-left
+   position and the docking control hidden (v6.5 never offered docking). */
+html.v65 .prompt-archived-demo .prompt {
+  --system-background-1: #ffffff;
+  --component-fg-1: #121212;
+  --component-fg-2: #757575;
+  --component-fg-3: #999999;
+  --component-fg-4: #cccccc;
+  --component-border-1: #f3f3f3;
+  --prompt-fill-mix: 4%;
+  --prompt-fill-mix-focus: 6%;
+}

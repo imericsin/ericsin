@@ -9,7 +9,7 @@ import WorkPage from './pages/WorkPage'
 import Archives from './pages/Archives'
 import ToastDemo from './pages/ToastDemo'
 import PromptDemo from './pages/PromptDemo'
-import PromptComponent, { loadDockedPreference } from './components/PromptComponent'
+import CommandPalette from './components/CommandPalette'
 import { useWorkIndex } from './hooks/useWorkIndex'
 import { usePageContext } from './hooks/usePageContext'
 import { PromptContext } from './lib/promptContext'
@@ -18,8 +18,15 @@ import { PromptContext } from './lib/promptContext'
 // future reuse but is intentionally unmounted — Home is now the Work index.
 // import WorksPage from './pages/WorksPage'
 
+// Per-case-study theming (frontmatter `theme:` values applied to each
+// WorkPage) is temporarily disabled while the actual color values are
+// still being worked out — every case study renders with the default
+// site theme instead. Flip back to true once those values are finalized;
+// WorkPage/layout.md frontmatter and applyTheme() below are untouched, so
+// this is the only line that needs to change.
+const THEMING_ENABLED = false
+
 const LERP = 0.1
-const DOCK_WIDTH = 360
 
 function useMouseTrail(enabled: boolean) {
   const target = useRef({ x: -200, y: -200 })
@@ -99,41 +106,57 @@ export default function App() {
   const onEnter = useCallback(() => setTooltipVisible(true), [])
   const onLeave = useCallback(() => setTooltipVisible(false), [])
 
-  const [promptOpen, setPromptOpen] = useState(false)
-  const [promptDocked, setPromptDocked] = useState(loadDockedPreference)
+  // v6.5's case-study nav shows "Work / {title}" instead of the site
+  // identity — WorkPage sets this once its layout.md has loaded, cleared
+  // by the route-change effect below so a stale title never flashes on
+  // the next page.
+  const [workTitle, setWorkTitle] = useState<string | null>(null)
 
-  // The docked panel is a sibling of the app shell, not an overlay — this
-  // inset is what every viewport-fixed element (nav, faders, lightboxes)
-  // shrinks by, so the page reads as a split browser pane.
-  // The gutter is reserved only while the docked pane is actually on screen.
-  // Dock preference is remembered independently, so CMD+K collapses the whole
-  // pane (not just its contents) and reopens straight back into docked.
-  const openPrompt = useCallback(() => setPromptOpen(true), [])
-  const togglePrompt = useCallback(() => setPromptOpen(o => !o), [])
-  const promptControls = useMemo(() => ({ open: openPrompt, toggle: togglePrompt }), [openPrompt, togglePrompt])
+  // Single CMD+K dialog (CommandPalette) now owns both search and chat —
+  // PromptComponent's separate docked/floating panel has been retired.
+  // paletteMode is which mode the dialog opens into, but CMD+K itself
+  // never touches it — the user should always pick back up in whichever
+  // mode they last left the dialog in, search or chat. Only a direct chat
+  // trigger (the "Let's Chat" CTA, overlay menu) forces it to 'chat' via
+  // openChat(); CommandPalette itself updates paletteMode as the user
+  // switches modes inside the dialog (Tab/Back), so this stays in sync
+  // for the next open even without a fresh explicit trigger.
+  const [paletteOpen, setPaletteOpen] = useState(false)
+  const [paletteMode, setPaletteMode] = useState<'search' | 'chat'>('search')
 
-  const dockPaneVisible = promptDocked && promptOpen
+  const openChat = useCallback(() => {
+    setPaletteMode('chat')
+    setPaletteOpen(true)
+  }, [])
+  const promptControls = useMemo(() => ({ open: openChat, toggle: openChat }), [openChat])
+
   useEffect(() => {
-    document.documentElement.style.setProperty('--dock-inset', dockPaneVisible ? `${DOCK_WIDTH}px` : '0px')
-  }, [dockPaneVisible])
+    function onKeyDown(e: KeyboardEvent) {
+      const isCmdK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'
+      if (!isCmdK) return
+      e.preventDefault()
+      setPaletteOpen(o => !o)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   const allWorkCards = useWorkIndex({ featuredOnly: false })
   const [activeTab, setActiveTab] = useState<string | null>(null)
   const tabs = useMemo(() => {
     const counts = new Map<string, number>()
     for (const card of allWorkCards) {
-      for (const cat of card.categories.split(',').map(c => c.trim()).filter(Boolean)) {
-        counts.set(cat, (counts.get(cat) ?? 0) + 1)
-      }
+      if (!card.type) continue
+      counts.set(card.type, (counts.get(card.type) ?? 0) + 1)
     }
-    const order = ['Brand', 'Product', 'Web', 'Design Systems']
+    const order = ['Brand', 'Product']
     return order
       .filter(label => counts.has(label))
       .map(label => ({ label, count: counts.get(label)! }))
   }, [allWorkCards])
   const filteredWorkCards = useMemo(
     () => activeTab
-      ? allWorkCards.filter(c => c.categories.split(',').map(t => t.trim()).includes(activeTab))
+      ? allWorkCards.filter(c => c.type === activeTab)
       : allWorkCards,
     [allWorkCards, activeTab]
   )
@@ -148,7 +171,10 @@ export default function App() {
 
   useEffect(() => {
     if (location.pathname === displayLocation.pathname) return
-    if (!location.pathname.startsWith('/work/')) pendingTheme.current = null
+    if (!location.pathname.startsWith('/work/')) {
+      pendingTheme.current = null
+      setWorkTitle(null)
+    }
 
     setFading(true)
     timer.current = setTimeout(() => {
@@ -161,16 +187,17 @@ export default function App() {
   }, [location])
 
   function handleTheme(theme: Record<string, string> | null) {
-    pendingTheme.current = theme
-    if (!fading) applyTheme(theme)
+    const applied = THEMING_ENABLED ? theme : null
+    pendingTheme.current = applied
+    if (!fading) applyTheme(applied)
   }
 
   return (
     <PromptContext.Provider value={promptControls}>
     <CardTooltipContext.Provider value={{ onEnter, onLeave }}>
       <div className="shell">
-      <Nav tabs={tabs} totalCount={allWorkCards.length} activeTab={activeTab} onTabChange={setActiveTab} />
-      <NavMobile />
+      <Nav tabs={tabs} totalCount={allWorkCards.length} activeTab={activeTab} onTabChange={setActiveTab} workTitle={workTitle} onOpenPalette={() => setPaletteOpen(true)} />
+      <NavMobile workTitle={workTitle} onOpenPalette={() => setPaletteOpen(true)} />
       <div className="app">
         <div
           key={displayLocation.pathname}
@@ -188,7 +215,7 @@ export default function App() {
             } />
             <Route path="/about" element={<About />} />
             <Route path="/work" element={<Navigate to="/" replace />} />
-            <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} />} />
+            <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} onTitle={setWorkTitle} />} />
             <Route path="/archives" element={<Archives />} />
             <Route path="/toast-demo" element={<ToastDemo />} />
             <Route path="/prompt-demo" element={<PromptDemo />} />
@@ -198,11 +225,13 @@ export default function App() {
         </div>
       </div>
       </div>
-      <PromptComponent
-        open={promptOpen}
-        onOpenChange={setPromptOpen}
-        onDockChange={setPromptDocked}
+      <CommandPalette
+        open={paletteOpen}
+        onOpenChange={setPaletteOpen}
+        cards={allWorkCards}
         pageContext={pageContext}
+        initialMode={paletteMode}
+        onModeChange={setPaletteMode}
       />
       {createPortal(
         <div

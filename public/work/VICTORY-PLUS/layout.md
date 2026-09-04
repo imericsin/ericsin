@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: VICTORY+
 headliner: Influencing Leadership, Culture, and Product through Design
-categories: Brand, Product, Design Systems
+workScope: Brand, Product, Design Systems
+type: Product
 featured: true
 date: 2026-07
 role: |
@@ -29,8 +30,10 @@ theme:
   --component-fg-2: "#999999"
   --component-fg-3: "#555555"
   --component-fg-4: "#cccccc"
-  --component-border-1: "#2a2a2a"
-  --component-border-2: "#333333"
+  --component-border-1: "#666666"
+  --component-border-2: "#999999"
+  --component-border-3: "#dddddd"
+  --component-border-4: "#f3f3f3"
 ---
 
 ::01_FULLHERO
@@ -68,7 +71,7 @@ Constrained resources forced a more disciplined approach — rather than spreadi
 
 In addition, I introduced a phased process—Concept → Design → Build —that forced alignment upfront instead of endless revisions; the result was work shipping with significantly less rounds of feedback instead of immeasurable iterations.
 
-::08_3COL
+::08_2COLTEXT
 ## Contextually-Informed Design Systems at Scale
 
 Expression points across marketing and in-app, without compromising the clear, simple UX the product depended on.
@@ -86,7 +89,7 @@ In addition, we had to rework the core logotype in a way that would be more of a
 
 ::12_FULL
 
-::13_3COL
+::13_2COLTEXT
 ## Refinement, not reinvention
 
 VICTORY+ already had built equity amongst a standing audience of 200K+ active users. Any adjustments had to be made in consideration of existing brand equity—forcing restrained, deliberate adjustments.

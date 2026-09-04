@@ -42,7 +42,7 @@ export interface WorkCard {
   slug: string
   name: string
   headliner: string
-  categories: string
+  type: string
   thumb: string
   thumbType: 'image' | 'video'
   date: string
@@ -110,7 +110,7 @@ export function useWorkIndex({ featuredOnly = true, limit }: WorkIndexOptions = 
             slug,
             name: meta.title ?? '',
             headliner: meta.headliner ?? meta.title ?? '',
-            categories: meta.categories ?? '',
+            type: meta.type ?? '',
             thumb: hero.src,
             thumbType: hero.type,
             date: meta.date!,

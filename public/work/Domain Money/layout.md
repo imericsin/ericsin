@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.mp4
 title: Domain Money
 headliner: Designing a More Accessible Crypto Experience
-categories: Brand, Web
+workScope: Brand, Web
+type: Brand
 featured: false
 date: 2022-07
 role: |

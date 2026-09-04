@@ -43,7 +43,8 @@ export function usePageContext(cards: WorkCard[], activeTab: string | null) {
             parts.push(`They are reading the "${meta.title}" case study — ${meta.headliner ?? ''}`.trim())
 
             const facts: string[] = []
-            if (meta.categories) facts.push(`Categories: ${meta.categories}`)
+            if (meta.type) facts.push(`Type: ${meta.type}`)
+            if (meta.workScope) facts.push(`Type of work: ${meta.workScope}`)
             if (meta.role) facts.push(`Role: ${meta.role.split('\n').filter(Boolean).join(', ')}`)
             if (meta.industry) facts.push(`Industry: ${meta.industry.split('\n').filter(Boolean).join(', ')}`)
             if (meta.scope) facts.push(`Scope: ${meta.scope.split('\n').filter(Boolean).join(', ')}`)
@@ -67,7 +68,7 @@ export function usePageContext(cards: WorkCard[], activeTab: string | null) {
           if (card) {
             parts.push(
               `They are reading the "${card.name}" case study — ${card.headliner}.`,
-              `Categories: ${card.categories}. Timeframe: ${card.dateRange}.`
+              `Type: ${card.type}. Timeframe: ${card.dateRange}.`
             )
           }
         }
@@ -89,7 +90,7 @@ export function usePageContext(cards: WorkCard[], activeTab: string | null) {
         if (cards.length) {
           parts.push(
             'Projects visible in the list:',
-            cards.map(c => `- ${c.name} (${c.categories}, ${c.dateRange}): ${c.headliner}`).join('\n')
+            cards.map(c => `- ${c.name} (${c.type}, ${c.dateRange}): ${c.headliner}`).join('\n')
           )
         }
       } else if (pathname === '/about') {

@@ -6,12 +6,12 @@ import { CardTooltipContext } from '../App'
 interface Props {
   title: string
   name?: string
-  tags: string
+  type?: string
   dateRange?: string
   thumb: string
-  type?: 'image' | 'victory-orb'
-  thumbType?: 'image' | 'video'
   variant?: 'work' | 'learn'
+  thumbType?: 'image' | 'video'
+  cardType?: 'image' | 'victory-orb'
   href?: string
   slug?: string
   className?: string
@@ -20,31 +20,12 @@ interface Props {
   onMouseLeave?: MouseEventHandler<HTMLAnchorElement>
 }
 
-export default function Card({ title, name, tags, dateRange, thumb, type = 'image', thumbType = 'image', variant = 'work', href, slug, className, style, onMouseEnter, onMouseLeave }: Props) {
+export default function Card({ title, name, type, dateRange, thumb, cardType = 'image', thumbType = 'image', variant = 'work', href, slug, className, style, onMouseEnter, onMouseLeave }: Props) {
   const navigate = useNavigate()
   const { onEnter, onLeave } = useContext(CardTooltipContext)
   const thumbClass = `card-thumb thumb-${variant}`
 
-  const mediaStyle = { position: 'absolute' as const, inset: 0, width: '100%', height: '100%', objectFit: 'cover' as const, display: 'block' }
-
-  const cardTags = tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : []
-
-  const chipOverlay = variant === 'work' && (cardTags.length > 0 || dateRange) ? (
-    <div className="card-chip-row">
-      <div className="card-chip-row__left">
-        {cardTags.map(t => (
-          <span key={t} className="card-chip">{t}</span>
-        ))}
-      </div>
-      {dateRange && (
-        <div className="card-chip-row__right">
-          <span className="card-chip">{dateRange}</span>
-        </div>
-      )}
-    </div>
-  ) : null
-
-  const inner = type === 'victory-orb' ? (
+  const inner = cardType === 'victory-orb' ? (
     <div className={`${thumbClass} victory-thumb`}>
       <div className="victory-orb-wrap">
         <div className="victory-orb-inner">
@@ -53,21 +34,18 @@ export default function Card({ title, name, tags, dateRange, thumb, type = 'imag
           <img className="victory-logo" src={thumb} alt={title} />
         </div>
       </div>
-      {chipOverlay}
     </div>
   ) : thumbType === 'video' ? (
     <div className={thumbClass}>
       <video
         src={thumb}
         poster={thumb.replace(/\.(mp4|webm|mov)$/i, '.jpg')}
-        autoPlay muted loop playsInline style={mediaStyle}
+        autoPlay muted loop playsInline
       />
-      {chipOverlay}
     </div>
   ) : (
     <div className={thumbClass}>
-      <img src={thumb} alt={title} style={mediaStyle} loading="lazy" decoding="async" />
-      {chipOverlay}
+      <img src={thumb} alt={title} loading="lazy" decoding="async" />
     </div>
   )
 
@@ -89,6 +67,8 @@ export default function Card({ title, name, tags, dateRange, thumb, type = 'imag
     }
   }
 
+  const meta = [type, dateRange].filter(Boolean).join(', ')
+
   return (
     <a
       className={['card', className].filter(Boolean).join(' ')}
@@ -102,18 +82,13 @@ export default function Card({ title, name, tags, dateRange, thumb, type = 'imag
       {inner}
       {variant === 'work' ? (
         <div className="card-meta">
-          <div className="card-meta__top">
-            <div className="card-meta__row1">
-              {name && <p className="card-name">{name}</p>}
-              {tags && <p className="card-categories card-categories--desktop">{tags}</p>}
-            </div>
-            <p className="card-title">{title}</p>
-          </div>
+          {name && <p className="card-name">{name}</p>}
+          {meta && <p className="card-title">{meta}</p>}
         </div>
       ) : (
         <div className="card-caption">
           <p className="card-title">{title}</p>
-          <p className="card-sub">{tags}</p>
+          <p className="card-sub">{type}</p>
         </div>
       )}
     </a>

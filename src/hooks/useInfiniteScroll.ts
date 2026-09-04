@@ -13,10 +13,15 @@ export function useInfiniteScroll<T>(items: T[], initial: number, step: number) 
   const [count, setCount] = useState(initial)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  // Reset when the source list changes (e.g. it finished loading).
+  // Reset when the source list actually changes (e.g. it finished loading,
+  // or a filter changed the set). Keyed on length rather than the array
+  // reference itself — callers commonly rebuild `items` with a new array
+  // identity every render (e.g. via .filter/.map in a parent), which would
+  // otherwise reset the reveal count back to `initial` on every render and
+  // permanently undo any progress the sentinel had made.
   useEffect(() => {
     setCount(initial)
-  }, [items, initial])
+  }, [items.length, initial])
 
   const hasMore = count < items.length
 
@@ -36,6 +41,19 @@ export function useInfiniteScroll<T>(items: T[], initial: number, step: number) 
     )
 
     observer.observe(node)
+
+    // If the initial page is short enough that the sentinel is already
+    // sitting on screen (or within rootMargin) at mount, the observer's
+    // first callback never fires — IntersectionObserver only reports
+    // *changes*, not the starting state, and there is no future scroll
+    // event to change it. Check once, synchronously, so a short first page
+    // (e.g. a narrow viewport, or few enough cards to fit without a
+    // scrollbar) still reveals the rest instead of getting stuck.
+    const rect = node.getBoundingClientRect()
+    if (rect.top < window.innerHeight + 600) {
+      setCount(c => Math.min(c + step, items.length))
+    }
+
     return () => observer.disconnect()
   }, [hasMore, step, items.length])
 

@@ -1,63 +1,56 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import Card from '../components/Card'
 import PageFooter from '../components/PageFooter'
 import Tab from '../components/Tab'
-import ToastFeed from '../components/ToastFeed'
-import type { ToastItem } from '../components/NotificationToast'
 import type { TabDef } from '../components/NavbarV2'
 import type { WorkCard } from '../hooks/useWorkIndex'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 import { useReveal } from '../hooks/useReveal'
-import IconCmdk from '../components/IconCmdk'
-import { usePrompt } from '../lib/promptContext'
+import { BASE_DELAY, STEP } from '../lib/revealDelay'
+import threadsIcon from '../assets/icons/social/threads.svg'
+import instagramIcon from '../assets/icons/social/instagram.svg'
+import linkedinIcon from '../assets/icons/social/linkedin.svg'
+import youtubeIcon from '../assets/icons/social/youtube.svg'
 
-const HOME_TOAST_ITEMS: ToastItem[] = [
-  {
-    assetSrc: '/about/photo.jpg',
-    copy: "One of my favourite things about my new portfolio is the 20+ years of design snippets in my Archives page.",
-    label: '@ericsin • threads',
-    href: 'https://www.threads.com/@imericsin',
-  },
-  {
-    assetSrc: '',
-    title: 'ToastFeed Component Added',
-    copy: 'A simple component to share my latest news.',
-    label: 'Site Updates',
-    href: '',
-  },
-  {
-    assetSrc: '/about/photo.jpg',
-    copy: '"Don\'t be so scared to ask for help, everyone needs it, and you definitely should!"',
-    label: 'Post on LinkedIn',
-    href: 'https://www.linkedin.com/feed/update/urn:li:activity:7493041079777157120/',
-  },
+const SOCIAL_LINKS = [
+  { icon: threadsIcon, label: 'Threads', href: 'https://www.threads.com/@imericsin' },
+  { icon: instagramIcon, label: 'Instagram', href: 'https://www.instagram.com/imericsin' },
+  { icon: linkedinIcon, label: 'LinkedIn', href: 'https://www.linkedin.com/in/ericsin' },
+  { icon: youtubeIcon, label: 'YouTube', href: 'https://www.youtube.com' },
 ]
 
-function CtaButton() {
-  const { open } = usePrompt()
-  const [hovered, setHovered] = useState(false)
-  const btnRef = useRef<HTMLButtonElement>(null)
-  const fillRef = useRef<HTMLSpanElement>(null)
+// Baked in at build time (see vite.config.ts) from Vercel's own
+// VERCEL_GIT_COMMIT_SHA — empty locally, where there's no Vercel env.
+const DEPLOY_ID = __GIT_COMMIT_SHA__ || 'dev'
 
-  function updateOrigin(e: React.MouseEvent<HTMLButtonElement>) {
-    const rect = btnRef.current!.getBoundingClientRect()
-    fillRef.current!.style.left = `${e.clientX - rect.left}px`
-    fillRef.current!.style.top = `${e.clientY - rect.top}px`
-  }
+function FooterClock() {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000 * 30)
+    return () => clearInterval(id)
+  }, [])
+  const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
 
   return (
-    <button
-      ref={btnRef}
-      type="button"
-      className={`home-cta-btn${hovered ? ' home-cta-btn--hover' : ''}`}
-      onClick={open}
-      onMouseEnter={(e) => { updateOrigin(e); setHovered(true) }}
-      onMouseLeave={(e) => { updateOrigin(e); setHovered(false) }}
-    >
-      <span ref={fillRef} className="home-cta-fill" />
-      <span className="home-cta-label">Let's Chat</span>
-      <IconCmdk />
-    </button>
+    <div className="home-footer-rows">
+      <div className="home-footer-row">
+        <p className="home-footer-row__label">Local Time</p>
+        <p className="home-footer-row__value">{time}</p>
+      </div>
+      <div className="home-footer-row">
+        <p className="home-footer-row__label">Area</p>
+        <p className="home-footer-row__value">Anaheim, CA</p>
+      </div>
+      <div className="home-footer-row">
+        <p className="home-footer-row__label">Version</p>
+        <p className="home-footer-row__value">6.{DEPLOY_ID}</p>
+      </div>
+      <div className="home-footer-spacer" />
+      <div className="home-footer-copyright">
+        <p>© 2026  Eric Sin — Selected Works</p>
+      </div>
+    </div>
   )
 }
 
@@ -77,7 +70,7 @@ export default function Home({ cards: allCards, tabs, totalCount = 0, activeTab 
     () => [...allCards.filter(c => c.featured), ...allCards.filter(c => !c.featured)],
     [allCards]
   )
-  const { visible: workCards, sentinelRef, hasMore } = useInfiniteScroll(ordered, 4, 3)
+  const { visible: workCards, sentinelRef, hasMore } = useInfiniteScroll(ordered, 8, 4)
 
   // Re-scan whenever a batch is appended so the new .reveal cards get observed.
   useReveal([workCards.length])
@@ -94,38 +87,85 @@ export default function Home({ cards: allCards, tabs, totalCount = 0, activeTab 
     return () => clearTimeout(t)
   }, [allCards])
 
+  // Both columns render the SAME full, date-ordered list in the DOM — no
+  // JS split. CSS alone decides what's visible in each column, purely via
+  // :nth-child (see .home-cards in v65.css): on desktop, the left column
+  // shows only its odd-position children (1,3,5...) and the right column
+  // shows only its even-position children (2,4,6...), giving the
+  // appearance of a round-robin split without actually duplicating cards
+  // in two different DOM shapes. At the single-column breakpoint, the left
+  // column's nth-child filter is removed (so all of its children show,
+  // reading 1→N in full) and the right column is hidden outright.
+  const ANIMATED_ROWS = 4
+  function cardEntrance(index: number) {
+    if (index >= ANIMATED_ROWS) return { className: 'reveal', style: undefined }
+    return {
+      className: 'anim',
+      style: { animationDelay: `${BASE_DELAY + index * STEP}s` },
+    }
+  }
+
+  function renderCardColumn(side: 'left' | 'right') {
+    return (
+      <div className={`home-cards__col home-cards__col--${side}`}>
+        {workCards.map((card, i) => {
+          // Animation stagger counts only this column's own visible cards
+          // (every other one), so the ones actually shown in this column
+          // still animate in 1st/2nd/3rd, not skipping beats for the other
+          // column's cards sitting between them in the shared full list.
+          const entrance = cardEntrance(Math.floor(i / 2))
+          return (
+            <Card
+              key={card.slug}
+              name={card.name}
+              title={card.name}
+              type={card.type}
+              dateRange={card.dateRange}
+              thumb={card.thumb}
+              thumbType={card.thumbType}
+              slug={card.slug}
+              href={`/work/${card.slug}`}
+              className={entrance.className}
+              style={entrance.style}
+            />
+          )
+        })}
+      </div>
+    )
+  }
+
   return (
     <>
-    <div className="home-layout">
+    <div className="home-layout page-content style-sidebar">
       {/* Left — sticky */}
-      <div className="home-left">
+      <div className="home-left page-content__sidebar">
         <div className="home-left__top">
           <div className="home-bio-section">
             <div className="home-bio-text">
               <p className="home-bio anim" style={{ animationDelay: '0.1s' }}>
-                Designer in practice, engineer at heart.<br />20+ years shipping consumer experiences and enterprise software.
+                Designer and creative technologist with a specialization in brand &amp; product design systems in 0-1 spaces. I’m based out of OC, California, and currently serving APMC as VP of Design — building VICTORY+
               </p>
               <p className="home-bio-sub anim" style={{ animationDelay: '0.125s' }}>
-                I believe in design with a purpose—an ideology anchored around community, thoughtfulness, and craft. If that sounds like you, let's build something together.
+                Learn more <Link to="/about">about me</Link>, scroll through my <Link to="/archives">archives</Link>, or connect with me below.
               </p>
             </div>
-            <div className="home-cta-section anim" style={{ animationDelay: '0.15s' }}>
-              <CtaButton />
-              <div className="home-cta-availability">
-                <p className="home-cta-avail-label">Current Role</p>
-                <p className="home-cta-avail-status">VP, Design @ APMC</p>
-              </div>
+            <div className="home-social-links anim" style={{ animationDelay: '0.15s' }}>
+              {SOCIAL_LINKS.map(({ icon, label, href }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="home-social-link" aria-label={label}>
+                  <img src={icon} alt="" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
 
         <div className="home-footer-details anim" style={{ animationDelay: '0.3s' }}>
-          <ToastFeed items={HOME_TOAST_ITEMS} />
+          <FooterClock />
         </div>
       </div>
 
       {/* Right — scrollable */}
-      <div className="home-right">
+      <div className="home-right page-content__main">
         {tabs && (
           <div className="home-tabs-mobile tab-row anim" style={{ animationDelay: '0.2s' }}>
             <Tab
@@ -148,25 +188,8 @@ export default function Home({ cards: allCards, tabs, totalCount = 0, activeTab 
           </div>
         )}
         <div className={`home-cards${flash ? ' home-cards--flash' : ''}`}>
-          {workCards.map((card, i) => (
-            <Card
-              key={card.slug}
-              name={card.name}
-              title={card.headliner}
-              tags={card.categories}
-              dateRange={card.dateRange}
-              thumb={card.thumb}
-              thumbType={card.thumbType}
-              slug={card.slug}
-              href={`/work/${card.slug}`}
-              // The first batch animates on mount with a stagger. Appended
-              // cards use .reveal instead so each fades in when it actually
-              // scrolls into view — the sentinel fires 600px early, so a
-              // mount animation would finish before the card is ever seen.
-              className={i < 4 ? 'anim' : 'reveal'}
-              style={i < 4 ? { animationDelay: `${0.25 + i * 0.06}s` } : undefined}
-            />
-          ))}
+          {renderCardColumn('left')}
+          {renderCardColumn('right')}
         </div>
         {hasMore && <div ref={sentinelRef} className="home-cards-sentinel" aria-hidden />}
       </div>

@@ -2,7 +2,8 @@
 thumb: assets/thumbnail.jpg
 title: AuditBoard
 headliner: Bringing Third-Party Risk Into the Connected Risk Story
-categories: Product, Design Systems
+workScope: Product, Design Systems
+type: Product
 featured: true
 date: 2022-07
 role: |
@@ -44,7 +45,7 @@ We joined to build a new product from zero to one: third-party risk management (
 ## The Vision
 In Auditboard, TPRM tools already existed, but was often a job hacked together by our users with existing components across different products—disconnected from the broader business risk picture a Chief Risk Officer actually needs. Our bet was that as companies became more interconnected through vendors, third-party risk needed to live inside the same connected risk story as audit and compliance, not stand apart from it.
 
-::06_3COL
+::06_2COLTEXT
 
 ## Testing with Forward Facing DS Components
 I always used our vision / validation stages to test out new components—collaborating with other teams in our Risk product org and looking to create coverage across use cases beyond our own product in TPRM.

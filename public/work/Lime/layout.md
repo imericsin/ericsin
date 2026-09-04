@@ -1,8 +1,9 @@
 ---
-thumb: assets/thumbnail.mp4
+thumb: assets/thumbnail.webp
 title: Lime
 headliner: A Facelift for A Recognizable Disruptor
-categories: Brand, Web
+workScope: Brand, Web
+type: Brand
 featured: false
 date: 2021-08
 role: |
