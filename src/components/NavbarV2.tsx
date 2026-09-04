@@ -9,7 +9,6 @@ export interface TabDef {
 interface Props {
   variant: 'index' | 'about-archives'
   tabs?: TabDef[]
-  totalCount?: number
   activeTab?: string | null
   onTabChange?: (label: string | null) => void
   // v6.5 only: set while on a case study page — replaces the site

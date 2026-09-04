@@ -6,7 +6,6 @@ import type { LayoutBlock as LayoutBlockType } from '../types/work'
 
 interface Props {
   block: LayoutBlockType
-  heroVtName?: string
   meta?: import('../types/work').WorkMeta
 }
 
@@ -43,14 +42,14 @@ function parseBlockText(text: string | undefined) {
   return { subhead, body }
 }
 
-export default function LayoutBlock({ block, heroVtName, meta }: Props) {
+export default function LayoutBlock({ block, meta }: Props) {
   const { type, text, assets } = block
 
   switch (type) {
     case 'FULLHERO':
       return (
         <section className="block block-fullhero">
-          {assets[0] && <MediaAsset asset={assets[0]} className="block-fullhero__media" noClip vtName={heroVtName} />}
+          {assets[0] && <MediaAsset asset={assets[0]} className="block-fullhero__media" noClip />}
         </section>
       )
 

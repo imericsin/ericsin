@@ -19,7 +19,6 @@ const BLUR_LAYERS = [0.195, 0.39, 0.78, 1.5625, 3.125, 6.25, 12.5, 25].map((blur
 
 interface Props {
   tabs?: TabDef[]
-  totalCount?: number
   activeTab?: string | null
   onTabChange?: (label: string | null) => void
   workTitle?: string | null
@@ -28,7 +27,7 @@ interface Props {
   onOpenPalette?: () => void
 }
 
-export default function Nav({ tabs, totalCount, activeTab, onTabChange, workTitle, onOpenPalette }: Props) {
+export default function Nav({ tabs, activeTab, onTabChange, workTitle, onOpenPalette }: Props) {
   const { pathname } = useLocation()
   // Bottom fader is visible everywhere except once the user has actually
   // reached the bottom of the page — at that point the real page footer
@@ -77,7 +76,6 @@ export default function Nav({ tabs, totalCount, activeTab, onTabChange, workTitl
       <NavbarV2
         variant={variant}
         tabs={variant === 'index' ? tabs : undefined}
-        totalCount={totalCount}
         activeTab={activeTab}
         onTabChange={onTabChange}
         workTitle={workTitle}

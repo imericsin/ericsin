@@ -196,7 +196,7 @@ export default function App() {
     <PromptContext.Provider value={promptControls}>
     <CardTooltipContext.Provider value={{ onEnter, onLeave }}>
       <div className="shell">
-      <Nav tabs={tabs} totalCount={allWorkCards.length} activeTab={activeTab} onTabChange={setActiveTab} workTitle={workTitle} onOpenPalette={() => setPaletteOpen(true)} />
+      <Nav tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} workTitle={workTitle} onOpenPalette={() => setPaletteOpen(true)} />
       <NavMobile workTitle={workTitle} onOpenPalette={() => setPaletteOpen(true)} />
       <div className="app">
         <div
