@@ -135,6 +135,17 @@ html.v65 .app {
      entirely through .page's padding-top, so this is zeroed here. */
   padding-top: 0;
 }
+/* The dashed hairline frame reads fine bracketing the page at desktop/
+   tablet widths, but at mobile it sits right at the edge of the phone
+   viewport — with no real margin outside it, the dashes just look like
+   stray marks clipped by the screen edge rather than an intentional
+   frame. Dropped entirely at this project's own mobile tier. */
+@media (max-width: 719px) {
+  html.v65 .app {
+    border-left: none;
+    border-right: none;
+  }
+}
 
 /* ─── Nav stacking ───────────────────────────────── */
 /* main's unscoped .nav is z-index: 100 (globals.css) — far below the rail
@@ -245,6 +256,17 @@ html.v65 .nav-mobile-identity__mark {
 html.v65 .nav-mobile-inner {
   justify-content: flex-start;
   gap: 12px;
+  /* Height set explicitly to --v65-nav-height (the same clearance value
+     .work-hero--mobile and every page's top padding already assume) with
+     vertical centering (align-items: center, inherited from main's own
+     rule) doing the rest — main's unscoped @media (max-width: 640px)
+     padding: 16px var(--body-margin-x) baked its own top/bottom spacing
+     directly into that 16px, which only accidentally matched this
+     project's nav height. Restated here as horizontal-only so the row's
+     real height is the single source of truth instead of two numbers
+     that have to be kept in sync by hand. */
+  height: var(--v65-nav-height);
+  padding: 0 var(--body-margin-x);
 }
 html.v65 .nav-mobile-inner .nav-menu-btn {
   margin-left: auto;
@@ -1450,18 +1472,18 @@ html.v65 .work-header { display: none; }
 
 html.v65 .block-fullhero__media { border-radius: 8px; }
 
-/* Case-study block subheadings (TEXT/2COL/2COLTEXT's label line above
-   the body copy) — unify to foreground-1 at medium weight across all
-   three block types. main's own unscoped rules disagree with each other
-   here: .block-text__label uses --system-body-secondary (dim gray,
-   leaking straight through since no .v65 override existed), .block-
-   2col__label is already the right color but bold (700) instead of
-   medium, and .block-2coltext__label is semibold (600). */
-html.v65 .block-text__label,
-html.v65 .block-2col__label,
-html.v65 .block-2coltext__label {
+/* TEXT block's subhead (the label above body copy in a FULL+TEXT pair —
+   image block followed by an accompanying text block) — was too small
+   and too close to the body copy's own weight/color to read as a
+   heading. main's unscoped rule sizes it the same as the body (14px,
+   500) and dims it to --system-body-secondary; bumped a level up in
+   size and weight, and to full foreground-1, so it reads as a real
+   subheading rather than blending into the paragraph below it. */
+html.v65 .block-text__label {
   color: var(--component-fg-1);
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
 }
 
 /* OVERVIEW's headline+body layout lives entirely in LayoutBlock.tsx's
@@ -1711,6 +1733,33 @@ html.v65 .block-overview {
     padding-left: 0;
     padding-right: 0;
   }
+  /* main's own unscoped @media (max-width: 1024px) block (globals.css)
+     pulls certain adjacent block pairs together with a negative
+     margin-top (-52px between consecutive FULL/2COL-images blocks,
+     -58px between 2COL/2COLTEXT/FULL combos) to keep back-to-back image
+     sections tight, calibrated against ITS OWN block padding values.
+     v6.5's blocks use different padding at this same breakpoint (see
+     .block-2col__media above, .block-2col-images/.block-full below), so
+     that offset was overcorrecting and pulling the next block up far
+     enough to visibly overlap the one above it — exactly the "images
+     overlapping" symptom reported, present only in this single-column
+     tier since that's the only place these negative-margin rules exist.
+     Neutralized entirely for the v6.5 block set; there's no equivalent
+     tight-stacking spec for this project to reproduce instead. */
+  html.v65 .block-full + .block-full,
+  html.v65 .block-full + .block-2col-images,
+  html.v65 .block-2col-images + .block-full,
+  html.v65 .block-2col-images + .block-2col-images,
+  html.v65 .block-full + .block-2col,
+  html.v65 .block-full + .block-2coltext,
+  html.v65 .block-2col + .block-full,
+  html.v65 .block-2col + .block-2col,
+  html.v65 .block-2col + .block-2coltext,
+  html.v65 .block-2coltext + .block-full,
+  html.v65 .block-2coltext + .block-2col,
+  html.v65 .block-2coltext + .block-2coltext {
+    margin-top: 0;
+  }
   /* Scoped to .page--work specifically — .page-content.style-sidebar
      alone also matches Home (.home-layout page-content style-sidebar,
      no .page--work ancestor needed since this used to be a flat class
@@ -1788,6 +1837,14 @@ html.v65 .block-overview {
   html.v65 .block-2col__media {
     flex-direction: column;
     order: 1;
+    /* main's own unscoped @media (max-width: 640px) sets padding: 0
+       var(--body-margin-x) on .work-content .block-2col__media
+       (globals.css) — a rule keyed to a breakpoint outside our 3-tier
+       system, so it fires anywhere from 719px down to 640px without a
+       restatement here. That shrank the media (image/video) inward from
+       the card's own edges, showing as a visible gap on both sides
+       instead of the asset filling flush to the rounded corners. */
+    padding: 0;
   }
   /* main scales these same elements up at its own 640px breakpoint
      (globals.css) for mobile legibility — that rule is unscoped but keyed
