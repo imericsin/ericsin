@@ -425,9 +425,22 @@ export default function CommandPalette({ open, onOpenChange, cards, pageContext,
               // so comparing straight against messages.length - 1 would
               // never match any user row.
               const isLatest = i === lastUserIndex
-              const reply = messages[i + 1]?.role === 'model' ? messages[i + 1] : null
-              const answerText = isLatest ? (streaming || (loading ? null : reply?.text)) : reply?.text
+              // A single answer often arrives as several consecutive
+              // 'model' bubbles (see useChat's playMessages/MESSAGE_GAP_MS
+              // — a long reply is split into a few short beats internally
+              // for the typing/streaming effect), not just messages[i+1].
+              // These render as ONE joined message from "Eric", not
+              // separate bubbles — collecting only that one next message
+              // used to silently drop every part after the first; this
+              // walks forward and joins ALL of them, stopping at the next
+              // 'user' message.
+              const replies: typeof messages = []
+              for (let j = i + 1; j < messages.length && messages[j].role === 'model'; j++) {
+                replies.push(messages[j])
+              }
               const isLoading = isLatest && loading
+              const showStreaming = isLatest && streaming
+              const hasReply = replies.length > 0 || isLoading || showStreaming
               return (
                 <div
                   key={i}
@@ -443,17 +456,19 @@ export default function CommandPalette({ open, onOpenChange, cards, pageContext,
                     </div>
                     <p className="cmdk-chat__message-text">{m.text}</p>
                   </div>
-                  {(isLoading || answerText) && (
+                  {hasReply && (
                     <div className="cmdk-chat__message">
                       <div className="cmdk-chat__message-meta">
                         <span className="cmdk-chat__message-name">Eric</span>
-                        {reply?.time && <span className="cmdk-chat__message-time">{formatTime(reply.time)}</span>}
+                        {replies[0]?.time && <span className="cmdk-chat__message-time">{formatTime(replies[0].time)}</span>}
                       </div>
                       <div className="cmdk-chat__message-text">
-                        {isLoading ? (
+                        {isLoading && replies.length === 0 && !showStreaming ? (
                           <span className="cmdk-chat__answer-loading">Thinking…</span>
                         ) : (
-                          <MessageText text={answerText!} />
+                          <MessageText
+                            text={[...replies.map(r => r.text), ...(showStreaming ? [streaming] : [])].join(' ')}
+                          />
                         )}
                       </div>
                     </div>

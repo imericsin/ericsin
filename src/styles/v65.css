@@ -1450,6 +1450,20 @@ html.v65 .work-header { display: none; }
 
 html.v65 .block-fullhero__media { border-radius: 8px; }
 
+/* Case-study block subheadings (TEXT/2COL/2COLTEXT's label line above
+   the body copy) — unify to foreground-1 at medium weight across all
+   three block types. main's own unscoped rules disagree with each other
+   here: .block-text__label uses --system-body-secondary (dim gray,
+   leaking straight through since no .v65 override existed), .block-
+   2col__label is already the right color but bold (700) instead of
+   medium, and .block-2coltext__label is semibold (600). */
+html.v65 .block-text__label,
+html.v65 .block-2col__label,
+html.v65 .block-2coltext__label {
+  color: var(--component-fg-1);
+  font-weight: 500;
+}
+
 /* OVERVIEW's headline+body layout lives entirely in LayoutBlock.tsx's
    .block-overview markup (see globals.css) — but its own padding
    (64px 0 80px) was written before v6.5's hero sat directly above it;
