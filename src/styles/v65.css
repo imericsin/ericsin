@@ -81,7 +81,7 @@ html.v65 {
      main's, with a new heaviest step. Scoped here rather than edited in
      globals.css since border color ripples across every bordered component
      site-wide; this keeps main's scale untouched. */
-  --component-border-1: #f3f3f3;
+  --component-border-1: #e0e0e0;
   --component-border-2: #dddddd;
   --component-border-3: #999999;
   --component-border-4: #666666;
