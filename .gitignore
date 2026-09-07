@@ -5,3 +5,6 @@ dist/
 .env
 .env.*
 .claude/mcp.json
+.archive-video-backups/
+public/**/*_backup.mp4
+public/**/*_backup.mov
