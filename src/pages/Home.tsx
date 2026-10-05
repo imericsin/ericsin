@@ -143,11 +143,11 @@ export default function Home({ cards: allCards, tabs, totalCount = 0, activeTab 
           <div className="home-bio-section">
             <div className="home-bio-text">
               <p className="home-bio anim" style={{ animationDelay: '0.1s' }}>
-                Designer and creative technologist with a specialization in brand &amp; product design systems in 0-1 spaces. I’m based out of OC, California, and currently at{' '}
+                Designer and creative technologist with a specialization in brand &amp; product design systems in 0-1 spaces. I’m currently working at{' '}
                 <a className="chip" href="https://www.netflix.com" target="_blank" rel="noopener noreferrer">
                   <img src="/assets/netflix-icon.png" alt="" />Netflix
                 </a>
-                , as Staff Product Designer, NCXD.
+                , as Staff Product Designer.
               </p>
               <p className="home-bio-sub anim" style={{ animationDelay: '0.125s' }}>
                 Learn more <Link to="/about">about me</Link>, scroll through my <Link to="/archives">archives</Link>, or connect with me below.
