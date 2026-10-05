@@ -2135,3 +2135,24 @@ html.v65 .archive-card {
     width: 50%;
   }
 }
+
+/* ─── Inline chip (Figma Chip 3701:10729) ────────── */
+/* Inline in the bio copy — icon + label on --component-bg-3, hover steps up
+   to --component-bg-4. Must restate color/decoration: the bio's own
+   `a` rules and globals' `a { text-decoration: none }` would otherwise leak. */
+html.v65 .home-bio .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 2px;
+  border-radius: 4px;
+  background: var(--component-bg-3);
+  color: var(--component-fg-1);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  vertical-align: top;
+  transition: background 0.15s ease;
+}
+html.v65 .home-bio .chip:hover { background: var(--component-bg-4); }
+html.v65 .home-bio .chip img { width: 16px; height: 16px; object-fit: cover; flex: none; }

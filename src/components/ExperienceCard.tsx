@@ -10,13 +10,15 @@ interface Props {
 
 export default function ExperienceCard({ name, role, status, paras, defaultExpanded = false }: Props) {
   const [expanded, setExpanded] = useState(defaultExpanded)
+  const expandable = paras.length > 0
 
   return (
     <button
       type="button"
       className={`exp-card${expanded ? ' exp-card--expanded' : ''}`}
-      onClick={() => setExpanded(e => !e)}
-      aria-expanded={expanded}
+      onClick={expandable ? () => setExpanded(e => !e) : undefined}
+      aria-expanded={expandable ? expanded : undefined}
+      style={expandable ? undefined : { cursor: 'default' }}
     >
       <div className="exp-card__row">
         <div className="exp-card__label-col">
@@ -28,7 +30,7 @@ export default function ExperienceCard({ name, role, status, paras, defaultExpan
         </div>
       </div>
 
-      <div className="exp-card__expand">
+      {expandable && <div className="exp-card__expand">
         <div className="exp-card__expand-inner">
           <div className="exp-card__row">
             <div className="exp-card__label-col" aria-hidden />
@@ -39,9 +41,9 @@ export default function ExperienceCard({ name, role, status, paras, defaultExpan
             </div>
           </div>
         </div>
-      </div>
+      </div>}
 
-      <span className="exp-card__toggle" aria-hidden>{expanded ? '×' : '+'}</span>
+      {expandable && <span className="exp-card__toggle" aria-hidden>{expanded ? '×' : '+'}</span>}
     </button>
   )
 }

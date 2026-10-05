@@ -18,10 +18,17 @@ const logoRows = [
 
 const companies = [
   {
+    logo: '/assets/netflix-icon.png',
+    name: 'Netflix',
+    role: 'Staff Product Designer, NCXD',
+    status: 'Current',
+    paras: [] as string[],
+  },
+  {
     logo: '/about/logos/apmc.jpg',
     name: 'A Parent Media Co. Inc.',
     role: 'VP, Design',
-    status: 'Current',
+    status: '2025—2026',
     paras: [
       'A Parent Media Co. Inc. (APMC) is a streaming service reaching 50M+ monthly active users across CTV, mobile, and web, with brand partnerships spanning the WNBA, NHL, NFL, & NBA.',
       'At APMC I lead systems-level design across the platform, partnering with product and executive leadership on vision and roadmap strategy. I lead design for our major sports league partnerships, and coach a team of designers on data-informed practices.',
