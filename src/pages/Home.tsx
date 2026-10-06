@@ -16,7 +16,7 @@ import youtubeIcon from '../assets/icons/social/youtube.svg'
 const SOCIAL_LINKS = [
   { icon: threadsIcon, label: 'Threads', href: 'https://www.threads.com/@imericsin' },
   { icon: instagramIcon, label: 'Instagram', href: 'https://www.instagram.com/imericsin' },
-  { icon: linkedinIcon, label: 'LinkedIn', href: 'https://www.linkedin.com/in/ericsin' },
+  { icon: linkedinIcon, label: 'LinkedIn', href: 'https://linkedin.com/in/quickfox' },
   { icon: youtubeIcon, label: 'YouTube', href: 'https://www.youtube.com' },
 ]
 
