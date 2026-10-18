@@ -12,7 +12,7 @@ interface Props {
 // Inline links inside case study copy. Separate from the Experience list's
 // .link-dotted so the two can diverge. Applied via ReactMarkdown's component
 // map so every block picks it up without per-call-site markup.
-const MD_COMPONENTS = {
+export const MD_COMPONENTS = {
   a: ({ href, children, ...props }: React.ComponentPropsWithoutRef<'a'>) => (
     <a
       {...props}
@@ -27,7 +27,7 @@ const MD_COMPONENTS = {
 }
 
 // Parses block text: lines starting with "## " become the subhead; remaining lines are body
-function parseBlockText(text: string | undefined) {
+export function parseBlockText(text: string | undefined) {
   const lines = (text ?? '').trim().split('\n')
   let subhead = ''
   const bodyLines: string[] = []

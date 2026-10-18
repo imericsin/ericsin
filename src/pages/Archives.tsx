@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback, useContext } from 'react'
 import { createPortal } from 'react-dom'
-import PageFooter from '../components/PageFooter'
+import { V8Footer, useV8Site } from '../components/v8/Chrome'
 import { CardTooltipContext } from '../App'
 import { useColumns } from '../hooks/useColumns'
 import { delayAt } from '../lib/revealDelay'
+import { useV8Reveal } from '../hooks/useReveal'
 
 interface ArchiveItem {
   filename: string
@@ -47,18 +48,20 @@ interface ArchiveCardProps {
   onClick: () => void
   onEnter: () => void
   onLeave: () => void
+  // First rows blur in on load ('anim', staggered); the rest on scroll.
+  entry: 'anim' | 'reveal'
   delay: string
 }
 
-function ArchiveCard({ item, onClick, onEnter, onLeave, delay }: ArchiveCardProps) {
+function ArchiveCard({ item, onClick, onEnter, onLeave, entry, delay }: ArchiveCardProps) {
   const src = `/archives/${item.filename}`
   const video = isVideo(item.filename)
   const inlinePlay = video && item.size <= INLINE_VIDEO_MAX_BYTES
 
   return (
     <div
-      className="archive-card anim"
-      style={{ animationDelay: delay }}
+      className={`archive-card ${entry}`}
+      style={entry === 'anim' ? { animationDelay: delay } : undefined}
       onClick={onClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
@@ -168,6 +171,7 @@ function Overlay({ items, index, onClose, onNav }: OverlayProps) {
 }
 
 export default function Archives() {
+  useV8Site()
   const [items, setItems] = useState<ArchiveItem[]>([])
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const [overlayVisible, setOverlayVisible] = useState(false)
@@ -224,14 +228,16 @@ export default function Archives() {
   }, [])
 
   const cols = toColumns(items, numCols)
+  useV8Reveal([items.length, numCols])
 
   return (
     <>
-      <div className="page page--archives archives-page">
-        <div className="archives-header">
-          <h1 className="archives-title anim" style={{ animationDelay: '0.1s' }}>Archives</h1>
-          <p className="archives-sub anim" style={{ animationDelay: '0.2s' }}>20 years of ideas, snippets, and small projects that left a trail of my work</p>
-        </div>
+      <div className="v8 v8-archives">
+
+        <section className="v8-archives-intro">
+          <h1 className="v8-display anim" style={{ animationDelay: '0.1s' }}>Archives</h1>
+          <div className="v8-rule" aria-hidden />
+        </section>
 
         <div className="archives-grid">
           {cols.map((col, ci) => (
@@ -245,16 +251,17 @@ export default function Archives() {
                     onClick={() => openOverlay(globalIndex)}
                     onEnter={onEnter}
                     onLeave={onLeave}
-                    delay={delayAt(ri, ci)}
+                    entry={ri < 2 ? 'anim' : 'reveal'}
+                    delay={delayAt(ri, ci, 0.2)}
                   />
                 )
               })}
             </div>
           ))}
         </div>
-      </div>
 
-      <PageFooter revealClass="anim" />
+        <V8Footer />
+      </div>
 
       {activeIndex !== null && createPortal(
         <div className={`archive-overlay-wrap${overlayVisible ? ' archive-overlay-wrap--visible' : ''}`}>

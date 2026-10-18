@@ -151,93 +151,46 @@ body {
 }
 
 /* ─── Load-in animations ─────────────────────────── */
+/* The site's one entrance: fade up from an 8px blur. Played with fill-mode
+   backwards (not forwards): the blurred start state covers the stagger
+   delay, and once finished the element falls back to its own styles —
+   forwards would pin an interpolated filter: blur(0) and keep every
+   animated element on its own compositing layer. */
 @keyframes blurIn {
   from { opacity: 0; filter: blur(8px); }
-  to   { opacity: 1; filter: blur(0); }
+  to   { opacity: 1; filter: none; }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-@keyframes riseIn {
-  from { opacity: 0; transform: translateY(10px); filter: blur(6px); }
-  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
-}
-
-@keyframes clipReveal {
-  from { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); }
-  to   { clip-path: polygon(0 0%,   100% 0%,   100% 100%, 0 100%); }
-}
-@keyframes scaleUp {
-  from { transform: scale(1.06); }
-  to   { transform: scale(1); }
-}
 
 /* Time-based blur-in — for above-fold elements only */
 .anim {
-  opacity: 0;
-  animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 .anim-done { opacity: 1; }
 
 .anim-1 { animation-delay: 0.05s; }
 
-/* Scroll-reveal — for below-fold elements */
+/* Scroll-reveal — for below-fold elements. Same blur-in as .anim, started
+   when the element scrolls into view (useReveal / useV8Reveal). */
 .reveal {
   opacity: 0;
 }
 .reveal.in-view {
-  animation: riseIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s) forwards;
+  opacity: 1;
+  animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s) backwards;
 }
 .reveal-done { opacity: 1; }
 
-/* Image blocks: skip block-level riseIn, let clip-reveal handle it */
-.block-full.reveal,
-.block-fullhero.reveal,
-.block-2col.reveal,
-.block-2col-images.reveal,
-.block-2coltext.reveal,
-.block-comp.reveal { opacity: 1; }
-.block-full.reveal.in-view,
-.block-fullhero.reveal.in-view,
-.block-2col.reveal.in-view,
-.block-2col-images.reveal.in-view,
-.block-2coltext.reveal.in-view,
-.block-comp.reveal.in-view { animation: none; }
-
-/* Text columns inside image blocks fade in alongside the clip-reveal */
-.block-2col.reveal .block-2col__text,
-.block-2coltext.reveal .block-2coltext__text,
-.block-comp.reveal .block-comp__caption { opacity: 0; }
-.block-2col.reveal.in-view .block-2col__text,
-.block-2coltext.reveal.in-view .block-2coltext__text,
-.block-comp.reveal.in-view .block-comp__caption {
-  animation: riseIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s) forwards;
-}
-
-/* Clip reveal — for case study images */
+/* Media wrapper (MediaAsset). Previously a wipe + zoom; media now blurs in
+   with its block like everything else, so this is just a plain wrapper. */
 .clip-reveal {
   display: block;
   width: 100%;
   overflow: hidden;
-  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-}
-.clip-reveal > img,
-.clip-reveal > video {
-  transform: scale(1.06);
-}
-.reveal.in-view .clip-reveal {
-  animation: clipReveal 0.9s cubic-bezier(0.76, 0, 0.24, 1) var(--reveal-delay, 0s) forwards;
-}
-.reveal.in-view .clip-reveal > * {
-  animation: scaleUp 0.9s cubic-bezier(0.76, 0, 0.24, 1) var(--reveal-delay, 0s) forwards;
-}
-.reveal-done .clip-reveal {
-  clip-path: polygon(0 0%, 100% 0%, 100% 100%, 0 100%);
-}
-.reveal-done .clip-reveal > * {
-  transform: scale(1);
 }
 
 /* ─── View Transitions ───────────────────────────── */
@@ -254,8 +207,7 @@ body {
 
 
 @media (prefers-reduced-motion: reduce) {
-  .anim { animation: none; opacity: 1; filter: none; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .anim, .reveal, .reveal.in-view { animation: none; opacity: 1; filter: none; transform: none; }
 }
 
 /* ─── App shell ──────────────────────────────────── */

@@ -3,13 +3,17 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import Nav from './components/Nav'
 import NavMobile from './components/NavMobile'
-import Home from './pages/Home'
-import About from './pages/About'
-import WorkPage from './pages/WorkPage'
+// HomeV7 (src/pages/HomeV7.tsx + v7.css) is kept but unmounted; v8 replaced it.
+import HomeV8 from './pages/HomeV8'
+// About (pre-v8) is kept but unmounted.
+import AboutV8 from './pages/AboutV8'
+// WorkPage (pre-v8 case study layout) is kept but unmounted.
+import WorkPageV8 from './pages/WorkPageV8'
 import Archives from './pages/Archives'
 import ToastDemo from './pages/ToastDemo'
 import PromptDemo from './pages/PromptDemo'
 import CommandPalette from './components/CommandPalette'
+import { V8Chrome } from './components/v8/Chrome'
 import { useWorkIndex } from './hooks/useWorkIndex'
 import { usePageContext } from './hooks/usePageContext'
 import { PromptContext } from './lib/promptContext'
@@ -25,6 +29,11 @@ import { PromptContext } from './lib/promptContext'
 // WorkPage/layout.md frontmatter and applyTheme() below are untouched, so
 // this is the only line that needs to change.
 const THEMING_ENABLED = false
+
+// Routes built on the v8 shell — they share the persistent V8Chrome header.
+function isV8Route(pathname: string) {
+  return pathname === '/' || pathname === '/about' || pathname === '/archives' || pathname.startsWith('/work/')
+}
 
 const LERP = 0.1
 
@@ -179,6 +188,9 @@ export default function App() {
     setFading(true)
     timer.current = setTimeout(() => {
       window.scrollTo(0, 0)
+      // A card entered during the fade unmounts without a mouseleave, which
+      // would leave the cursor tooltip stuck on — clear it on swap too.
+      setTooltipVisible(false)
       applyTheme(pendingTheme.current)
       setDisplayLocation(location)
       setFading(false)
@@ -199,23 +211,22 @@ export default function App() {
       <Nav tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} workTitle={workTitle} onOpenPalette={() => setPaletteOpen(true)} />
       <NavMobile workTitle={workTitle} onOpenPalette={() => setPaletteOpen(true)} />
       <div className="app">
+        {isV8Route(displayLocation.pathname) && <V8Chrome page={displayLocation.pathname} />}
         <div
           key={displayLocation.pathname}
-          style={{ width: '100%', opacity: fading ? 0 : 1, transition: 'opacity 0.28s ease' }}
+          // Leaving: blur out. Arriving: show at once — the new page's own
+          // .anim / .reveal blocks blur in, so the wrapper doesn't fade too.
+          style={fading
+            ? { width: '100%', opacity: 0, filter: 'blur(8px)', transition: 'opacity 0.28s ease, filter 0.28s ease' }
+            : { width: '100%' }}
         >
           <Routes location={displayLocation}>
             <Route path="/" element={
-              <Home
-                cards={filteredWorkCards}
-                tabs={tabs}
-                totalCount={allWorkCards.length}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-              />
+              <HomeV8 cards={filteredWorkCards} />
             } />
-            <Route path="/about" element={<About />} />
+            <Route path="/about" element={<AboutV8 />} />
             <Route path="/work" element={<Navigate to="/" replace />} />
-            <Route path="/work/:slug" element={<WorkPage onTheme={handleTheme} onTitle={setWorkTitle} />} />
+            <Route path="/work/:slug" element={<WorkPageV8 onTheme={handleTheme} onTitle={setWorkTitle} />} />
             <Route path="/archives" element={<Archives />} />
             <Route path="/toast-demo" element={<ToastDemo />} />
             <Route path="/prompt-demo" element={<PromptDemo />} />

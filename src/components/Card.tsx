@@ -57,14 +57,11 @@ export default function Card({ title, name, type, dateRange, thumb, cardType = '
   }
 
   function handleAnimationEnd(e: AnimationEvent<HTMLAnchorElement>) {
-    if (e.animationName === 'blurIn') {
-      e.currentTarget.classList.remove('anim')
-      e.currentTarget.classList.add('anim-done')
-    }
-    if (e.animationName === 'riseIn') {
-      e.currentTarget.classList.remove('reveal', 'in-view')
-      e.currentTarget.classList.add('reveal-done')
-    }
+    // Load-in (.anim) and scroll-reveal (.reveal) both end on blurIn.
+    if (e.animationName !== 'blurIn' || e.target !== e.currentTarget) return
+    const cl = e.currentTarget.classList
+    if (cl.contains('anim')) { cl.remove('anim'); cl.add('anim-done') }
+    if (cl.contains('reveal')) { cl.remove('reveal', 'in-view'); cl.add('reveal-done') }
   }
 
   const meta = [type, dateRange].filter(Boolean).join(', ')
