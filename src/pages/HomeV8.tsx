@@ -75,28 +75,38 @@ export default function HomeV8({ cards }: Props) {
         <p className="v8-label">/01. Overview</p>
         <div className="v8-row">
           <div className="v8-col-heading v8-overview__intro">
-            <h1 className="v8-heading">
-              <span className="v8-muted">Hey, my name is </span><strong>Eric</strong>.<br />
-              <span className="v8-muted">I’m currently at </span>
-              <a className="v8-chip" href="https://jobs.netflix.com/culture" target="_blank" rel="noopener noreferrer">
-                <img src="/v8/netflix.png" alt="" width={24} height={24} />
-                <strong>Netflix</strong>
-              </a>
-              <span className="v8-muted">, working as a </span><strong>Staff Product Designer.</strong>
+            {/* One block per sentence, each balanced on its own, so the line
+                lengths even out at every width instead of one long middle line. */}
+            <h1 className="v8-heading v8-intro">
+              <span className="v8-intro__line">
+                <span className="v8-muted">Hey, my name is </span><strong>Eric</strong>.
+              </span>
+              <span className="v8-intro__line">
+                <span className="v8-muted">I’m currently at </span>
+                {/* Chip + comma never split; the title stays on one line. */}
+                <span className="v8-nowrap">
+                  <a className="v8-chip" href="https://jobs.netflix.com/culture" target="_blank" rel="noopener noreferrer">
+                    <img src="/v8/netflix.png" alt="" width={24} height={24} />
+                    <strong>Netflix</strong>
+                  </a>
+                  <span className="v8-muted">,</span>
+                </span>
+                <span className="v8-muted"> working as a </span>
+                <strong className="v8-nowrap">Staff Product Designer.</strong>
+              </span>
             </h1>
             <SocialIcons />
           </div>
           <div className="v8-col-body v8-body">
             <p>
-              I design and build in code, for systems, products, and brands. Motion and CGI are
-              where I came from, and they still shape how I craft interfaces and tell stories.
+              I believe great experiences start with a strong, well-defined problem and have deep
+              conviction in storytelling as a superpower to strengthen and change people, places,
+              and products.
             </p>
             <p>
-              Today I'm a design engineer on the{' '}
-              <a href="https://www.microsoft.com/windows" target="_blank" rel="noopener noreferrer">Windows</a>{' '}
-              Design System team, where I own our design-system code infrastructure: turning Figma
-              files into coded components, architecting MDX documentation sites, and running
-              monorepo management and AI coding workflows.
+              I do this practically by working as a product designer in my day-to-day on the New
+              Content Experiences team at Netflix—where I work on future bets for the constantly
+              shifting landscape of streaming entertainment.
             </p>
           </div>
         </div>

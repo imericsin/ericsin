@@ -150,6 +150,8 @@ html.v8-site .shell { display: block; }
   text-wrap: balance;
 }
 .v8-heading strong { font-weight: 600; }
+.v8-intro__line { display: block; text-wrap: balance; }
+.v8-nowrap { white-space: nowrap; }
 /* Inline company chip (logo tile + name on a grey pill). The pill is 30px
    tall (24px tile + 3px padding); -1px block margins keep its margin box
    at the heading's 28px line so the line doesn't grow. */
