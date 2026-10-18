@@ -30,6 +30,16 @@
   font-style: normal;
   font-display: swap;
 }
+/* Denton Bold — v8 display titles and the footer sign-off. Latin subset
+   generated from Denton-Bold.otf (pyftsubset), WOFF2 with WOFF fallback. */
+@font-face {
+  font-family: "Denton";
+  src: url("/fonts/Denton-Bold.woff2") format("woff2"),
+       url("/fonts/Denton-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "PP Neue Montreal";
   src: url("/fonts/PPNeueMontreal-SemiBold.otf") format("opentype");

@@ -26,7 +26,7 @@ html.v8-site {
   --v8-pad: 24px;
   --v8-gap: 24px;              /* spacing/6 */
   --v8-mono: 'Geist Mono', ui-monospace, monospace;
-  --v8-serif: 'ABC Arizona Flare', 'Arizona Flare', Georgia, 'Times New Roman', serif;
+  --v8-serif: 'Denton', Georgia, 'Times New Roman', serif;   /* webfont: globals.css */
   --v8-sans: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
   --v8-dash-x: repeating-linear-gradient(to right, var(--v8-rule) 0 2px, transparent 2px 4px);
   --v8-dash-y: repeating-linear-gradient(to bottom, var(--v8-rule) 0 2px, transparent 2px 4px);
@@ -347,10 +347,10 @@ html.v8-site .v8 .card-meta .card-title {
 .v8-footer__sign { align-items: end; }
 .v8-footer__title {
   font-family: var(--v8-serif);
-  font-weight: 400;
+  font-weight: 700;              /* Figma 3888:39336: Denton Bold 48 / 0.9, -0.96px */
   font-size: 48px;
   line-height: 0.9;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   color: var(--v8-fg);
   text-wrap: balance;
   max-width: 397px;
