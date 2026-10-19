@@ -622,8 +622,11 @@ html.v8-site .v8-archives .archives-col { flex: 1 0 0; min-width: 0; padding: 0;
 
 .v8-label--flush { padding-left: 0; }
 .v8-about-exp { padding-bottom: 64px; }
-.v8-about-exp__heading { grid-column: 1 / span 4; }
-.v8-about-exp__list { grid-column: 6 / span 6; margin: 0; padding: 0; list-style: none; }
+/* Same two-halves split as the intro, so the table's left edge lines up
+   with the photo's (Figma: table x 720, 620 wide — the right half). */
+.v8-about-exp > .v8-row { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 0; }
+.v8-about-exp__heading { grid-column: 1; }
+.v8-about-exp__list { grid-column: 2; margin: 0; padding: 0; list-style: none; }
 .v8-about-exp__row {
   display: flex;
   align-items: center;
