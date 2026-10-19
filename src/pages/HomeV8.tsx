@@ -6,7 +6,8 @@ import { useV8Reveal } from '../hooks/useReveal'
 import { BASE_DELAY, STEP } from '../lib/revealDelay'
 import type { WorkCard } from '../hooks/useWorkIndex'
 import { SocialIcons, V8Footer, useV8Site } from '../components/v8/Chrome'
-import HeroWash from '../components/v8/HeroWash'
+// HeroWash (watercolor reveal) is paused — kept in components/v8 to re-enable:
+// import HeroWash from '../components/v8/HeroWash'
 
 // Same tiers as v7: desktop >1199px, tablet 720–1199px, mobile ≤719px.
 function useColumnCount() {
@@ -59,7 +60,6 @@ export default function HomeV8({ cards }: Props) {
     <div className="v8">
 
       <section className="v8-hero" aria-label="Designing and building what's next.">
-        <HeroWash />
         <div className="v8-hero__stage">
           <img className="v8-hero__word v8-hero__word--1 anim" style={{ animationDelay: '0.1s' }} src="/v8/hero-designing-and.svg" alt="" width={935} height={152} />
           <img className="v8-hero__word v8-hero__word--2 anim" style={{ animationDelay: '0.18s' }} src="/v8/hero-building.svg" alt="" width={545} height={152} />
